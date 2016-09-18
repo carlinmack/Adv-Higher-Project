@@ -21,6 +21,8 @@ class Deck {
 
     cut() {
         //remove last 20% of cards
+		//test2
+		//wasth
     }
 }
 
