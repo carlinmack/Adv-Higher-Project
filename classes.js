@@ -1,11 +1,11 @@
 class Deck {
-    constructor(decks, cards, spentCards) {
-        this.availableCards = cards;
-        this.spentCards = spentCards;
+    constructor() {
+        this.availableCards = [];
+        this.spentCards = [];
     }
 
     createDeck(decks) {
-        decks *= 4
+        decks *= 4;
         for (var j = 0; j < decks; j++) {
             this.availableCards.push(new Array());
             for (let i = 0; i < 13; i++) {
@@ -47,7 +47,7 @@ class Hand extends Dealer {
     }
 }
 
-deck = new Deck();
+var deck = new Deck();
 console.log(deck.availableCards);
 deck.createDeck(6);
 console.log(deck.availableCards);
