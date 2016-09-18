@@ -6,23 +6,21 @@ class Deck {
 
     createDeck(decks) {
         decks *= 4
-        for (j = 0; j < decks; j++) {
-            availableCards.push(new Array());
-            for (i = 0; i < 13; i++) {
-                array[j][i] = i;
+        for (var j = 0; j < decks; j++) {
+            this.availableCards.push(new Array());
+            for (let i = 0; i < 13; i++) {
+                this.availableCards[j][i] = i;
             }
         }
-        return availableCards;
     }
 
     shuffle() {
+		return("a");
         //fisher-yates shuffle
     }
 
     cut() {
         //remove last 20% of cards
-		//test2
-		//wasth
     }
 }
 
@@ -49,4 +47,8 @@ class Hand extends Dealer {
     }
 }
 
-deck = new Deck(6);
+deck = new Deck();
+console.log(deck.availableCards);
+deck.createDeck(6);
+console.log(deck.availableCards);
+console.log(deck.shuffle());
