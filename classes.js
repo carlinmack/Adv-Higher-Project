@@ -6,16 +6,15 @@ class Deck {
 
     createDeck(decks) {
         decks *= 4;
-        for (var j = 0; j < decks; j++) {
-            this.availableCards.push(new Array());
+        for (var j = 0; j < decks; j++) {;
             for (let i = 0; i < 13; i++) {
-                this.availableCards[j][i] = i;
+                this.availableCards.push([j,i]);
             }
         }
     }
 
     shuffle() {
-		return("a");
+        return("a");
         //fisher-yates shuffle
     }
 
