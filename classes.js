@@ -2,6 +2,7 @@ class Deck {
     constructor() {
         //initialises arrays for cards
         this.availableCards = [];
+        this.cutCards = [];
         this.spentCards = [];
     }
 
@@ -40,13 +41,17 @@ class Deck {
     deal() {
         //deal 2 cards to each player and the dealer
     }
+
+    combineDecks() {
+        // when availableCards is empty, push cut and spent cards to it
+    }
 }
 
 class Dealer {
     cards = [];
 
     display() {
-
+        //Change [0, 2] to A ♦
     }
 
     stand() {
@@ -60,7 +65,13 @@ class Dealer {
 }
 
 class virtualHand extends Dealer {
+    wager() {
+        let wager = Math.floor(Math.random()*3));
+    }
 
+    hit() {}
+
+    stand {}
 }
 
 class playerHand extends Dealer {
