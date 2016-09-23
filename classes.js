@@ -38,12 +38,16 @@ class Deck {
     }
 
     deal() {
-
+        //deal 2 cards to each player and the dealer
     }
 }
 
 class Dealer {
     cards = [];
+
+    display() {
+
+    }
 
     stand() {
         //end turn
@@ -55,7 +59,11 @@ class Dealer {
     }
 }
 
-class Hand extends Dealer {
+class virtualHand extends Dealer {
+
+}
+
+class playerHand extends Dealer {
     double() {
         //double wager
         //receive card
