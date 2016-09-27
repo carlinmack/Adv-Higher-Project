@@ -35,7 +35,7 @@ class Deck {
 
     cut() {
         //remove last 20% of cards
-        for (let i = 0; i < this.availableCards/5; i++) this.availableCards.pop();
+        for (let i = 0; i < this.availableCards.length/5; i++) this.availableCards.pop();
     }
 
     deal() {
