@@ -3,7 +3,7 @@ CLASS deck:
     SET cutCards TO [];
     SET spentCards TO [];
 
-    METHOD createDeck(decks)
+    METHOD CreateDeck(decks)
     END METHOD
 
     METHOD shuffle()
@@ -15,7 +15,7 @@ CLASS deck:
     METHOD deal()
     END METHOD
 
-    METHOD combineDecks()
+    METHOD CombineDecks()
     END METHOD
 END CLASS
     
@@ -23,6 +23,9 @@ CLASS dealer:
     SET cards TO []
     
     METHOD display()
+        FOR EACH card FROM cards
+            return unicodeCards[cards[0], cards[1]]
+        END FOR
     END METHOD
     
     METHOD stand()
@@ -32,7 +35,7 @@ CLASS dealer:
     END METHOD
 END CLASS
     
-CLASS AIhands:
+CLASS AIhand:
     METHOD wager()
     END METHOD
     
@@ -52,3 +55,27 @@ CLASS playerHand:
 END CLASS
 
 # MAIN PROGRAM
+SET deck TO NEW deck
+SET player5 TO NEW playerHand
+
+RECEIVE num FROM keyboard
+FOR iterator FROM 0 TO num DO
+    SET player+iterator TO NEW AIhand
+    APPEND player+iterator TO virtualPlayers
+END FOR
+
+FUNCTION main()
+    deck.deal()
+    
+    FOR EACH iterator FROM virtualPlayers DO
+        player+iterator.turn()
+    END FOR
+    
+    SWITCH input:
+        hit:
+        stand:
+        double:
+        split:
+    END SWITCH
+    
+END FUNCTION
