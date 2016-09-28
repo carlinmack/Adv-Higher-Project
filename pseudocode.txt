@@ -1,0 +1,54 @@
+CLASS deck:
+    SET availableCards TO [];
+    SET cutCards TO [];
+    SET spentCards TO [];
+
+    METHOD createDeck(decks)
+    END METHOD
+
+    METHOD shuffle()
+    END METHOD
+
+    METHOD cut()
+    END METHOD
+
+    METHOD deal()
+    END METHOD
+
+    METHOD combineDecks()
+    END METHOD
+END CLASS
+    
+CLASS dealer:
+    SET cards TO []
+    
+    METHOD display()
+    END METHOD
+    
+    METHOD stand()
+    END METHOD
+    
+    METHOD hit()
+    END METHOD
+END CLASS
+    
+CLASS AIhands:
+    METHOD wager()
+    END METHOD
+    
+    METHOD hit()
+    END METHOD
+
+    METHOD stand()
+    END METHOD
+END CLASS
+
+CLASS playerHand:
+    METHOD double()
+    END METHOD
+
+    METHOD splitCards()
+    END METHOD
+END CLASS
+
+# MAIN PROGRAM
