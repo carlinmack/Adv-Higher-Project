@@ -35,8 +35,9 @@ class Deck {
 
     cut() {
         //remove last 20% of cards
-        for (let i = 0; i < this.availableCards.length/5; i++) this.availableCards.pop();
-    }
+        for (let i = 0; i < this.availableCards.length/5; i++) {
+            this.cutCards.push(this.availableCards.pop());
+        }
 
     deal() {
         //deal 2 cards to each player and the dealer
@@ -64,7 +65,7 @@ class Dealer {
     }
 }
 
-class virtualHand extends Dealer {
+class VirtualHand extends Dealer {
     wager() {
         let wager = Math.floor(Math.random()*3));
     }
@@ -74,7 +75,12 @@ class virtualHand extends Dealer {
     stand {}
 }
 
-class playerHand extends Dealer {
+class PlayerHand extends Dealer {
+    hit() {
+        //take next card from queue
+        //continue turn
+    }
+
     double() {
         //double wager
         //receive card
