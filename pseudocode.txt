@@ -1,15 +1,35 @@
 CLASS deck:
-    SET availableCards TO [];
-    SET cutCards TO [];
-    SET spentCards TO [];
+    SET availableCards TO []
+    SET cutCards TO []
+    SET spentCards TO []
 
     METHOD CreateDeck(decks)
+        SET decks TO decks * 4
+        FOR iterator1 FROM 0 TO decks DO
+            FOR iterator2 FROM 0 TO 13 DO
+                APPEND [j,i] TO availableCards
+            END FOR
+        END FOR
     END METHOD
 
     METHOD shuffle()
+        SET length TO length(availableCards)
+        
+        WHILE length > 0 DO
+            SET length TO length - 1
+            SET selectedCard TO Round(RandomInt * length)
+
+            SET temp TO availableCards[length]
+            SET availableCards[length] TO availableCards[selectedCard]
+            SET availableCards[selectedCard] TO temp
+        END WHILE
     END METHOD
 
     METHOD cut()
+        FOR iterator FROM 0 TO length(availableCards/5) DO
+            APPEND availableCards[0] TO cutCards
+            REMOVE availableCards[0]
+        END FOR
     END METHOD
 
     METHOD deal()
@@ -18,6 +38,7 @@ CLASS deck:
     METHOD CombineDecks()
     END METHOD
 END CLASS
+    
     
 CLASS dealer:
     SET cards TO []
@@ -35,6 +56,7 @@ CLASS dealer:
     END METHOD
 END CLASS
     
+    
 CLASS AIhand:
     METHOD wager()
     END METHOD
@@ -46,6 +68,7 @@ CLASS AIhand:
     END METHOD
 END CLASS
 
+
 CLASS playerHand:
     METHOD double()
     END METHOD
@@ -54,7 +77,7 @@ CLASS playerHand:
     END METHOD
 END CLASS
 
-# MAIN PROGRAM
+                # MAIN PROGRAM
 SET deck TO NEW deck
 SET player5 TO NEW playerHand
 
@@ -63,6 +86,7 @@ FOR iterator FROM 0 TO num DO
     SET player+iterator TO NEW AIhand
     APPEND player+iterator TO virtualPlayers
 END FOR
+
 
 FUNCTION main()
     deck.deal()
@@ -73,9 +97,13 @@ FUNCTION main()
     
     SWITCH input:
         hit:
+            playerHand.hit()
         stand:
+            playerHand.stand()
         double:
+            playerHand.double()
         split:
+            playerHand.split()
     END SWITCH
     
 END FUNCTION
