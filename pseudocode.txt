@@ -1,0 +1,109 @@
+CLASS deck:
+    SET availableCards TO []
+    SET cutCards TO []
+    SET spentCards TO []
+
+    METHOD CreateDeck(decks)
+        SET decks TO decks * 4
+        FOR iterator1 FROM 0 TO decks DO
+            FOR iterator2 FROM 0 TO 13 DO
+                APPEND [j,i] TO availableCards
+            END FOR
+        END FOR
+    END METHOD
+
+    METHOD shuffle()
+        SET length TO length(availableCards)
+        
+        WHILE length > 0 DO
+            SET length TO length - 1
+            SET selectedCard TO Round(RandomInt * length)
+
+            SET temp TO availableCards[length]
+            SET availableCards[length] TO availableCards[selectedCard]
+            SET availableCards[selectedCard] TO temp
+        END WHILE
+    END METHOD
+
+    METHOD cut()
+        FOR iterator FROM 0 TO length(availableCards/5) DO
+            APPEND availableCards[0] TO cutCards
+            REMOVE availableCards[0]
+        END FOR
+    END METHOD
+
+    METHOD deal()
+    END METHOD
+
+    METHOD CombineDecks()
+    END METHOD
+END CLASS
+    
+    
+CLASS dealer:
+    SET cards TO []
+    
+    METHOD display()
+        FOR EACH card FROM cards
+            return unicodeCards[cards[0], cards[1]]
+        END FOR
+    END METHOD
+    
+    METHOD stand()
+    END METHOD
+    
+    METHOD hit()
+    END METHOD
+END CLASS
+    
+    
+CLASS AIhand:
+    METHOD wager()
+    END METHOD
+    
+    METHOD hit()
+    END METHOD
+
+    METHOD stand()
+    END METHOD
+END CLASS
+
+
+CLASS playerHand:
+    METHOD double()
+    END METHOD
+
+    METHOD splitCards()
+    END METHOD
+END CLASS
+
+                # MAIN PROGRAM
+SET deck TO NEW deck
+SET player5 TO NEW playerHand
+
+RECEIVE num FROM keyboard
+FOR iterator FROM 0 TO num DO
+    SET player+iterator TO NEW AIhand
+    APPEND player+iterator TO virtualPlayers
+END FOR
+
+
+FUNCTION main()
+    deck.deal()
+    
+    FOR EACH iterator FROM virtualPlayers DO
+        player+iterator.turn()
+    END FOR
+    
+    SWITCH input:
+        hit:
+            playerHand.hit()
+        stand:
+            playerHand.stand()
+        double:
+            playerHand.double()
+        split:
+            playerHand.split()
+    END SWITCH
+    
+END FUNCTION

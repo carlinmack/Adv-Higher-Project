@@ -1,32 +1,60 @@
 class Deck {
-    constructor(decks, cards, spentCards) {
-        this.availableCards = cards;
-        this.spentCards = spentCards;
+    constructor() {
+        //initialises arrays for cards
+        this.availableCards = [];
+        this.cutCards = [];
+        this.spentCards = [];
     }
 
     createDeck(decks) {
-        decks *= 4
-        for (j = 0; j < decks; j++) {
-            availableCards.push(new Array());
-            for (i = 0; i < 13; i++) {
-                array[j][i] = i;
+        decks *= 4; //As there are 4 suits per deck it needs to be multiplied for the loop
+        for (var j = 0; j < decks; j++) {;  //for the amount of suits
+            for (let i = 0; i < 13; i++) {  //and the amount of cards
+                this.availableCards.push([j,i]); // adds a card to the main array
             }
         }
-        return availableCards;
     }
 
     shuffle() {
         //fisher-yates shuffle
+        var m = array.length, t, i;
+
+        // While there remain elements to shuffle…
+        while (m) {
+            m -= 1; // Decrease number of remaining cards
+            // Pick a remaining element…
+            i = Math.floor(Math.random() * m);
+
+            // And swap it with the current element.
+            t = array[m];
+            array[m] = array[i];
+            array[i] = t;
+        }
+        return array;
     }
 
     cut() {
         //remove last 20% of cards
-		//test2
-		//wasth
+        for (let i = 0; i < this.availableCards.length/5; i++) {
+            this.cutCards.push(this.availableCards.pop());
+        }
+
+    deal() {
+        //deal 2 cards to each player and the dealer
+    }
+
+    combineDecks() {
+        // when availableCards is empty, push cut and spent cards to it
     }
 }
 
 class Dealer {
+    cards = [];
+
+    display() {
+        //Change [0, 2] to A ♦
+    }
+
     stand() {
         //end turn
     }
@@ -37,7 +65,22 @@ class Dealer {
     }
 }
 
-class Hand extends Dealer {
+class VirtualHand extends Dealer {
+    wager() {
+        let wager = Math.floor(Math.random()*3));
+    }
+
+    hit() {}
+
+    stand {}
+}
+
+class PlayerHand extends Dealer {
+    hit() {
+        //take next card from queue
+        //continue turn
+    }
+
     double() {
         //double wager
         //receive card
@@ -49,4 +92,8 @@ class Hand extends Dealer {
     }
 }
 
-deck = new Deck(6);
+var deck = new Deck();
+console.log(deck.availableCards);
+deck.createDeck(6); //creates 6 decks - CHANGE: make user input
+console.log(deck.availableCards);
+console.log(deck.shuffle());
