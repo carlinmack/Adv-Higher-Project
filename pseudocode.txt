@@ -50,18 +50,21 @@ CLASS dealer:
     END METHOD
     
     METHOD stand()
+        turn = false 
     END METHOD
     
     METHOD hit()
+        cards.append(deck.hit())
     END METHOD
 END CLASS
     
     
-CLASS AIhand:
+CLASS AIhand INHERITS dealer:
     METHOD wager()
     END METHOD
     
     METHOD hit()
+        
     END METHOD
 
     METHOD stand()
@@ -69,7 +72,7 @@ CLASS AIhand:
 END CLASS
 
 
-CLASS playerHand:
+CLASS playerHand INHERITS dealer:
     METHOD double()
     END METHOD
 
@@ -77,11 +80,12 @@ CLASS playerHand:
     END METHOD
 END CLASS
 
-                # MAIN PROGRAM
+                # MAIN PROGRAM  #
 SET deck TO NEW deck
 SET player5 TO NEW playerHand
+SET virtualPlayers TO [] 
 
-RECEIVE num FROM keyboard
+RECEIVE num FROM GUI
 FOR iterator FROM 0 TO num DO
     SET player+iterator TO NEW AIhand
     APPEND player+iterator TO virtualPlayers
@@ -89,21 +93,27 @@ END FOR
 
 
 FUNCTION main()
+
     deck.deal()
     
     FOR EACH iterator FROM virtualPlayers DO
-        player+iterator.turn()
+        virtualPlayers[iterator].turn()
     END FOR
     
-    SWITCH input:
-        hit:
-            playerHand.hit()
-        stand:
-            playerHand.stand()
-        double:
-            playerHand.double()
-        split:
-            playerHand.split()
-    END SWITCH
+    turn = true
+    WHILE turn
+        SWITCH input:
+            hit:
+                playerHand.hit()
+            stand:
+                playerHand.stand()
+            double:
+                playerHand.double()
+            split:
+                playerHand.split()
+        END SWITCH
+    END WHILE
+    
+    
     
 END FUNCTION
