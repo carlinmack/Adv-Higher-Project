@@ -49,7 +49,9 @@ class Deck {
 }
 
 class Dealer {
-    cards = [];
+    constructor() {
+        cards = [];
+    }
 
     display() {
         //Change [0, 2] to A ♦
@@ -72,7 +74,7 @@ class VirtualHand extends Dealer {
 
     hit() {}
 
-    stand {}
+    stand() {}
 }
 
 class PlayerHand extends Dealer {
