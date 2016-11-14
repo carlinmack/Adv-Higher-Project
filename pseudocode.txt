@@ -1,3 +1,8 @@
+
+
+
+URGENT: how is tournament mode and leaderboard mode gonna work lol
+
 CLASS deck:
     SET availableCards TO []
     SET cutCards TO []
@@ -43,7 +48,8 @@ CLASS deck:
         return this.availableCards.pop()
     END METHOD
 
-    METHOD CombineDecks()
+    METHOD combineDecks()
+        APPEND cutCards AND spentCards TO availableCards
     END METHOD
 END CLASS
     
@@ -72,7 +78,7 @@ CLASS dealer:
     END METHOD
     
     METHOD hit()
-        cards.append(deck.hit())
+        APPEND deck.hit() TO cards
     END METHOD
 END CLASS
     
@@ -88,14 +94,18 @@ END CLASS
 
 CLASS playerHand INHERITS dealer:
     METHOD double()
+        APPEND deck.hit() TO cards
+        SET turn TO FALSE
     END METHOD
 
     METHOD splitCards()
+        URGENT
     END METHOD
 END CLASS
 
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
+SET dealer TO NEW dealer
 SET player5 TO NEW playerHand
 SET aiPlayers TO [] 
 
@@ -105,9 +115,15 @@ FOR iterator FROM 0 TO num DO
     APPEND player+iterator TO aiPlayers
 END FOR
 
+APPEND dealer TO aiPlayers
+
+SET decks TO RECEIVE num FROM GUI
+deck.CreateDeck(decks)
 
 FUNCTION main()
-
+    
+    deck.shuffle()
+    deck.cut()
     deck.deal()
     
     FOR EACH iterator FROM aiPlayers DO
@@ -120,6 +136,7 @@ FUNCTION main()
         END WHILE
     END FOR
     
+    // display some of the turns
     turn = true
     WHILE turn
         SWITCH input:
@@ -133,8 +150,6 @@ FUNCTION main()
                 playerHand.split()
         END SWITCH
     END WHILE
-    
-    dealer.turn()
     
     FOR EACH iter FROM aiPlayers DO
         IF aiPlayers[iter].evaluate < dealer.evaluate OR aiPlayers[iter] >= 21 THEN
