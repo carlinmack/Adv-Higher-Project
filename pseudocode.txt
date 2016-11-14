@@ -27,12 +27,20 @@ CLASS deck:
 
     METHOD cut()
         FOR iterator FROM 0 TO length(availableCards/5) DO
-            APPEND availableCards[0] TO cutCards
-            REMOVE availableCards[0]
+            APPEND availableCards[iterator] TO cutCards
+            REMOVE availableCards[iterator]
         END FOR
     END METHOD
 
     METHOD deal()
+        FOR EACH iterator FROM aiPlayers DO
+            APPEND availableCards[2 LAST] TO aiPlayers[iterator]
+        END FOR
+        APPEND availableCards[2 LAST] TO player5[iterator]
+    END METHOD
+    
+    METHOD hit() 
+        return this.availableCards.pop()
     END METHOD
 
     METHOD CombineDecks()
@@ -45,9 +53,19 @@ CLASS dealer:
     
     METHOD display()
         FOR EACH card FROM cards
-            return unicodeCards[cards[0], cards[1]]
-        END FOR
+            return unicodeCards[cards[0] MOD 4, cards[1]]
+        END FOR      
     END METHOD
+    
+    METHOD evaluate()
+        SWITCH cards[1]:
+            0:
+                value = 1
+            1,2,3,4,5,6,7,8,9:
+                value = cards[1]
+            10,11,12:
+                value = 10
+    END METHOD    
     
     METHOD stand()
         turn = false 
@@ -60,14 +78,10 @@ END CLASS
     
     
 CLASS AIhand INHERITS dealer:
-    METHOD wager()
-    END METHOD
+    balance = Math.random()
     
-    METHOD hit()
-        
-    END METHOD
-
-    METHOD stand()
+    METHOD wager()
+        SET wager TO Random(0,1,2)
     END METHOD
 END CLASS
 
@@ -83,12 +97,12 @@ END CLASS
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
 SET player5 TO NEW playerHand
-SET virtualPlayers TO [] 
+SET aiPlayers TO [] 
 
 RECEIVE num FROM GUI
 FOR iterator FROM 0 TO num DO
     SET player+iterator TO NEW AIhand
-    APPEND player+iterator TO virtualPlayers
+    APPEND player+iterator TO aiPlayers
 END FOR
 
 
@@ -96,8 +110,14 @@ FUNCTION main()
 
     deck.deal()
     
-    FOR EACH iterator FROM virtualPlayers DO
-        virtualPlayers[iterator].turn()
+    FOR EACH iterator FROM aiPlayers DO
+        WHILE aiPlayers[iterator].turn IS True Then
+            IF aiPlayers[iterator].evaluate() > aiPlayers[iterator].balance THEN
+                aiPlayers[iterator].hit()
+            ELSE
+                aiPlayers[iterator].stand()
+            END IF
+        END WHILE
     END FOR
     
     turn = true
@@ -114,6 +134,14 @@ FUNCTION main()
         END SWITCH
     END WHILE
     
+    dealer.turn()
     
+    FOR EACH iter FROM aiPlayers DO
+        IF aiPlayers[iter].evaluate < dealer.evaluate OR aiPlayers[iter] >= 21 THEN
+            SET aiPlayers[iter].bank TO aiPlayers[iter].bank - aiPlayers[iter].wager
+        ELSE IF aiPlayers[iter].evaluate > dealer.evaluate THEN
+            SET aiPlayers[iter].bank TO aiPlayers[iter].bank + aiPlayers[iter].wager
+        END IF    
+    END FOR
     
 END FUNCTION
