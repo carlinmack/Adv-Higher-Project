@@ -59,7 +59,7 @@ CLASS dealer:
     
     METHOD display()
         FOR EACH card FROM cards
-            return unicodeCards[cards[0] MOD 4, cards[1]]
+            return unicodeCards[cards[0] MOD 4, cards[1]]  - need to use "card" at some point
         END FOR      
     END METHOD
     
@@ -136,7 +136,8 @@ FUNCTION main()
         END WHILE
     END FOR
     
-    // display some of the turns
+    // display some of the aiTurns
+    
     turn = true
     WHILE turn
         SWITCH input:
