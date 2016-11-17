@@ -56,6 +56,22 @@ class Dealer {
 
     display() {
         //Change [0, 2] to A ♦
+        this.cards.forEach(function(card) {
+            prefix = "0x0001F0";
+            suit = "";
+
+            var suits = {
+                '0': 'A',
+                '1': 'B',
+                '2': 'C',
+                '3': 'D'
+            };
+            suit = suits[ card[0] ];
+
+            cardVal = (card[1] + 1).toString(16);
+            temp = prefix.concat(suit, cardVal);
+            return String.fromCodePoint(temp);
+        });
     }
 
     evaluate() {
@@ -124,3 +140,16 @@ console.log(deck.availableCards);
 deck.createDeck(6); //creates 6 decks - CHANGE: make user input
 console.log(deck.availableCards);
 console.log(deck.shuffle());
+
+
+/*
+MAIN
+var cases = {
+    1: doX,
+    2: doY,
+    3: doN
+};
+if (cases[something]) {
+    cases[something]();
+}
+*/
