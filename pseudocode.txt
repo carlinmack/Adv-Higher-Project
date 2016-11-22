@@ -1,7 +1,4 @@
-
-
-
-URGENT: how is tournament mode and leaderboard mode gonna work lol
+TODO leaderboard
 
 CLASS deck:
     SET availableCards TO []
@@ -45,32 +42,55 @@ CLASS deck:
     END METHOD
     
     METHOD hit() 
-        return this.availableCards.pop()
+        return availableCards.pop()
     END METHOD
 
     METHOD combineDecks()
         APPEND cutCards AND spentCards TO availableCards
+    END METHOD
+    
+    METHOD store()
+        SEND availableCards, cutCards, spentCards TO FILE
     END METHOD
 END CLASS
     
     
 CLASS dealer:
     SET cards TO []
+    SET bank TO 5000
     
     METHOD display()
         FOR EACH card FROM cards
-            return unicodeCards[cards[0] MOD 4, cards[1]]  - need to use "card" at some point
-        END FOR      
+            SWITCH cards[1]:
+                0:
+                    SET suit TO 'A'
+                1:
+                    SET suit TO 'B'
+                2:
+                    SET suit TO 'C'
+                3:
+                    SET suit TO 'D'
+            END SWITCH
+
+            SET cardVal TO card[1] + 1 TO HEXADECIMAL
+            SET temp TO "0x0001F0" CONCAT suit CONCAT cardVal
+            RETURN temp TO UNICODE;
+        END FOR    
     END METHOD
     
     METHOD evaluate()
-        SWITCH cards[1]:
-            0:
-                value = 1
-            1,2,3,4,5,6,7,8,9:
-                value = cards[1]
-            10,11,12:
-                value = 10
+        SET value TO 0
+        FOR iter FROM 0 TO length CARDS
+            SWITCH cards[1]:
+                0:
+                    value += 1
+                1,2,3,4,5,6,7,8,9:
+                    value += cards[1]
+                10,11,12:
+                    value += 10
+            END SWITCH
+        END FOR
+        RETURN value
     END METHOD    
     
     METHOD stand()
@@ -79,6 +99,10 @@ CLASS dealer:
     
     METHOD hit()
         APPEND deck.hit() TO cards
+    END METHOD
+    
+    METHOD store()
+        SEND cards, bank, wager TO FILE
     END METHOD
 END CLASS
     
@@ -93,13 +117,25 @@ END CLASS
 
 
 CLASS playerHand INHERITS dealer:
+    SET wager TO 50
+    SET splitCards TO []
+    
+    METHOD display()
+        FOR EACH card FROM cards
+            RETURN unicodeCards[cards[card][0] MOD 4, cards[card][1]]
+        END FOR    
+        IF splitCards != null
+            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
+        END IF
+    END METHOD
+
     METHOD double()
         APPEND deck.hit() TO cards
         SET turn TO FALSE
     END METHOD
 
     METHOD splitCards()
-        URGENT
+        APPEND cards.pop TO splitCards
     END METHOD
 END CLASS
 
@@ -109,19 +145,18 @@ SET dealer TO NEW dealer
 SET player5 TO NEW playerHand
 SET aiPlayers TO [] 
 
-RECEIVE num FROM GUI
-FOR iterator FROM 0 TO num DO
-    SET player+iterator TO NEW AIhand
-    APPEND player+iterator TO aiPlayers
-END FOR
 
-APPEND dealer TO aiPlayers
+FUNCTION Game(rounds):    
+    RECEIVE num FROM GUI
+    FOR iterator FROM 0 TO num DO
+        SET player+iterator TO NEW AIhand
+        APPEND player+iterator TO aiPlayers
+    END FOR
 
-SET decks TO RECEIVE num FROM GUI
-deck.CreateDeck(decks)
+    APPEND dealer TO aiPlayers
 
-FUNCTION main()
-    
+    SET players TO RECEIVE num FROM GUI
+    deck.CreateDeck(players)
     deck.shuffle()
     deck.cut()
     deck.deal()
@@ -136,7 +171,11 @@ FUNCTION main()
         END WHILE
     END FOR
     
-    // display some of the aiTurns
+    SET display TO ROUND DOWN (LENGTH aiPlayers / 2)
+    
+    FOR iterator FROM 1 TO display + 1 DO
+        aiPlayer[iterator].display()
+    END FOR
     
     turn = true
     WHILE turn
@@ -153,11 +192,39 @@ FUNCTION main()
     END WHILE
     
     FOR EACH iter FROM aiPlayers DO
+        #if lower than dealer or over 21
         IF aiPlayers[iter].evaluate < dealer.evaluate OR aiPlayers[iter] >= 21 THEN
             SET aiPlayers[iter].bank TO aiPlayers[iter].bank - aiPlayers[iter].wager
+        #if higher than dealer
         ELSE IF aiPlayers[iter].evaluate > dealer.evaluate THEN
             SET aiPlayers[iter].bank TO aiPlayers[iter].bank + aiPlayers[iter].wager
+        ELSE
+            #tied, do nothing
         END IF    
     END FOR
     
+    FOR EACH iterator FROM aiPlayers DO
+        aiPlayers[iterator].store()
+    END FOR
+    
+    dealer.store()
+    player
+END FUNCTION
+
+FUNCTION newGame():
+    WHILE playing:
+        Game();
+    END WHILE
+END FUNCTION
+
+FUNCTION loadGame():
+    FOR EACH iter FROM aiPlayers DO
+        SET 
+    END FOR
+END FUNCTION
+
+FUNCTION tournament():
+    FOR iter FROM 0 TO 10:
+        newGame();
+    END FOR
 END FUNCTION
