@@ -1,15 +1,13 @@
-TODO leaderboard
-
-CLASS deck:
+CLASS Deck:
     SET availableCards TO []
     SET cutCards TO []
     SET spentCards TO []
 
     METHOD CreateDeck(decks)
         SET decks TO decks * 4
-        FOR iterator1 FROM 0 TO decks DO
-            FOR iterator2 FROM 0 TO 13 DO
-                APPEND [j,i] TO availableCards
+        FOR iter1 FROM 0 TO decks DO
+            FOR iter2 FROM 0 TO 13 DO
+                APPEND [iter1, iter2] TO availableCards
             END FOR
         END FOR
     END METHOD
@@ -28,17 +26,16 @@ CLASS deck:
     END METHOD
 
     METHOD cut()
-        FOR iterator FROM 0 TO length(availableCards/5) DO
-            APPEND availableCards[iterator] TO cutCards
-            REMOVE availableCards[iterator]
+        FOR iterA FROM 0 TO length(availableCards/5) DO
+            APPEND availableCards[iterA] TO cutCards
+            REMOVE availableCards[iterA]
         END FOR
     END METHOD
 
     METHOD deal()
-        FOR EACH iterator FROM aiPlayers DO
-            APPEND availableCards[2 LAST] TO aiPlayers[iterator]
+        FOR EACH iterB FROM Players DO
+            APPEND availableCards[2 LAST] TO Players[iterB]
         END FOR
-        APPEND availableCards[2 LAST] TO player5[iterator]
     END METHOD
     
     METHOD hit() 
@@ -54,7 +51,6 @@ CLASS deck:
     END METHOD
 END CLASS
     
-    
 CLASS dealer:
     SET cards TO []
     SET bank TO 5000
@@ -62,14 +58,10 @@ CLASS dealer:
     METHOD display()
         FOR EACH card FROM cards
             SWITCH cards[1]:
-                0:
-                    SET suit TO 'A'
-                1:
-                    SET suit TO 'B'
-                2:
-                    SET suit TO 'C'
-                3:
-                    SET suit TO 'D'
+                0:  SET suit TO 'A'
+                1:  SET suit TO 'B'
+                2:  SET suit TO 'C'
+                3:  SET suit TO 'D'
             END SWITCH
 
             SET cardVal TO card[1] + 1 TO HEXADECIMAL
@@ -80,12 +72,12 @@ CLASS dealer:
     
     METHOD evaluate()
         SET value TO 0
-        FOR iter FROM 0 TO length CARDS
-            SWITCH cards[1]:
+        FOR iterC FROM 0 TO length CARDS
+            SWITCH cards[iterC][1]:
                 0:
                     value += 1
                 1,2,3,4,5,6,7,8,9:
-                    value += cards[1]
+                    value += cards[1] + 1
                 10,11,12:
                     value += 10
             END SWITCH
@@ -141,16 +133,67 @@ END CLASS
 
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
-SET dealer TO NEW dealer
-SET player5 TO NEW playerHand
-SET aiPlayers TO [] 
+SET Dealer TO NEW dealer
+SET Player TO NEW playerHand
+SET Players TO [] 
+APPEND dealer TO Players
 
 
-FUNCTION Game(rounds):    
+FUNCTION Round():    
+    deck.deal()
+
+    FOR iterD FROM 1 TO Length(Players) - 1 DO
+        WHILE Players[iterD].turn IS True Then
+            IF Players[iterD].evaluate() > Players[iterD].balance THEN
+                Players[iterD].hit()
+            ELSE
+                Players[iterD].stand()
+            END IF
+        END WHILE
+    END FOR
+    
+    SET display TO ROUND DOWN (LENGTH Players / 2)
+    
+    FOR iterE FROM 1 TO display + 1 DO
+        aiPlayer[iterE].display()
+    END FOR
+    
+    turn = true
+    WHILE turn
+        SWITCH input:
+            hit:
+                Player[last].hit()
+            stand:
+                Player[last].stand()
+            double:
+                Player[last].double()
+            split:
+                Player[last].split()
+        END SWITCH
+    END WHILE
+    
+    FOR iterF FROM 1 TO Length(Players) DO
+        #if lower than dealer or over 21
+        IF Players[iterF].evaluate < Players[0].evaluate OR Players[iterF] >= 21 THEN
+            SET Players[iterF].bank TO Players[iterF].bank - Players[iterF].wager
+        #if higher than dealer
+        ELSE IF Players[iterF].evaluate > Players[0].evaluate THEN
+            SET Players[iterF].bank TO Players[iterF].bank + Players[iterF].wager
+        ELSE
+            #tied, do nothing
+        END IF    
+    END FOR
+    
+    FOR EACH iterG FROM Players DO
+        Players[iterG].store()
+    END FOR
+END FUNCTION
+
+FUNCTION newGame():  
     RECEIVE num FROM GUI
-    FOR iterator FROM 0 TO num DO
-        SET player+iterator TO NEW AIhand
-        APPEND player+iterator TO aiPlayers
+    FOR iterH FROM 0 TO num DO
+        SET player+iterH TO NEW AIhand
+        APPEND player+iterH TO aiPlayers
     END FOR
 
     APPEND dealer TO aiPlayers
@@ -159,72 +202,33 @@ FUNCTION Game(rounds):
     deck.CreateDeck(players)
     deck.shuffle()
     deck.cut()
-    deck.deal()
     
-    FOR EACH iterator FROM aiPlayers DO
-        WHILE aiPlayers[iterator].turn IS True Then
-            IF aiPlayers[iterator].evaluate() > aiPlayers[iterator].balance THEN
-                aiPlayers[iterator].hit()
-            ELSE
-                aiPlayers[iterator].stand()
-            END IF
-        END WHILE
-    END FOR
-    
-    SET display TO ROUND DOWN (LENGTH aiPlayers / 2)
-    
-    FOR iterator FROM 1 TO display + 1 DO
-        aiPlayer[iterator].display()
-    END FOR
-    
-    turn = true
-    WHILE turn
-        SWITCH input:
-            hit:
-                playerHand.hit()
-            stand:
-                playerHand.stand()
-            double:
-                playerHand.double()
-            split:
-                playerHand.split()
-        END SWITCH
-    END WHILE
-    
-    FOR EACH iter FROM aiPlayers DO
-        #if lower than dealer or over 21
-        IF aiPlayers[iter].evaluate < dealer.evaluate OR aiPlayers[iter] >= 21 THEN
-            SET aiPlayers[iter].bank TO aiPlayers[iter].bank - aiPlayers[iter].wager
-        #if higher than dealer
-        ELSE IF aiPlayers[iter].evaluate > dealer.evaluate THEN
-            SET aiPlayers[iter].bank TO aiPlayers[iter].bank + aiPlayers[iter].wager
-        ELSE
-            #tied, do nothing
-        END IF    
-    END FOR
-    
-    FOR EACH iterator FROM aiPlayers DO
-        aiPlayers[iterator].store()
-    END FOR
-    
-    dealer.store()
-    player
-END FUNCTION
-
-FUNCTION newGame():
     WHILE playing:
-        Game();
+        IF Length(deck.availableCards) > 4 * Length(Players)
+            Round();
+        ELSE
+            deck.combineDecks()
+            deck.shuffle()
+            deck.cut()
     END WHILE
 END FUNCTION
 
 FUNCTION loadGame():
-    FOR EACH iter FROM aiPlayers DO
-        SET 
+    FOR EACH iterI FROM Players DO
+        SET filebank, filebalance, filewager, filesplitCards TO Players[iterI](.bank, .balance, .wager)
     END FOR
 END FUNCTION
 
 FUNCTION tournament():
-    FOR iter FROM 0 TO 10:
-        newGame();
+    SET Player.handle TO USER INPUT
+    
+    FOR iterJ FROM 0 TO 10:
+        Round();
+        iterJ++
     END FOR
+    
+    FOR iterK FROM 0 TO Length(File)
+        IF Player.bank > File.bank 
+            INSERT Player.bank, Player.handle
+    APPEND Player.bank TO FILE 
 END FUNCTION
