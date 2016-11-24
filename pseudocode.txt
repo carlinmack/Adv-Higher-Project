@@ -159,8 +159,6 @@ CLASS playerHand INHERITS dealer:
     END METHOD
 END CLASS
 
-
-
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
 SET Dealer TO NEW dealer
@@ -271,12 +269,11 @@ END FUNCTION
 
 FUNCTION tournament():
     APPEND Player TO Players
+    SET Player.handle TO USER INPUT
 
     deck.CreateDeck(6)
     deck.shuffle()
     deck.cut()
-    
-    SET Player.handle TO USER INPUT
     
     FOR iterJ FROM 0 TO 10:
         Round();
