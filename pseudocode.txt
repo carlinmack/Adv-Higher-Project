@@ -47,13 +47,17 @@ CLASS Deck:
     END METHOD
     
     METHOD store()
-        SEND availableCards, cutCards, spentCards TO FILE
+        WRITE {
+            availableCards, availableCards
+            cutCards, cutCards
+            spentCards, spentCards
+        }  TO FILE
     END METHOD
 END CLASS
     
 CLASS dealer:
     SET cards TO []
-    SET bank TO 5000
+    SET players TO 2
     
     METHOD display()
         FOR EACH card FROM cards
@@ -65,7 +69,7 @@ CLASS dealer:
             END SWITCH
 
             SET cardVal TO card[1] + 1 TO HEXADECIMAL
-            SET temp TO "0x0001F0" CONCAT suit CONCAT cardVal
+            SET temp TO "0x0001F0" & suit & cardVal
             RETURN temp TO UNICODE;
         END FOR    
     END METHOD
@@ -94,23 +98,37 @@ CLASS dealer:
     END METHOD
     
     METHOD store()
-        SEND cards, bank, wager TO FILE
+        WRITE {
+            i & cards, cards
+            i & players, players
+        }  TO FILE
     END METHOD
 END CLASS
     
     
 CLASS AIhand INHERITS dealer:
+    SET bank TO 5000
     balance = Math.random()
     
     METHOD wager()
         SET wager TO Random(0,1,2)
     END METHOD
+    
+    METHOD store(i)
+        WRITE {
+            i & cards, cards
+            i & bank, bank
+            i & balance, balance
+        }  TO FILE
+    END METHOD
 END CLASS
 
 
 CLASS playerHand INHERITS dealer:
+    SET bank TO 5000
     SET wager TO 50
     SET splitCards TO []
+    SET handle TO ""
     
     METHOD display()
         FOR EACH card FROM cards
@@ -129,7 +147,19 @@ CLASS playerHand INHERITS dealer:
     METHOD splitCards()
         APPEND cards.pop TO splitCards
     END METHOD
+    
+    METHOD store(i)
+        WRITE {
+            i & cards, cards
+            i & bank, bank
+            i & wager, wager
+            i & splitCards, splitCards
+            i & handle, handle
+        }  TO FILE
+    END METHOD
 END CLASS
+
+
 
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
@@ -138,9 +168,14 @@ SET Player TO NEW playerHand
 SET Players TO [] 
 APPEND dealer TO Players
 
-
 FUNCTION Round():    
     deck.deal()
+    
+    FOR EACH iterG FROM Players DO
+        Players[iterG].store(iterG)
+    END FOR
+    
+    deck.store()
 
     FOR iterD FROM 1 TO Length(Players) - 1 DO
         WHILE Players[iterD].turn IS True Then
@@ -153,9 +188,8 @@ FUNCTION Round():
     END FOR
     
     SET display TO ROUND DOWN (LENGTH Players / 2)
-    
     FOR iterE FROM 1 TO display + 1 DO
-        aiPlayer[iterE].display()
+        Players[iterE].display()
     END FOR
     
     turn = true
@@ -187,19 +221,19 @@ FUNCTION Round():
     FOR EACH iterG FROM Players DO
         Players[iterG].store()
     END FOR
+    
 END FUNCTION
 
 FUNCTION newGame():  
-    RECEIVE num FROM GUI
-    FOR iterH FROM 0 TO num DO
-        SET player+iterH TO NEW AIhand
-        APPEND player+iterH TO aiPlayers
+    SET dealer.players TO INT FROM GUI
+    FOR iterH FROM 0 TO dealer.players DO
+        SET player & iterH TO NEW AIhand
+        APPEND player & iterH TO Players
     END FOR
 
-    APPEND dealer TO aiPlayers
+    APPEND Player TO Players
 
-    SET players TO RECEIVE num FROM GUI
-    deck.CreateDeck(players)
+    deck.CreateDeck(6)
     deck.shuffle()
     deck.cut()
     
@@ -210,16 +244,38 @@ FUNCTION newGame():
             deck.combineDecks()
             deck.shuffle()
             deck.cut()
+        END IF
     END WHILE
 END FUNCTION
 
 FUNCTION loadGame():
-    FOR EACH iterI FROM Players DO
-        SET filebank, filebalance, filewager, filesplitCards TO Players[iterI](.bank, .balance, .wager)
+    SET deck.availableCards TO READ FILE availableCards
+    SET deck.cutCards TO READ FILE cutCards
+    SET deck.spentCards TO READ FILE spentCards
+    
+    SET Players[0].cards TO READ FILE 0cards
+    SET Players[0].players TO READ FILE 0players
+    
+    FOR iterI FROM 1 TO Length(Players) + 1
+        SET Players[iterI].cards TO READ FILE iterI & cards
+        SET Players[iterI].bank TO READ FILE iterI & bank
+        SET Players[iterI].balance TO READ FILE iterI & cards
+        
+        IF iterI IS Length(Players) + 1
+            SET Players[iterI].wager TO READ FILE iterI & wager
+            SET Players[iterI].splitCards TO READ FILE iterI & splitCards
+            SET Players[iterI].handle TO READ FILE iterI & handle/
+        END IF
     END FOR
 END FUNCTION
 
 FUNCTION tournament():
+    APPEND Player TO Players
+
+    deck.CreateDeck(6)
+    deck.shuffle()
+    deck.cut()
+    
     SET Player.handle TO USER INPUT
     
     FOR iterJ FROM 0 TO 10:
@@ -227,8 +283,12 @@ FUNCTION tournament():
         iterJ++
     END FOR
     
-    FOR iterK FROM 0 TO Length(File)
-        IF Player.bank > File.bank 
-            INSERT Player.bank, Player.handle
-    APPEND Player.bank TO FILE 
+    # SORT #
+    SET currentval TO Player.bank    
+	SET position TO 1   
+	WHILE position > 0 AND list[position-1] > currentval     
+		list[position] = list[position-1]        
+		position -= 1    
+	END WHILE
+    SET list[position] = currentval
 END FUNCTION
