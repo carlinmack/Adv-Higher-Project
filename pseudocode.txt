@@ -26,7 +26,8 @@ CLASS Deck:
     END METHOD
 
     METHOD cut()
-        FOR iterA FROM 0 TO length(availableCards/5) DO
+        #cut 20% of the deck which is 62 cards
+        FOR iterA FROM 0 TO 62 DO
             APPEND availableCards[iterA] TO cutCards
             REMOVE availableCards[iterA]
         END FOR
@@ -259,7 +260,7 @@ FUNCTION loadGame():
         SET Players[iterI].bank TO READ FILE iterI & bank
         SET Players[iterI].balance TO READ FILE iterI & cards
         
-        IF iterI IS Length(Players) + 1
+        IF iterI IS Length(Players)
             SET Players[iterI].wager TO READ FILE iterI & wager
             SET Players[iterI].splitCards TO READ FILE iterI & splitCards
             SET Players[iterI].handle TO READ FILE iterI & handle/
