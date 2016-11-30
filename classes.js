@@ -1,6 +1,5 @@
 /*jshint esversion: 6 */
 /*globals console:false */
-
 class Deck {
     constructor() {
         //initialises arrays for cards
@@ -15,7 +14,7 @@ class Deck {
         //for the amount of suits
         for (var j = 0; j < decks; j++) {
             //and the amount of cards in a suit
-            for (let i = 0; i < 13; i++) {
+            for (var i = 0; i < 14; i++) {
                 if (i === 11) {
                     //unicode has a knight card which is not needed for the game
                 } else {
@@ -30,14 +29,12 @@ class Deck {
         //fisher-yates shuffle
         var m = this.availableCards.length,
             t, i;
-
         // While there remain elements to shuffle…
         while (m) {
             // Decrease number of remaining cards
             m -= 1;
             // Pick a remaining element…
             i = Math.floor(Math.random() * m);
-
             // And swap it with the current element.
             t = this.availableCards[m];
             this.availableCards[m] = this.availableCards[i];
@@ -48,23 +45,32 @@ class Deck {
 
     cut() {
         //remove last 20% of cards
-        for (let i = 0; i < this.availableCards.length / 5; i++) {
+        var len = this.availableCards.length / 5;
+        for (let i = 0; i < len; i++) {
             this.cutCards.push(this.availableCards.pop());
         }
     }
 
     deal() {
         //deal 2 cards to each player and the dealer
+        for (var i = 0; i > len(players); i++) {}
+    }
+
+    hit() {
+        return this.availableCards.pop();
     }
 
     combineDecks() {
         // when availableCards is empty, push cut and spent cards to it
     }
+
+    store()
 }
 
 class Dealer {
     constructor() {
         this.cards = [];
+        this.players = 2;
     }
 
     display() {
@@ -73,7 +79,6 @@ class Dealer {
             suit = "",
             cardVal, temp;
         this.cards.forEach(function (card) {
-
             var suits = {
                 '0': 'A',
                 '1': 'B',
@@ -81,7 +86,6 @@ class Dealer {
                 '3': 'D'
             };
             suit = suits[card[0]];
-
             cardVal = (card[1] + 1).toString(16);
             temp = prefix.concat(suit, cardVal);
             return String.fromCodePoint(temp);
@@ -89,27 +93,15 @@ class Dealer {
     }
 
     evaluate() {
-        switch (this.cards[1]) {
-        case 0:
-            this.value = 1;
-            break;
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-            this.value = this.cards[1] + 1;
-            break;
-        case 10:
-        case 12:
-        case 13:
-            this.value = 10;
-            break;
+        var value = 0;
+        for (var k = 0; k < array.length; k++) {
+            if (array[k][1] < 10) {
+                value += array[k][1] + 1;
+            } else {
+                value += 10;
+            }
         }
+        return value;
     }
 
     stand() {
@@ -117,26 +109,36 @@ class Dealer {
     }
 
     hit() {
-        //take next card from queue
-        //continue turn
+        //take card from start of queue
+        this.cards.push(deck.hit());
     }
+
+    store() {}
 }
 
 class VirtualHand extends Dealer {
+    constructor() {
+        this.bank = 5000
+        this.cards = [];
+        this.players = 2;
+    }
+
     wager() {
         let wager = Math.floor(Math.random() * 3);
     }
 
-    hit() {}
-
-    stand() {}
+    store() {}
 }
 
 class PlayerHand extends Dealer {
-    hit() {
-        //take next card from queue
-        //continue turn
+    constructor() {
+        this.bank = 5000;
+        this.wager = 50;
+        this.splitCards = [];
+        this.handle = "";
     }
+
+    display() {}
 
     double() {
         //double wager
@@ -147,16 +149,31 @@ class PlayerHand extends Dealer {
     splitCards() {
         //create two seperate hands
     }
+
+    store() {}
 }
 
+
+
+//// MAIN FUNCTION ////
 var deck = new Deck();
-console.log(deck.availableCards);
-//creates 6 decks - CHANGE: make user input
-deck.createDeck(1);
-console.log(deck.availableCards);
-console.log(deck.shuffle());
+var dealer = new Dealer();
+var player = new PlayerHand();
+var Players = new Array();
+Players.push(dealer);
 
+function newGame() {
+    dealer.players = 5; //Number from GUI
+    for (var i = 1; i < dealer.players; i++) {
+        Players.push(new VirtualHand);
+    }
 
+    Players.push(player);
+
+    deck.CreateDeck(6)
+    deck.shuffle()
+    deck.cut()
+}
 
 /*
 MAIN
