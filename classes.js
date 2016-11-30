@@ -53,7 +53,7 @@ class Deck {
 
     deal() {
         //deal 2 cards to each player and the dealer
-        for (var i = 0; i > len(players); i++) {}
+        for (var i = 0; i > Players.length; i++) {}
     }
 
     hit() {
@@ -64,7 +64,7 @@ class Deck {
         // when availableCards is empty, push cut and spent cards to it
     }
 
-    store()
+    store() {}
 }
 
 class Dealer {
@@ -94,9 +94,9 @@ class Dealer {
 
     evaluate() {
         var value = 0;
-        for (var k = 0; k < array.length; k++) {
-            if (array[k][1] < 10) {
-                value += array[k][1] + 1;
+        for (var k = 0; k < this.cards.length; k++) {
+            if (this.cards[k][1] < 10) {
+                value += this.cards[k][1] + 1;
             } else {
                 value += 10;
             }
@@ -118,7 +118,7 @@ class Dealer {
 
 class VirtualHand extends Dealer {
     constructor() {
-        this.bank = 5000
+        this.bank = 5000;
         this.cards = [];
         this.players = 2;
     }
@@ -159,20 +159,20 @@ class PlayerHand extends Dealer {
 var deck = new Deck();
 var dealer = new Dealer();
 var player = new PlayerHand();
-var Players = new Array();
+var Players = [];
 Players.push(dealer);
 
 function newGame() {
     dealer.players = 5; //Number from GUI
     for (var i = 1; i < dealer.players; i++) {
-        Players.push(new VirtualHand);
+        Players.push(new VirtualHand());
     }
 
     Players.push(player);
 
-    deck.CreateDeck(6)
-    deck.shuffle()
-    deck.cut()
+    deck.CreateDeck(6);
+    deck.shuffle();
+    deck.cut();
 }
 
 /*
