@@ -48,7 +48,12 @@ CLASS Deck:
     END METHOD
     
     METHOD combineDecks()
-        APPEND cutCards AND spentCards TO availableCards
+        FOR iter3 Length(cutCards)
+            APPEND cutCards TO availableCards
+        END FOR
+        FOR iter4 TO Length(spendCards)
+           APPEND spentCards TO availableCards
+        END FOR
     END METHOD
     
     METHOD store()
