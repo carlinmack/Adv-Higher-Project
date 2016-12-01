@@ -6,6 +6,7 @@ class Deck {
         this.availableCards = [];
         this.cutCards = [];
         this.spentCards = [];
+        this.players = 2;
     }
 
     createDeck(decks) {
@@ -53,7 +54,10 @@ class Deck {
 
     deal() {
         //deal 2 cards to each player and the dealer
-        for (var i = 0; i > Players.length; i++) {}
+        for (var i = 0; i < Players.length; i++) {
+            Players[i].cards.push(this.availableCards.pop());
+            Players[i].cards.push(this.availableCards.pop());
+        }
     }
 
     hit() {
@@ -62,15 +66,18 @@ class Deck {
 
     combineDecks() {
         // when availableCards is empty, push cut and spent cards to it
+        this.availableCards.push(this.cutCards)
+        this.availableCards.push(this.spentCards)
     }
 
-    store() {}
+    store() {
+
+    }
 }
 
 class Dealer {
     constructor() {
         this.cards = [];
-        this.players = 2;
     }
 
     display() {
@@ -113,21 +120,24 @@ class Dealer {
         this.cards.push(deck.hit());
     }
 
-    store() {}
+    store() {
+
+    }
 }
 
 class VirtualHand extends Dealer {
     constructor() {
         this.bank = 5000;
         this.cards = [];
-        this.players = 2;
     }
 
     wager() {
         let wager = Math.floor(Math.random() * 3);
     }
 
-    store() {}
+    store() {
+
+    }
 }
 
 class PlayerHand extends Dealer {
@@ -138,7 +148,9 @@ class PlayerHand extends Dealer {
         this.handle = "";
     }
 
-    display() {}
+    display() {
+
+    }
 
     double() {
         //double wager
@@ -150,27 +162,29 @@ class PlayerHand extends Dealer {
         //create two seperate hands
     }
 
-    store() {}
+    store() {
+
+    }
 }
 
 
 
 //// MAIN FUNCTION ////
-var deck = new Deck();
-var dealer = new Dealer();
-var player = new PlayerHand();
-var Players = [];
+var deck = new Deck(),
+    dealer = new Dealer(),
+    player = new PlayerHand(),
+    Players = [];
 Players.push(dealer);
 
 function newGame() {
-    dealer.players = 5; //Number from GUI
-    for (var i = 1; i < dealer.players; i++) {
+    deck.players = 5; //Number from GUI
+    for (var i = 1; i < deck.players; i++) {
         Players.push(new VirtualHand());
     }
 
     Players.push(player);
 
-    deck.CreateDeck(6);
+    deck.createDeck(6);
     deck.shuffle();
     deck.cut();
 }
