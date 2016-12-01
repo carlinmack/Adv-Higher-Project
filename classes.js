@@ -66,8 +66,12 @@ class Deck {
 
     combineDecks() {
         // when availableCards is empty, push cut and spent cards to it
-        this.availableCards.push(this.cutCards)
-        this.availableCards.push(this.spentCards)
+        for (var i = 0; i < cutCards.length; i++) {
+            this.availableCards.push(cutCards[i]);
+        }
+        for (var i = 0; i < spentCards.length; i++) {
+            this.availableCards.push(spentCards[i]);
+        }
     }
 
     store() {
