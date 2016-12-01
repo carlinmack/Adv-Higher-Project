@@ -42,7 +42,11 @@ CLASS Deck:
     METHOD hit() 
         return availableCards.pop()
     END METHOD
-
+    
+    METHOD return(cards) 
+        PUSH cards TO spentCards
+    END METHOD
+    
     METHOD combineDecks()
         APPEND cutCards AND spentCards TO availableCards
     END METHOD
@@ -98,6 +102,11 @@ CLASS dealer:
         APPEND deck.hit() TO cards
     END METHOD
     
+    METHOD return()
+        Deck.return(cards)
+        SET cards TO []
+    METHOD
+    
     METHOD store()
         WRITE {
             i & cards, cards
@@ -106,10 +115,9 @@ CLASS dealer:
     END METHOD
 END CLASS
     
-    
 CLASS AIhand INHERITS dealer:
     SET bank TO 5000
-    balance = Math.random()
+    SET balance TO Math.random()
     
     METHOD wager()
         SET wager TO Random(0,1,2)
@@ -123,7 +131,6 @@ CLASS AIhand INHERITS dealer:
         }  TO FILE
     END METHOD
 END CLASS
-
 
 CLASS playerHand INHERITS dealer:
     SET bank TO 5000
@@ -195,13 +202,13 @@ FUNCTION Round():
     WHILE turn
         SWITCH input:
             hit:
-                Player[last].hit()
+                Player[length(Player) - 1].hit()
             stand:
-                Player[last].stand()
+                Player[length(Player) - 1].stand()
             double:
-                Player[last].double()
+                Player[length(Player) - 1].double()
             split:
-                Player[last].split()
+                Player[length(Player) - 1].split()
         END SWITCH
     END WHILE
     
@@ -219,13 +226,12 @@ FUNCTION Round():
     
     FOR EACH iterG FROM Players DO
         Players[iterG].store()
-    END FOR
-    
+    END FOR    
 END FUNCTION
 
 FUNCTION newGame():  
-    SET dealer.players TO INT FROM GUI
-    FOR iterH FROM 0 TO dealer.players DO
+    SET deck.players TO INT FROM GUI
+    FOR iterH FROM 0 TO deck.players DO
         SET player & iterH TO NEW AIhand
         APPEND player & iterH TO Players
     END FOR
@@ -251,9 +257,9 @@ FUNCTION loadGame():
     SET deck.availableCards TO READ FILE availableCards
     SET deck.cutCards TO READ FILE cutCards
     SET deck.spentCards TO READ FILE spentCards
+    SET deck.players TO READ FILE players
     
     SET Players[0].cards TO READ FILE 0cards
-    SET Players[0].players TO READ FILE 0players
     
     FOR iterI FROM 1 TO Length(Players) + 1
         SET Players[iterI].cards TO READ FILE iterI & cards
