@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 /*globals console:false */
+
 class Deck {
     constructor() {
         //initialises arrays for cards
@@ -171,13 +172,12 @@ class PlayerHand extends Dealer {
     }
 }
 
-
-
 //// MAIN FUNCTION ////
 var deck = new Deck(),
     dealer = new Dealer(),
     player = new PlayerHand(),
     Players = [];
+
 Players.push(dealer);
 
 function newGame() {
