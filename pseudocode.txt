@@ -100,7 +100,7 @@ CLASS dealer:
     END METHOD    
     
     METHOD stand()
-        turn = false 
+        SET turn TO False 
     END METHOD
     
     METHOD hit()
@@ -154,7 +154,7 @@ CLASS playerHand INHERITS dealer:
 
     METHOD double()
         APPEND deck.hit() TO cards
-        SET turn TO FALSE
+        SET turn TO False
     END METHOD
 
     METHOD splitCards()
@@ -187,35 +187,45 @@ FUNCTION Round():
     END FOR
     
     deck.store()
-
-    FOR iterD FROM 1 TO Length(Players) - 1 DO
-        WHILE Players[iterD].turn IS True Then
-            IF Players[iterD].evaluate() > Players[iterD].balance THEN
-                Players[iterD].hit()
-            ELSE
-                Players[iterD].stand()
-            END IF
-        END WHILE
-    END FOR
     
     SET display TO ROUND DOWN (LENGTH Players / 2)
     FOR iterE FROM 1 TO display + 1 DO
         Players[iterE].display()
     END FOR
     
-    turn = true
-    WHILE turn
-        SWITCH input:
-            hit:
-                Player[length(Player) - 1].hit()
-            stand:
-                Player[length(Player) - 1].stand()
-            double:
-                Player[length(Player) - 1].double()
-            split:
-                Player[length(Player) - 1].split()
-        END SWITCH
-    END WHILE
+    # checking for naturals, dealer can have one
+    SET natural TO False
+    FOR iter5 FROM 1 TO Length(Players)
+        IF Players[iter5].evaluate() = 21
+            SET natural TO True
+        END IF
+    END FOR
+    
+    IF natural != True
+        FOR iterD FROM 1 TO Length(Players) - 1
+            WHILE Players[iterD].turn IS True Then
+                IF Players[iterD].evaluate() > Players[iterD].balance THEN
+                    Players[iterD].hit()
+                ELSE
+                    Players[iterD].stand()
+                END IF
+            END WHILE
+        END FOR
+
+        SET turn TO True
+        WHILE turn
+            SWITCH input:
+                hit:
+                    Player[length(Player) - 1].hit()
+                stand:
+                    Player[length(Player) - 1].stand()
+                double:
+                    Player[length(Player) - 1].double()
+                split:
+                    Player[length(Player) - 1].split()
+            END SWITCH
+        END WHILE
+    END IF
     
     FOR iterF FROM 1 TO Length(Players) DO
         #if lower than dealer or over 21
