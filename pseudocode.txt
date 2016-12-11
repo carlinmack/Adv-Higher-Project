@@ -2,6 +2,7 @@ CLASS Deck:
     SET availableCards TO []
     SET cutCards TO []
     SET spentCards TO []
+    SET players TO 2
 
     METHOD CreateDeck(decks)
         SET decks TO decks * 4
@@ -43,7 +44,7 @@ CLASS Deck:
         return availableCards.pop()
     END METHOD
     
-    METHOD return(cards) 
+    METHOD returnCards(cards) 
         PUSH cards TO spentCards
     END METHOD
     
@@ -67,7 +68,6 @@ END CLASS
     
 CLASS dealer:
     SET cards TO []
-    SET players TO 2
     
     METHOD display()
         FOR EACH card FROM cards
@@ -107,7 +107,7 @@ CLASS dealer:
         APPEND deck.hit() TO cards
     END METHOD
     
-    METHOD return()
+    METHOD returnCards()
         Deck.return(cards)
         SET cards TO []
     METHOD
@@ -154,6 +154,7 @@ CLASS playerHand INHERITS dealer:
 
     METHOD double()
         APPEND deck.hit() TO cards
+        SET wager TO wager * 2
         SET turn TO False
     END METHOD
 
