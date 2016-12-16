@@ -1,5 +1,8 @@
+// following are debug comment lines
 /*jshint esversion: 6 */
 /*globals console:false */
+/*globals localStorage:false */
+// end debug lines
 
 class Deck {
     constructor() {
@@ -65,18 +68,25 @@ class Deck {
         return this.availableCards.pop();
     }
 
+    returnCards(cards) {
+        this.spentCards.push(cards);
+    }
+
     combineDecks() {
         // when availableCards is empty, push cut and spent cards to it
-        for (var i = 0; i < cutCards.length; i++) {
-            this.availableCards.push(cutCards[i]);
+        for (var i = 0; i < this.cutCards.length; i++) {
+            this.availableCards.push(this.cutCards[i]);
         }
-        for (var i = 0; i < spentCards.length; i++) {
-            this.availableCards.push(spentCards[i]);
+        for (var j = 0; i < this.spentCards.length; j++) {
+            this.availableCards.push(this.spentCards[j]);
         }
     }
 
     store() {
-
+        localStorage.availableCards = this.availableCards;
+        localStorage.cutCards = this.availableCards;
+        localStorage.spentCards = this.availableCards;
+        localStorage.players = this.players;
     }
 }
 
@@ -117,7 +127,8 @@ class Dealer {
     }
 
     stand() {
-        //end turn
+        turn = false;
+        return turn;
     }
 
     hit() {
@@ -125,23 +136,44 @@ class Dealer {
         this.cards.push(deck.hit());
     }
 
-    store() {
+    returnCards(cards) {
+        deck.returnCards(this.cards);
+        this.cards = [];
+    }
 
+    store() {
+        localStorage.availableCards = this.availableCards;
+        localStorage.cutCards = this.cutCards;
+        localStorage.spentCards = this.spentCards;
+        localStorage.players = this.players;
     }
 }
 
 class VirtualHand extends Dealer {
     constructor() {
         this.bank = 5000;
-        this.cards = [];
+        this.wagerBalance = Math.random();
+        this.cardBalance = 16;
     }
 
     wager() {
         let wager = Math.floor(Math.random() * 3);
     }
 
-    store() {
+    cardBalance() {
+        //to get a normal (bell curve) distribution I'm adding two random numbers
+        //not a statistically sound method but it should do the trick
+        var max = 18;
+        var min = 14;
+        var x = Math.floor(Math.random() * (max - min + 1) + min);
+        var y = Math.floor(Math.random() * (max - min + 1) + min);
+        this.cardBalance = x + y;
+    }
 
+    store(i) {
+        localStorage.setItem(i + "bank", this.bank);
+        localStorage.setItem(i + "wagerBalance", this.wagerBalance);
+        localStorage.setItem(i + "cardBalance", this.cardBalance);
     }
 }
 
@@ -154,10 +186,32 @@ class PlayerHand extends Dealer {
     }
 
     display() {
+        //Change [0, 2] to A ♦
+        var prefix = "0x0001F0",
+            suit = "",
+            cardVal, temp;
+        this.cards.forEach(function (card) {
+            var suits = {
+                '0': 'A',
+                '1': 'B',
+                '2': 'C',
+                '3': 'D'
+            };
+            suit = suits[card[0]];
+            cardVal = (card[1] + 1).toString(16);
+            temp = prefix.concat(suit, cardVal);
+            return String.fromCodePoint(temp);
+        });
 
+        //        if (splitCards != [])
+        //            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
+        //        END IF
     }
 
     double() {
+        this.hit();
+        this.wager += this.wager;
+        turn = false;
         //double wager
         //receive card
         //end turn
@@ -165,10 +219,14 @@ class PlayerHand extends Dealer {
 
     splitCards() {
         //create two seperate hands
+        this.splitCards.push(this.cards.pop);
     }
 
-    store() {
-
+    store(i) {
+        localStorage.setItem(i + "bank", this.bank);
+        localStorage.setItem(i + "wager", this.wager);
+        localStorage.setItem(i + "splitCards", this.splitCards);
+        localStorage.setItem(i + "handle", this.handle);
     }
 }
 
@@ -179,6 +237,16 @@ var deck = new Deck(),
     Players = [];
 
 Players.push(dealer);
+
+function Round() {
+    deck.deal();
+
+    for (var i = 0; i < Players.length; i++) {
+        Players[i].store(i);
+    }
+
+    deck.store();
+}
 
 function newGame() {
     deck.players = 5; //Number from GUI
@@ -191,6 +259,27 @@ function newGame() {
     deck.createDeck(6);
     deck.shuffle();
     deck.cut();
+}
+
+function loadGame() {
+    deck.availableCards = localStorage.getItem('availableCards');
+    deck.cutCards = localStorage.getItem('cutCards');
+    deck.spentCards = localStorage.getItem('spentCards');
+    deck.players = localStorage.getItem('players');
+
+    Players[0].cards = localStorage.getItem('0cards');
+
+    for (var i = 1; i < Players.length + 1; i++) {
+        Players[i].cards = localStorage.getItem(i + 'cards');
+        Players[i].bank = localStorage.getItem(i + 'bank');
+        Players[i].balance = localStorage.getItem(i + 'cards');
+
+        if (i === Players.length) {
+            Players[i].wager = localStorage.getItem(i + 'wager');
+            Players[i].splitCards = localStorage.getItem(i + 'splitCards');
+            Players[i].handle = localStorage.getItem(i + 'handle');
+        }
+    }
 }
 
 /*
