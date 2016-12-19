@@ -151,6 +151,7 @@ class Dealer {
 
 class VirtualHand extends Dealer {
     constructor() {
+        super();
         this.bank = 5000;
         this.wagerBalance = Math.random();
         this.cardBalance = 16;
@@ -179,6 +180,7 @@ class VirtualHand extends Dealer {
 
 class PlayerHand extends Dealer {
     constructor() {
+        super();
         this.bank = 5000;
         this.wager = 50;
         this.splitCards = [];
@@ -232,11 +234,33 @@ class PlayerHand extends Dealer {
 
 //// MAIN FUNCTION ////
 var deck = new Deck(),
-    dealer = new Dealer(),
-    player = new PlayerHand(),
-    Players = [];
+    Players = [],
+    Players.push(new Dealer()); //adds dealer to array
 
-Players.push(dealer);
+function newGame() {
+    deck.players = 5; //Number from GUI
+    for (var i = 1; i < deck.players; i++) {
+        Players.push(new VirtualHand());
+    }
+
+    Players.push(new PlayerHand()); //adds player to array
+
+    deck.createDeck(6);
+    deck.shuffle();
+    deck.cut();
+
+    var playing = true;
+
+    while (playing) {
+        if (deck.availableCards.length > 4 * Players.length) {
+            Round();
+        } else {
+            deck.combineDecks();
+            deck.shuffle();
+            deck.cut();
+        }
+    }
+}
 
 function Round() {
     deck.deal();
@@ -246,19 +270,6 @@ function Round() {
     }
 
     deck.store();
-}
-
-function newGame() {
-    deck.players = 5; //Number from GUI
-    for (var i = 1; i < deck.players; i++) {
-        Players.push(new VirtualHand());
-    }
-
-    Players.push(player);
-
-    deck.createDeck(6);
-    deck.shuffle();
-    deck.cut();
 }
 
 function loadGame() {
@@ -272,24 +283,14 @@ function loadGame() {
     for (var i = 1; i < Players.length + 1; i++) {
         Players[i].cards = localStorage.getItem(i + 'cards');
         Players[i].bank = localStorage.getItem(i + 'bank');
-        Players[i].balance = localStorage.getItem(i + 'cards');
+        Players[i].balance = localStorage.getItem(i + 'balance');
 
         if (i === Players.length) {
+            Players[i].cards = localStorage.getItem(i + 'cards');
+            Players[i].bank = localStorage.getItem(i + 'bank');
             Players[i].wager = localStorage.getItem(i + 'wager');
             Players[i].splitCards = localStorage.getItem(i + 'splitCards');
             Players[i].handle = localStorage.getItem(i + 'handle');
         }
     }
 }
-
-/*
-MAIN
-var cases = {
-    1: doX,
-    2: doY,
-    3: doN
-};
-if (cases[something]) {
-    cases[something]();
-}
-*/

@@ -122,11 +122,20 @@ END CLASS
     
 CLASS AIhand INHERITS dealer:
     SET bank TO 5000
-    SET balance TO Math.random()
+    SET wagerBalance TO Math.random()
+    SET cardBalance TO 16
     
     METHOD wager()
         SET wager TO Random(0,1,2)
     END METHOD
+
+    METHOD cardBalance ()
+        SET max TO 18;
+        SET min TO 14;
+        SET x TO Math.floor(Math.random() * (max - min + 1) + min);
+        SET y TO Math.floor(Math.random() * (max - min + 1) + min);
+        SET cardBalance TO x + y;
+    }
     
     METHOD store(i)
         WRITE {
@@ -160,6 +169,7 @@ CLASS playerHand INHERITS dealer:
 
     METHOD splitCards()
         APPEND cards.pop TO splitCards
+        splitCards.hit()
     END METHOD
     
     METHOD store(i)
