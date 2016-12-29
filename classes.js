@@ -234,8 +234,44 @@ class PlayerHand extends Dealer {
 
 //// MAIN FUNCTION ////
 var deck = new Deck(),
-    Players = [],
-    Players.push(new Dealer()); //adds dealer to array
+    Players = [];
+Players.push(new Dealer()); //adds dealer to array
+
+function Round() {
+    var playerLength = Players.length;
+    deck.deal();
+
+    for (var i = 0; i < playerLength; i++) {
+        Players[i].store(i);
+    }
+
+    deck.store();
+
+    var display = Math.floor(playerLength / 2);
+    for (var j = 1; j < display + 1; j++) {
+        Players[j].display();
+    }
+
+    //checking for naturals, dealer can have one
+    var natural = false;
+    for (var k = 1; k < playerLength; k++) {
+        if (Players[k].evaluate() == 21) {
+            natural = true;
+        }
+    }
+
+    if (natural === false) {
+        for (var l = 1; l < playerLength; l++) {
+            while (Players[l].turn) {
+                if (Players[l].evaluate() > Players[l].cardBalance) {
+                    Players[l].hit();
+                } else {
+                    Players[l].stand();
+                }
+            }
+        }
+    }
+}
 
 function newGame() {
     deck.players = 5; //Number from GUI
@@ -262,16 +298,6 @@ function newGame() {
     }
 }
 
-function Round() {
-    deck.deal();
-
-    for (var i = 0; i < Players.length; i++) {
-        Players[i].store(i);
-    }
-
-    deck.store();
-}
-
 function loadGame() {
     deck.availableCards = localStorage.getItem('availableCards');
     deck.cutCards = localStorage.getItem('cutCards');
@@ -294,3 +320,5 @@ function loadGame() {
         }
     }
 }
+
+function tournament() {}
