@@ -322,3 +322,35 @@ function loadGame() {
 }
 
 function tournament() {}
+
+///// CLICKING /////
+prompt('loaded');
+
+function makeClicker(Button) {
+    return function () {
+        prompt(Button);
+        var x = document.querySelectorAll(".screen");
+        for (var i = 0; i < x.length; i++) {
+            x[i].className = 'screen hidden';
+        }
+        prompt(Button);
+        document.getElementById(Button).className = 'screen';
+    };
+}
+
+var main = makeClicker("mainScreen");
+var game = makeClicker("gameScreen");
+var rules = makeClicker("rulesScreen");
+var leaderboard = makeClicker("leaderboardScreen");
+var exit = makeClicker("exit");
+
+document.getElementById('game').onclick = game;
+document.getElementById('rules').onclick = rules;
+document.getElementById('leaderboard').onclick = leaderboard;
+document.getElementById('exit').onclick = exit;
+
+var y = document.querySelectorAll(".return");
+for (var i = 0; i < y.length; i++) {
+    prompt(i);
+    y[i].onclick = main;
+}
