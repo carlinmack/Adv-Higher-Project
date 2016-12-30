@@ -2,17 +2,122 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="classes.js"></script>
 </head>
 
 <body>
-    <h1> Blackjack </h1>
-    <div id="front">
-        <button class="menu"> Game </button>
-        <button class="menu"> Rules </button>
-        <br>
-        <button class="menu"> Leaderboard </button>
-        <button class="menu"> Exit </button>
+    <!-- Main Menu -->
+    <div id="mainScreen" class="screen">
+        <!-- Main Menu -->
+        <h1> Blackjack </h1>
+        <div class="center">
+            <button class="menu" id="game"> Game </button>
+            <button class="menu" id="rules"> Rules </button>
+        </div>
+        <div class="center">
+            <button class="menu" id="leaderboard"> Leaderboard </button>
+            <button class="menu" id="exit"> Exit </button>
+        </div>
+
     </div>
+    <!-- End Main Menu -->
+
+    <!-- Game -->
+    <div id="gameScreen" class="screen">
+        <button class="return hidden"> Return </button>
+        <h2> Blackjack </h2>
+        <button class="menu game center" id="create"> Create New Game </button>
+        <br>
+        <button class="menu game center" id="previous"> Enter Previous </button>
+        <br>
+        <button class="menu game center" id="tournament"> Tournament </button>
+
+    </div>
+    <!-- End
+    <!-- End Game -->
+
+    <!-- Rules -->
+    <div id="rulesScreen" class="screen">
+        <button class="return hidden"> Return </button>
+        <h2> Rules </h2>
+        <ul>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+            <li>
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+            </li>
+
+        </ul>
+    </div>
+    <!-- End Rules -->
+
+    <!-- Start Leaderboard -->
+    <div id="leaderboardScreen" class="screen hidden">
+        <button class="return"> Return </button>
+        <h2> Leaderboard </h2>
+        <table>
+            <tr>
+                <th style="width:18px">#</th>
+                <th style="width:435px">Handle</th>
+                <th>Final Bank</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Carlin</td>
+                <td>£5200</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Neeley</td>
+                <td>£5100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Nimrod</td>
+                <td>£4950</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Murray</td>
+                <td>£4950</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Ryan</td>
+                <td>£4900</td>
+            </tr>
+            <!-- Soz Ayden -->
+        </table>
+    </div>
+    <!-- End Leaderboard -->
 </body>
+
+</html>
+
 
 </html>
