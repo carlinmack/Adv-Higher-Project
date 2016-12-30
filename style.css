@@ -6,6 +6,13 @@ h1 {
     margin: 0.8em 0;
 }
 
+h2 {
+    font-family: sans-serif;
+    font-size: 4em;
+    font-weight: normal;
+    margin: 0.45em 0 0.45em 25px;
+}
+
 button {
     border: black solid 4px;
     border-radius: 5px;
@@ -18,13 +25,61 @@ div .card {
     font-size: 3.5em;
 }
 
-.menu {
-    font-size: 2.5em;
-    width: 300px;
-    margin: 15px;
+li {
+    margin: 10px 0;
 }
 
-#front {
-    width: 665px;
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
+    margin: auto;
+}
+
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+}
+
+td:first-child,
+th:first-child {
+    text-align: center;
+}
+
+.menu {
+    font-size: 2.5em;
+    width: 275px;
+    margin: 12px;
+}
+
+.game {
+    display: block;
+    width: 400px;
+}
+
+.center {
+    display: block;
     margin: 0 auto;
+    text-align: center;
+}
+
+.screen {
+    border: black solid 1px;
+    width: 665px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+.return {
+    border: lightgray solid 4px;
+    border-radius: 10px;
+    color: gray;
+    padding: 8px;
+    float: right;
+}
+
+.hidden {
+    display: none;
 }
