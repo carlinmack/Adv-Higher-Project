@@ -23,8 +23,8 @@
     <!-- End Main Menu -->
 
     <!-- Game -->
-    <div id="gameScreen" class="screen">
-        <button class="return hidden"> Return </button>
+    <div id="gameScreen" class="screen hidden">
+        <button class="return"> Return </button>
         <h2> Blackjack </h2>
         <button class="menu game center" id="create"> Create New Game </button>
         <br>
@@ -33,12 +33,40 @@
         <button class="menu game center" id="tournament"> Tournament </button>
 
     </div>
-    <!-- End
+
+    <div id="gameScreen2" class="screen hidden">
+        <button class="return"> Return </button>
+        <h2> Blackjack </h2>
+
+        <p class="center menu game"> Number of Players </p>
+        <br>
+        <p class="center menu">⯇ <span id="players"> 5 </span> ⯈ </p>
+        <br>
+        <button class="menu game center" id="play"> Play </button>
+
+    </div>
+
+    <div id="mainGame" class="screen hidden">
+        <button class="return"> Return </button>
+
+        <div id='dealer' class="hand center"><span>🂡</span><span>🂡</span></div>
+
+        <button class='game action hidden' id='split'>Split</button>
+
+        <div id='player' class="hand center"><span>🂡</span><span>🂡</span></div>
+
+        <button class='game action hidden' id='split'>Double</button>
+        <button class='mgame action'>Stand</button>
+        <button class='mgame action'>Hit</button>
+        <button class='mgame wager'>£10</button>
+        <button class='mgame wager'>£50</button>
+        <button class='mgame wager'>£100</button>
+    </div>
     <!-- End Game -->
 
     <!-- Rules -->
-    <div id="rulesScreen" class="screen">
-        <button class="return hidden"> Return </button>
+    <div id="rulesScreen" class="screen hidden">
+        <button class="return"> Return </button>
         <h2> Rules </h2>
         <ul>
             <li>
@@ -116,8 +144,5 @@
     </div>
     <!-- End Leaderboard -->
 </body>
-
-</html>
-
 
 </html>
