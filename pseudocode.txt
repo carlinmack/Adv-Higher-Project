@@ -185,10 +185,8 @@ END CLASS
 
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
-SET Dealer TO NEW dealer
-SET Player TO NEW playerHand
 SET Players TO [] 
-APPEND dealer TO Players
+APPEND NEW dealer TO Players
 
 FUNCTION Round():    
     deck.deal()
@@ -262,11 +260,13 @@ FUNCTION newGame():
         APPEND player & iterH TO Players
     END FOR
 
-    APPEND Player TO Players
+    APPEND NEW playerHand TO Players
 
     deck.CreateDeck(6)
     deck.shuffle()
     deck.cut()
+    
+    SET playing TO true
     
     WHILE playing:
         IF Length(deck.availableCards) > 4 * Length(Players)
@@ -295,7 +295,7 @@ FUNCTION loadGame():
         IF iterI IS Length(Players)
             SET Players[iterI].wager TO READ FILE iterI & wager
             SET Players[iterI].splitCards TO READ FILE iterI & splitCards
-            SET Players[iterI].handle TO READ FILE iterI & handle/
+            SET Players[iterI].handle TO READ FILE iterI & handle
         END IF
     END FOR
 END FUNCTION
