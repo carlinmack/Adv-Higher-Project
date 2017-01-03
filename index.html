@@ -2,7 +2,6 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script type="text/javascript" src="classes.js"></script>
 </head>
 
 <body>
@@ -47,20 +46,30 @@
     </div>
 
     <div id="mainGame" class="screen hidden">
+        <!--        <div style='color: red' style="float: left">shenttehtnt</div>-->
         <button class="return"> Return </button>
 
-        <div id='dealer' class="hand center"><span>🂡</span><span>🂡</span></div>
+        <div id='dealer' class="center"><span class="card">🂡</span><span class="card">🂡</span></div>
+        <div class="center">
+            <button class='mgame action' id='split'>Split</button>
 
-        <button class='game action hidden' id='split'>Split</button>
+            <div id='player'>
+                <span class="card">🂡</span><span class="card">🂡</span>
+            </div>
 
-        <div id='player' class="hand center"><span>🂡</span><span>🂡</span></div>
-
-        <button class='game action hidden' id='split'>Double</button>
-        <button class='mgame action'>Stand</button>
-        <button class='mgame action'>Hit</button>
-        <button class='mgame wager'>£10</button>
-        <button class='mgame wager'>£50</button>
-        <button class='mgame wager'>£100</button>
+            <button class='mgame action' id='double'>Double</button>
+        </div>
+        <br>
+        <span style="margin: 30px">
+            <button class='mgame action'>Stand</button>
+            <button class='mgame action'>Hit</button>
+        </span>
+        <span style="margin-left: 115px">
+            <button class='mgame wager'>£10</button>
+            <button class='mgame wager'>£50</button>
+            <button class='mgame wager'>£100</button>
+        </span>
+        <p id="bank"> Bank <span> £5000</span> </p>
     </div>
     <!-- End Game -->
 
@@ -143,6 +152,7 @@
         </table>
     </div>
     <!-- End Leaderboard -->
+    <script type="text/javascript" src="classes.js"></script>
 </body>
 
 </html>
