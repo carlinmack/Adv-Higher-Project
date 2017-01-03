@@ -87,8 +87,8 @@ th:first-child {
 
 .screen {
     border: black solid 1px;
-    width: 665px;
-    height: 500px;
+    width: 750px;
+    height: 550px;
     margin: 0 auto;
 }
 
@@ -97,25 +97,54 @@ th:first-child {
     border-radius: 10px;
     color: gray;
     padding: 7px 11px;
-    float: right;
 }
 
 .hidden {
     display: none;
 }
 
-#player {
-    margin: 25% 30px 5% 60px;
-}
-
-#split,
-#double,
-#player {
+.inline {
     display: inline-block;
 }
 
+.return,
+#hand0,
+.wagers {
+    float: right;
+}
+
+#hand1,
+.actions {
+    float: left;
+}
+
+#player {
+    margin: 25% 30px 4% 60px;
+}
+
 #bank {
-    font-weight: bold;
-    margin: -20px 0 0 -55px;
+    font: 1.3em sans-serif;
+    margin-top: -5px;
+    padding-top: 9px;
     text-align: center;
+}
+
+#hand0 {
+    margin-right: 80px;
+}
+
+.wagers {
+    margin-right: 20px;
+}
+
+.actions {
+    margin-left: 20px;
+}
+
+#hand1 {
+    margin-left: 70px;
+}
+
+#dealer {
+    margin-left: 87px;
 }
