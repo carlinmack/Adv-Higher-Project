@@ -49,27 +49,50 @@
         <!--        <div style='color: red' style="float: left">shenttehtnt</div>-->
         <button class="return"> Return </button>
 
-        <div id='dealer' class="center"><span class="card">🂡</span><span class="card">🂡</span></div>
-        <div class="center">
-            <button class='mgame action' id='split'>Split</button>
+        <div id='dealer' class="center">
+            <span class="card">🂡</span><span class="card">🂡</span>
+        </div>
+        <div id='hand0'>
+            <div id='ai1'>
+                <span class="card">🂡</span><span class="card">🂡</span>
+            </div>
+            <div id='ai2'>
+                <span class="card">🂡</span><span class="card">🂡</span>
+            </div>
+        </div>
+        <div id='hand1'>
+            <div id='ai3'>
+                <span class="card">🂡</span><span class="card">🂡</span>
+            </div>
+            <div id='ai4'>
+                <span class="card">🂡</span><span class="card">🂡</span>
+            </div>
+        </div>
 
-            <div id='player'>
+        <div class="center">
+            <button class='inline mgame action' id='split'>Split</button>
+
+            <div id='player' class="inline">
                 <span class="card">🂡</span><span class="card">🂡</span>
             </div>
 
-            <button class='mgame action' id='double'>Double</button>
+            <button class='inline mgame' id='double'>Double</button>
         </div>
+
         <br>
-        <span style="margin: 30px">
+        <div style="width: 750px">
+
+            <span class="actions">
             <button class='mgame action'>Stand</button>
             <button class='mgame action'>Hit</button>
         </span>
-        <span style="margin-left: 115px">
+            <span class="wagers">
             <button class='mgame wager'>£10</button>
             <button class='mgame wager'>£50</button>
             <button class='mgame wager'>£100</button>
         </span>
-        <p id="bank"> Bank <span> £5000</span> </p>
+            <p id="bank"> Bank <span> £5000</span> </p>
+        </div>
     </div>
     <!-- End Game -->
 
