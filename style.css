@@ -23,10 +23,6 @@ button {
     background-color: white;
 }
 
-div .card {
-    font-size: 3.5em;
-}
-
 li {
     margin: 10px 0;
 }
@@ -65,15 +61,22 @@ th:first-child {
     border-radius: 10px;
     padding: 7px;
     font-size: 1.3em;
-    margin: 0 10px;
+    margin: 0 8px;
+}
+
+.card {
+    background-position: 90% 90%;
+    background-color: white;
+    font-size: 5.5em;
+    margin-left: -30px;
 }
 
 .action {
-    width: 90px;
+    width: 80px;
 }
 
 .wager {
-    width: 70px;
+    width: 65px;
 }
 
 .center {
@@ -99,4 +102,20 @@ th:first-child {
 
 .hidden {
     display: none;
+}
+
+#player {
+    margin: 25% 30px 5% 60px;
+}
+
+#split,
+#double,
+#player {
+    display: inline-block;
+}
+
+#bank {
+    font-weight: bold;
+    margin: -20px 0 0 -55px;
+    text-align: center;
 }
