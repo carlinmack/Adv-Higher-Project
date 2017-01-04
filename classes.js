@@ -10,7 +10,7 @@ class Deck {
         this.availableCards = [];
         this.cutCards = [];
         this.spentCards = [];
-        this.players = 2;
+        this.players = 5;
     }
 
     createDeck(decks) {
@@ -324,7 +324,6 @@ function loadGame() {
 function tournament() {}
 
 //// CLICKING ////
-prompt("loaded");
 
 function makeClicker(Button) {
     return function () {
@@ -356,3 +355,11 @@ var y = document.querySelectorAll(".return");
 for (var k = 0; k < y.length; k++) {
     y[k].onclick = main;
 }
+
+document.getElementById('decPlayers').onclick = function () {
+    deck.players--;
+};
+
+window.setInterval(function () {
+    document.getElementById('players').innerHTML = deck.players;
+}, 100);
