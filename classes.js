@@ -359,6 +359,9 @@ for (var k = 0; k < y.length; k++) {
 document.getElementById('decPlayers').onclick = function () {
     deck.players--;
 };
+document.getElementById('incPlayers').onclick = function () {
+    deck.players++;
+};
 
 window.setInterval(function () {
     document.getElementById('players').innerHTML = deck.players;
