@@ -238,6 +238,7 @@ var deck = new Deck(),
 Players.push(new Dealer()); //adds dealer to array
 
 function Round() {
+    prompt('fuck')
     var playerLength = Players.length;
     deck.deal();
 
@@ -274,7 +275,8 @@ function Round() {
 }
 
 function newGame() {
-    deck.players = 5; //Number from GUI
+    play();
+
     for (var i = 1; i < deck.players; i++) {
         Players.push(new VirtualHand());
     }
@@ -324,6 +326,20 @@ function loadGame() {
 function tournament() {}
 
 //// CLICKING ////
+document.getElementById('game').onclick = game;
+document.getElementById('create').onclick = game2;
+document.getElementById('rules').onclick = rules;
+document.getElementById('play').onclick = play;
+document.getElementById('leaderboard').onclick = leaderboard;
+document.getElementById('exit').onclick = exit;
+
+var main = makeClicker("mainScreen");
+var game = makeClicker("gameScreen");
+var rules = makeClicker("rulesScreen");
+var leaderboard = makeClicker("leaderboardScreen");
+var exit = makeClicker("exit");
+var play = makeClicker("mainGame");
+var game2 = makeClicker("gameScreen2");
 
 function makeClicker(Button) {
     return function () {
@@ -334,22 +350,6 @@ function makeClicker(Button) {
         document.getElementById(Button).className = 'screen';
     };
 }
-
-var main = makeClicker("mainScreen");
-var game = makeClicker("gameScreen");
-var rules = makeClicker("rulesScreen");
-var leaderboard = makeClicker("leaderboardScreen");
-var exit = makeClicker("exit");
-var play = makeClicker("mainGame");
-var game2 = makeClicker("gameScreen2");
-
-document.getElementById('game').onclick = game;
-document.getElementById('create').onclick = game2;
-document.getElementById('rules').onclick = rules;
-document.getElementById('play').onclick = play;
-document.getElementById('leaderboard').onclick = leaderboard;
-document.getElementById('exit').onclick = exit;
-
 
 var y = document.querySelectorAll(".return");
 for (var k = 0; k < y.length; k++) {
