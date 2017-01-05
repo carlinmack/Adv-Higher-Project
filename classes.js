@@ -357,10 +357,12 @@ for (var k = 0; k < y.length; k++) {
 }
 
 document.getElementById('decPlayers').onclick = function () {
-    deck.players--;
+    if (deck.players > 1) deck.players--;
+
 };
+
 document.getElementById('incPlayers').onclick = function () {
-    deck.players++;
+    if (deck.players < 5) deck.players++;
 };
 
 window.setInterval(function () {
