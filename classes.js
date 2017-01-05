@@ -235,10 +235,8 @@ class PlayerHand extends Dealer {
 //// MAIN FUNCTION ////
 var deck = new Deck(),
     Players = [];
-Players.push(new Dealer()); //adds dealer to array
 
 function Round() {
-    prompt('fuck')
     var playerLength = Players.length;
     deck.deal();
 
@@ -277,8 +275,11 @@ function Round() {
 function newGame() {
     play();
 
+    Players = [];
+    Players.push(new Dealer()); //adds dealer to array
+
     for (var i = 1; i < deck.players; i++) {
-        Players.push(new VirtualHand());
+        Players.push(new VirtualHand()); //adds AI Players to array
     }
 
     Players.push(new PlayerHand()); //adds player to array
@@ -326,13 +327,6 @@ function loadGame() {
 function tournament() {}
 
 //// CLICKING ////
-document.getElementById('game').onclick = game;
-document.getElementById('create').onclick = game2;
-document.getElementById('rules').onclick = rules;
-document.getElementById('play').onclick = play;
-document.getElementById('leaderboard').onclick = leaderboard;
-document.getElementById('exit').onclick = exit;
-
 var main = makeClicker("mainScreen");
 var game = makeClicker("gameScreen");
 var rules = makeClicker("rulesScreen");
@@ -351,6 +345,12 @@ function makeClicker(Button) {
     };
 }
 
+document.getElementById('game').onclick = game;
+document.getElementById('create').onclick = game2;
+document.getElementById('rules').onclick = rules;
+document.getElementById('leaderboard').onclick = leaderboard;
+document.getElementById('exit').onclick = exit;
+
 var y = document.querySelectorAll(".return");
 for (var k = 0; k < y.length; k++) {
     y[k].onclick = main;
@@ -363,6 +363,10 @@ document.getElementById('decPlayers').onclick = function () {
 
 document.getElementById('incPlayers').onclick = function () {
     if (deck.players < 5) deck.players++;
+};
+
+document.getElementById('play').onclick = function () {
+    newGame();
 };
 
 window.setInterval(function () {
