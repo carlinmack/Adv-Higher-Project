@@ -1,6 +1,8 @@
 // following are debug comment lines
 /*jshint esversion: 6 */
 /*globals console:false */
+/*globals document:false */
+/*globals window:false */
 /*globals localStorage:false */
 // end debug lines
 
@@ -240,7 +242,7 @@ function Round() {
     var playerLength = Players.length;
     deck.deal();
 
-    for (var i = 0; i < playerLength; i++) {
+    /*for (var i = 0; i < playerLength; i++) {
         Players[i].store(i);
     }
 
@@ -269,7 +271,8 @@ function Round() {
                 }
             }
         }
-    }
+    }*/
+    return
 }
 
 function newGame() {
@@ -358,7 +361,6 @@ for (var k = 0; k < y.length; k++) {
 
 document.getElementById('decPlayers').onclick = function () {
     if (deck.players > 1) deck.players--;
-
 };
 
 document.getElementById('incPlayers').onclick = function () {
