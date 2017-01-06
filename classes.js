@@ -129,8 +129,8 @@ class Dealer {
     }
 
     stand() {
-        turn = false;
-        return turn;
+        playing = false;
+        return playing;
     }
 
     hit() {
@@ -215,10 +215,10 @@ class PlayerHand extends Dealer {
     double() {
         this.hit();
         this.wager += this.wager;
-        turn = false;
+        playing = false;
         //double wager
         //receive card
-        //end turn
+        //end playing
     }
 
     splitCards() {
@@ -242,7 +242,7 @@ function Round() {
     var playerLength = Players.length;
     deck.deal();
 
-    /*for (var i = 0; i < playerLength; i++) {
+    for (var i = 0; i < playerLength; i++) {
         Players[i].store(i);
     }
 
@@ -271,12 +271,12 @@ function Round() {
                 }
             }
         }
-    }*/
-    return
+    }
 }
 
 function newGame() {
     play();
+    document.getElementById("roundText").className = "hidden";
 
     Players = [];
     Players.push(new Dealer()); //adds dealer to array
@@ -290,7 +290,6 @@ function newGame() {
     deck.createDeck(6);
     deck.shuffle();
     deck.cut();
-
     var playing = true;
 
     while (playing) {
@@ -327,7 +326,25 @@ function loadGame() {
     }
 }
 
-function tournament() {}
+function tournament() {
+    play();
+    document.getElementById('roundText').className = "inline";
+
+    Players = [];
+    Players.push(new Dealer()); //adds dealer to array
+
+    Players.push(new PlayerHand()); //adds player to array
+
+    deck.createDeck(6);
+    deck.shuffle();
+    deck.cut();
+
+    for (var i = 0; i < 10; i++) {
+        Round();
+    }
+
+    //Sort leaderboard
+}
 
 //// CLICKING ////
 var main = makeClicker("mainScreen");
@@ -337,6 +354,7 @@ var leaderboard = makeClicker("leaderboardScreen");
 var exit = makeClicker("exit");
 var play = makeClicker("mainGame");
 var game2 = makeClicker("gameScreen2");
+
 
 function makeClicker(Button) {
     return function () {
@@ -369,6 +387,10 @@ document.getElementById('incPlayers').onclick = function () {
 
 document.getElementById('play').onclick = function () {
     newGame();
+};
+
+document.getElementById('tournament').onclick = function () {
+    tournament();
 };
 
 window.setInterval(function () {
