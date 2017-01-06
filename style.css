@@ -107,6 +107,14 @@ th:first-child {
     display: inline-block;
 }
 
+.wagers {
+    margin-right: 20px;
+}
+
+.actions {
+    margin-left: 20px;
+}
+
 .return,
 #hand0,
 .wagers {
@@ -116,6 +124,11 @@ th:first-child {
 #hand1,
 .actions {
     float: left;
+}
+
+#roundText {
+    font-size: 1.5em;
+    margin: 5% 10% 0 10%;
 }
 
 #player {
@@ -130,19 +143,11 @@ th:first-child {
 }
 
 #hand0 {
-    margin-right: 80px;
-}
-
-.wagers {
-    margin-right: 20px;
-}
-
-.actions {
-    margin-left: 20px;
+    margin-right: 120px;
 }
 
 #hand1 {
-    margin-left: 70px;
+    margin-left: 120px;
 }
 
 #dealer {
