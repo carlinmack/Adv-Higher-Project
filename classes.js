@@ -234,7 +234,7 @@ class PlayerHand extends Dealer {
     }
 }
 
-//// MAIN FUNCTION ////
+////////////////////// MAIN FUNCTION //////////////////////
 var deck = new Deck(),
     Players = [];
 
@@ -277,6 +277,8 @@ function Round() {
 function newGame() {
     play();
     document.getElementById("roundText").className = "hidden";
+    document.getElementById('dealer').style.marginTop = "0px";
+    document.getElementById('dealer').style.marginLeft = "100px";
 
     Players = [];
     Players.push(new Dealer()); //adds dealer to array
@@ -329,6 +331,8 @@ function loadGame() {
 function tournament() {
     play();
     document.getElementById('roundText').className = "inline";
+    document.getElementById('dealer').style.marginTop = "-50px";
+    document.getElementById('dealer').style.marginLeft = "100px";
 
     Players = [];
     Players.push(new Dealer()); //adds dealer to array
@@ -346,7 +350,7 @@ function tournament() {
     //Sort leaderboard
 }
 
-//// CLICKING ////
+////////////////////// CLICKING //////////////////////
 var main = makeClicker("mainScreen");
 var game = makeClicker("gameScreen");
 var rules = makeClicker("rulesScreen");
