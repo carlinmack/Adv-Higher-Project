@@ -97,23 +97,22 @@ class Dealer {
         this.cards = [];
     }
 
-    display() {
+    display(card) {
         //Change [0, 2] to A ♦
         var prefix = "0x0001F0",
             suit = "",
             cardVal, temp;
-        this.cards.forEach(function (card) {
-            var suits = {
-                '0': 'A',
-                '1': 'B',
-                '2': 'C',
-                '3': 'D'
-            };
-            suit = suits[card[0]];
-            cardVal = (card[1] + 1).toString(16);
-            temp = prefix.concat(suit, cardVal);
-            return String.fromCodePoint(temp);
-        });
+
+        var suits = {
+            '0': 'A',
+            '1': 'B',
+            '2': 'C',
+            '3': 'D'
+        };
+        suit = suits[card[0]];
+        cardVal = (card[1] + 1).toString(16);
+        temp = prefix.concat(suit, cardVal);
+        return String.fromCodePoint(temp);
     }
 
     evaluate() {
@@ -189,23 +188,22 @@ class PlayerHand extends Dealer {
         this.handle = "";
     }
 
-    display() {
+    display(card) {
         //Change [0, 2] to A ♦
         var prefix = "0x0001F0",
             suit = "",
             cardVal, temp;
-        this.cards.forEach(function (card) {
-            var suits = {
-                '0': 'A',
-                '1': 'B',
-                '2': 'C',
-                '3': 'D'
-            };
-            suit = suits[card[0]];
-            cardVal = (card[1] + 1).toString(16);
-            temp = prefix.concat(suit, cardVal);
-            return String.fromCodePoint(temp);
-        });
+
+        var suits = {
+            '0': 'A',
+            '1': 'B',
+            '2': 'C',
+            '3': 'D'
+        };
+        suit = suits[card[0]];
+        cardVal = (card[1] + 1).toString(16);
+        temp = prefix.concat(suit, cardVal);
+        return String.fromCodePoint(temp);
 
         //        if (splitCards != [])
         //            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
@@ -248,15 +246,24 @@ function Round() {
 
     deck.store();
 
-    var display = Math.floor(playerLength / 2);
-    for (var j = 1; j < display + 1; j++) {
-        Players[j].display();
-    }
+    // for each player
+    for (var Pl = 1; Pl < deck.players; Pl++) {
+        // for each card in their hand
+        for (var Cd = 1; Cd < Players[Pl].cards.length; Cd++) {
 
+            var card = Players[Pl].cards[Cd];
+            var content = document.createTextNode(Players[Pl].display(card));
+
+            var span = document.createElement("span");
+            span.className = "card";
+            span.appendChild(content);
+            document.getElementById("hi" + Pl).appendChild(span);
+        }
+    }
     //checking for naturals, dealer can have one
     var natural = false;
-    for (var k = 1; k < playerLength; k++) {
-        if (Players[k].evaluate() == 21) {
+    for (var n = 1; n < playerLength; n++) {
+        if (Players[n].evaluate() == 21) {
             natural = true;
         }
     }
@@ -275,19 +282,42 @@ function Round() {
 }
 
 function newGame() {
+    /// hides other screens, displays main game
     play();
+
+    /// ensures that 'the round 1 of 10" text is not displayed
     document.getElementById("roundText").className = "hidden";
     document.getElementById('dealer').style.marginTop = "0px";
     document.getElementById('dealer').style.marginLeft = "100px";
 
-    Players = [];
-    Players.push(new Dealer()); //adds dealer to array
+    // Adds AI players to the page
+    var hand0 = document.getElementById('hand0');
+    var hand1 = document.getElementById('hand1');
 
-    for (var i = 1; i < deck.players; i++) {
-        Players.push(new VirtualHand()); //adds AI Players to array
+    for (var j = 1; j < deck.players; j++) {
+        var div = document.createElement("div");
+        div.id = "hi" + j;
+        //        var content = document.createTextNode("<YOUR_CONTENT>");
+        //        div.appendChild(content);
+        if (deck.players != 3 && j < 3) {
+            hand0.appendChild(div);
+        } else {
+            hand1.appendChild(div);
+        }
     }
 
-    Players.push(new PlayerHand()); //adds player to array
+    // creates player array
+    Players = [];
+    //adds dealer to array
+    Players.push(new Dealer());
+
+    for (var i = 1; i < deck.players; i++) {
+        //adds AI Players to array
+        Players.push(new VirtualHand());
+    }
+
+    //adds player to array
+    Players.push(new PlayerHand());
 
     deck.createDeck(6);
     deck.shuffle();
@@ -400,3 +430,10 @@ document.getElementById('tournament').onclick = function () {
 window.setInterval(function () {
     document.getElementById('players').innerHTML = deck.players;
 }, 100);
+
+/*
+DISPLAYING PLAYER MOVES
+
+var display = Math.floor(playerLength / 2);
+    for (var j = 1; j < display + 1; j++) {
+    */
