@@ -109,7 +109,8 @@ class Dealer {
             '2': 'C',
             '3': 'D'
         };
-        suit = suits[card[0]];
+        var value = (card[0] % 4).toString();
+        suit = suits[value];
         cardVal = (card[1] + 1).toString(16);
         temp = prefix.concat(suit, cardVal);
         return String.fromCodePoint(temp);
@@ -200,7 +201,7 @@ class PlayerHand extends Dealer {
             '2': 'C',
             '3': 'D'
         };
-        suit = suits[card[0]];
+        suit = suits[card[0] % 4];
         cardVal = (card[1] + 1).toString(16);
         temp = prefix.concat(suit, cardVal);
         return String.fromCodePoint(temp);
@@ -246,18 +247,19 @@ function Round() {
 
     deck.store();
 
-    // for each player
-    for (var Pl = 1; Pl < deck.players; Pl++) {
+    // for each AI player
+    for (var Pl = 0; Pl < deck.players; Pl++) {
         // for each card in their hand
-        for (var Cd = 1; Cd < Players[Pl].cards.length; Cd++) {
+        for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
 
             var card = Players[Pl].cards[Cd];
             var content = document.createTextNode(Players[Pl].display(card));
+            console.log(content);
 
             var span = document.createElement("span");
             span.className = "card";
             span.appendChild(content);
-            document.getElementById("hi" + Pl).appendChild(span);
+            document.getElementById("hi" + (Pl + 1)).appendChild(span);
         }
     }
     //checking for naturals, dealer can have one
