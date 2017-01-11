@@ -259,7 +259,7 @@ function Round() {
             var span = document.createElement("span");
             span.className = "card";
             span.appendChild(content);
-            document.getElementById("hi" + (Pl + 1)).appendChild(span);
+            document.getElementById("ai" + (Pl + 1)).appendChild(span);
         }
     }
     //checking for naturals, dealer can have one
@@ -295,18 +295,6 @@ function newGame() {
     // Adds AI players to the page
     var hand0 = document.getElementById('hand0');
     var hand1 = document.getElementById('hand1');
-
-    for (var j = 1; j < deck.players; j++) {
-        var div = document.createElement("div");
-        div.id = "hi" + j;
-        //        var content = document.createTextNode("<YOUR_CONTENT>");
-        //        div.appendChild(content);
-        if (deck.players != 3 && j < 3) {
-            hand0.appendChild(div);
-        } else {
-            hand1.appendChild(div);
-        }
-    }
 
     // creates player array
     Players = [];
