@@ -249,6 +249,11 @@ function Round() {
 
     // for each AI player
     for (var Pl = 0; Pl < deck.players; Pl++) {
+        var aiNode = document.getElementById("ai" + (Pl + 1));
+        while (aiNode.firstChild) {
+            aiNode.removeChild(aiNode.firstChild);
+        }
+
         // for each card in their hand
         for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
 
@@ -259,9 +264,10 @@ function Round() {
             var span = document.createElement("span");
             span.className = "card";
             span.appendChild(content);
-            document.getElementById("ai" + (Pl + 1)).appendChild(span);
+            aiNode.appendChild(span);
         }
     }
+
     //checking for naturals, dealer can have one
     var natural = false;
     for (var n = 1; n < playerLength; n++) {
@@ -369,6 +375,8 @@ function tournament() {
 
     //Sort leaderboard
 }
+
+function display() {}
 
 ////////////////////// CLICKING //////////////////////
 var main = makeClicker("mainScreen");
