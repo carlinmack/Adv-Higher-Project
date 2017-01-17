@@ -248,25 +248,7 @@ function Round() {
     deck.store();
 
     // for each AI player
-    for (var Pl = 0; Pl < deck.players; Pl++) {
-        var aiNode = document.getElementById("ai" + (Pl + 1));
-        while (aiNode.firstChild) {
-            aiNode.removeChild(aiNode.firstChild);
-        }
-
-        // for each card in their hand
-        for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
-
-            var card = Players[Pl].cards[Cd];
-            var content = document.createTextNode(Players[Pl].display(card));
-            console.log(content);
-
-            var span = document.createElement("span");
-            span.className = "card";
-            span.appendChild(content);
-            aiNode.appendChild(span);
-        }
-    }
+    display();
 
     //checking for naturals, dealer can have one
     var natural = false;
@@ -376,7 +358,27 @@ function tournament() {
     //Sort leaderboard
 }
 
-function display() {}
+function display() {
+    for (var Pl = 0; Pl < deck.players; Pl++) {
+        var aiNode = document.getElementById("ai" + (Pl + 1));
+        while (aiNode.firstChild) {
+            aiNode.removeChild(aiNode.firstChild);
+        }
+
+        // for each card in their hand
+        for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
+
+            var card = Players[Pl].cards[Cd];
+            var content = document.createTextNode(Players[Pl].display(card));
+            console.log(content);
+
+            var span = document.createElement("span");
+            span.className = "card";
+            span.appendChild(content);
+            aiNode.appendChild(span);
+        }
+    }
+}
 
 ////////////////////// CLICKING //////////////////////
 var main = makeClicker("mainScreen");
@@ -425,8 +427,13 @@ document.getElementById('tournament').onclick = function () {
     tournament();
 };
 
+document.getElementById('hit').onclick = function () {
+    Players[2].hit();
+};
+
 window.setInterval(function () {
     document.getElementById('players').innerHTML = deck.players;
+    display();
 }, 100);
 
 /*
