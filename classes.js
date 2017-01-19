@@ -349,12 +349,9 @@ function tournament() {
     deck.shuffle();
     deck.cut();
 
-    for (var i = 0; i < 10; i++) {
-        var playing = Round();
-        if (playing) {
-
-        }
-    }
+    //for (var i = 0; i < 10; i++) {
+    Round();
+    //}
 
     //Sort leaderboard
 }
@@ -465,7 +462,41 @@ document.getElementById('tournament').onclick = function () {
 };
 
 document.getElementById('hit').onclick = function () {
-    Players[2].hit();
+    Players[Players.length - 1].hit();
+};
+
+document.getElementById('stand').onclick = function () {
+    Players[Players.length - 1].stand();
+};
+
+document.getElementById('10').onclick = function () {
+    Players[Players.length - 1].wager = 10;
+
+    var x = document.querySelectorAll(".wager");
+    for (var i = 0; i < x.length; i++) {
+        x[i].className = 'mgame wager';
+    }
+    document.getElementById('10').className = 'mgame wager selected';
+};
+
+document.getElementById('50').onclick = function () {
+    Players[Players.length - 1].wager = 50;
+
+    var x = document.querySelectorAll(".wager");
+    for (var i = 0; i < x.length; i++) {
+        x[i].className = 'mgame wager';
+    }
+    document.getElementById('50').className = 'mgame wager selected';
+};
+
+document.getElementById('100').onclick = function () {
+    Players[Players.length - 1].wager = 100;
+
+    var x = document.querySelectorAll(".wager");
+    for (var i = 0; i < x.length; i++) {
+        x[i].className = 'mgame wager';
+    }
+    document.getElementById('100').className = 'mgame wager selected';
 };
 
 window.setInterval(function () {
@@ -479,3 +510,8 @@ DISPLAYING PLAYER MOVES
 var display = Math.floor(playerLength / 2);
     for (var j = 1; j < display + 1; j++) {
     */
+
+/*
+SPLIT and DOUBLE
+change hidden to inline
+*/
