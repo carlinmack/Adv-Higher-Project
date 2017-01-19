@@ -53,9 +53,7 @@
         <p id='roundText' class="hidden">Round <span>1</span> of 10</p>
         <button class="return"> Return </button>
 
-        <div id='dealer' class="center">
-            <span class="card">🂡</span><span class="card">🂡</span>
-        </div>
+        <div id='dealer' class="center"></div>
         <div id='hand0'>
             <div id='ai1'>
             </div>
@@ -72,9 +70,7 @@
         <div class="center">
             <button class='inline mgame action' id='split'>Split</button>
 
-            <div id='player' class="inline">
-                <span class="card">🂡</span><span class="card">🂡</span>
-            </div>
+            <div id='player' class="inline"></div>
 
             <button class='inline mgame' id='double'>Double</button>
         </div>
@@ -83,15 +79,15 @@
         <div style="width: 750px">
 
             <span class="actions">
-            <button class='mgame action'>Stand</button>
-            <button class='mgame action'>Hit</button>
+            <button class='mgame action' id='stand'>Stand</button>
+            <button class='mgame action' id='hit'>Hit</button>
         </span>
             <span class="wagers">
-            <button class='mgame wager'>£10</button>
-            <button class='mgame wager'>£50</button>
-            <button class='mgame wager'>£100</button>
+            <button class='mgame wager' id='10'>£10</button>
+            <button class='mgame wager' id='50'>£50</button>
+            <button class='mgame wager' id='100'>£100</button>
         </span>
-            <p id="bank"> Bank <span> £5000</span> </p>
+            <p id="bank"> Bank <span id='total'> £5000</span> </p>
         </div>
     </div>
     <!-- End Game -->
