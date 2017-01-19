@@ -115,6 +115,10 @@ th:first-child {
     margin-left: 20px;
 }
 
+.selected {
+    background: linear-gradient(#fff, #d0d0d0);
+}
+
 .return,
 #hand0,
 .wagers {
