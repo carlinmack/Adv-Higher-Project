@@ -247,9 +247,6 @@ function Round() {
 
     deck.store();
 
-    // for each AI player
-    display();
-
     //checking for naturals, dealer can have one
     var natural = false;
     for (var n = 1; n < playerLength; n++) {
@@ -302,15 +299,16 @@ function newGame() {
     deck.cut();
     var playing = true;
 
-    while (playing) {
-        if (deck.availableCards.length > 4 * Players.length) {
-            Round();
-        } else {
-            deck.combineDecks();
-            deck.shuffle();
-            deck.cut();
-        }
-    }
+    Round();
+    //    while (playing) {
+    //        if (deck.availableCards.length > 4 * Players.length) {
+    //
+    //        } else {
+    //            deck.combineDecks();
+    //            deck.shuffle();
+    //            deck.cut();
+    //        }
+    //    }
 }
 
 function loadGame() {
@@ -343,8 +341,8 @@ function tournament() {
     document.getElementById('dealer').style.marginLeft = "100px";
 
     Players = [];
-    Players.push(new Dealer()); //adds dealer to array
 
+    Players.push(new Dealer()); //adds dealer to array
     Players.push(new PlayerHand()); //adds player to array
 
     deck.createDeck(6);
@@ -352,31 +350,70 @@ function tournament() {
     deck.cut();
 
     for (var i = 0; i < 10; i++) {
-        Round();
+        var playing = Round();
+        if (playing) {
+
+        }
     }
 
     //Sort leaderboard
 }
 
 function display() {
-    for (var Pl = 0; Pl < deck.players; Pl++) {
-        var aiNode = document.getElementById("ai" + (Pl + 1));
+    //for dealer
+    var dealerNode = document.getElementById("dealer");
+    while (dealerNode.firstChild) {
+        dealerNode.removeChild(dealerNode.firstChild);
+    }
+    // for each card in their hand
+    var dealer = Players[0];
+    for (var Cd = 0; Cd < dealer.cards.length; Cd++) {
+        var card = dealer.cards[Cd];
+        var content = document.createTextNode(dealer.display(card));
+
+        var span = document.createElement("span");
+        span.className = "card";
+        span.appendChild(content);
+        dealerNode.appendChild(span);
+    }
+
+    //for ai players
+
+    for (var Pl = 1; Pl < deck.players; Pl++) {
+        var aiNode = document.getElementById("ai" + (Pl));
         while (aiNode.firstChild) {
             aiNode.removeChild(aiNode.firstChild);
         }
+        if (Players.length > 2) {
+            // for each card in their hand
+            for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
 
-        // for each card in their hand
-        for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
+                var card = Players[Pl].cards[Cd];
+                var content = document.createTextNode(Players[Pl].display(card));
 
-            var card = Players[Pl].cards[Cd];
-            var content = document.createTextNode(Players[Pl].display(card));
-            console.log(content);
-
-            var span = document.createElement("span");
-            span.className = "card";
-            span.appendChild(content);
-            aiNode.appendChild(span);
+                var span = document.createElement("span");
+                span.className = "card";
+                span.appendChild(content);
+                aiNode.appendChild(span);
+            }
         }
+    }
+
+    //for player
+    var playerNode = document.getElementById("player");
+    while (playerNode.firstChild) {
+        playerNode.removeChild(playerNode.firstChild);
+    }
+    // for each card in their hand
+    var player = Players[Players.length - 1];
+    for (var Cd = 0; Cd < player.cards.length; Cd++) {
+        var card = player.cards[Cd];
+        var content = document.createTextNode(player.display(card));
+
+        var span = document.createElement("span");
+        span.className = "card";
+        span.appendChild(content);
+        playerNode.appendChild(span);
     }
 }
 
