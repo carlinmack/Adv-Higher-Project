@@ -129,8 +129,7 @@ class Dealer {
     }
 
     stand() {
-        playing = false;
-        return playing;
+        this.turn = false;
     }
 
     hit() {
@@ -157,6 +156,7 @@ class VirtualHand extends Dealer {
         this.bank = 5000;
         this.wagerBalance = Math.random();
         this.cardBalance = 16;
+        this.turn = false;
     }
 
     wager() {
@@ -238,6 +238,8 @@ var deck = new Deck(),
     Players = [];
 
 function Round() {
+    document.getElementById('deal').className = 'hidden'
+
     var playerLength = Players.length;
     deck.deal();
 
@@ -255,17 +257,18 @@ function Round() {
         }
     }
 
-    if (natural === false) {
-        for (var l = 1; l < playerLength; l++) {
-            while (Players[l].turn) {
-                if (Players[l].evaluate() > Players[l].cardBalance) {
-                    Players[l].hit();
-                } else {
-                    Players[l].stand();
-                }
-            }
-        }
-    }
+    //    if (natural === false) {
+    //        for (var l = 1; l < playerLength - 1; l++) {
+    //            Players[l].turn = true;
+    //            while (Players[l].turn) {
+    //                if (Players[l].evaluate() > Players[l].cardBalance) {
+    //                    Players[l].hit();
+    //                } else {
+    //                    Players[l].stand();
+    //                }
+    //            }
+    //        }
+    //    }
 }
 
 function newGame() {
@@ -276,6 +279,7 @@ function newGame() {
     document.getElementById("roundText").className = "hidden";
     document.getElementById('dealer').style.marginTop = "0px";
     document.getElementById('dealer').style.marginLeft = "100px";
+    document.getElementById('deal').className = "inline";
 
     // Adds AI players to the page
     var hand0 = document.getElementById('hand0');
@@ -297,9 +301,6 @@ function newGame() {
     deck.createDeck(6);
     deck.shuffle();
     deck.cut();
-    var playing = true;
-
-    Round();
     //    while (playing) {
     //        if (deck.availableCards.length > 4 * Players.length) {
     //
@@ -362,7 +363,7 @@ function display() {
     while (dealerNode.firstChild) {
         dealerNode.removeChild(dealerNode.firstChild);
     }
-    // for each card in their hand
+    // for each card in hand
     var dealer = Players[0];
     for (var Cd = 0; Cd < dealer.cards.length; Cd++) {
         var card = dealer.cards[Cd];
@@ -374,14 +375,30 @@ function display() {
         dealerNode.appendChild(span);
     }
 
-    //for ai players
+    if (dealer.cards.length === 0) {
+        var card = [0, -1];
+        var content = document.createTextNode(dealer.display(card));
+        var span = document.createElement("span");
+        span.className = "card";
+        span.appendChild(content);
+        dealerNode.appendChild(span);
+    }
 
-    for (var Pl = 1; Pl < deck.players; Pl++) {
-        var aiNode = document.getElementById("ai" + (Pl));
+
+    //clearing ai players
+    for (var x = 1; x < 5; x++) {
+        var aiNode = document.getElementById("ai" + (x));
         while (aiNode.firstChild) {
             aiNode.removeChild(aiNode.firstChild);
         }
-        if (Players.length > 2) {
+    }
+
+    //if there are ai players
+    if (Players.length > 2) {
+        //for each player
+        for (var Pl = 1; Pl < deck.players; Pl++) {
+            var aiNode = document.getElementById("ai" + (Pl));
+
             // for each card in their hand
             for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
 
@@ -469,6 +486,10 @@ document.getElementById('stand').onclick = function () {
     Players[Players.length - 1].stand();
 };
 
+document.getElementById('deal').onclick = function () {
+    Round();
+};
+
 document.getElementById('10').onclick = function () {
     Players[Players.length - 1].wager = 10;
 
@@ -504,14 +525,13 @@ window.setInterval(function () {
     display();
 }, 100);
 
-/*
-DISPLAYING PLAYER MOVES
+/* DISPLAYING PLAYER MOVES
 
 var display = Math.floor(playerLength / 2);
     for (var j = 1; j < display + 1; j++) {
     */
 
-/*
-SPLIT and DOUBLE
+/* SPLIT and DOUBLE
+
 change hidden to inline
 */
