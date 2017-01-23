@@ -235,12 +235,15 @@ class PlayerHand extends Dealer {
 
 ////////////////////// MAIN FUNCTION //////////////////////
 var deck = new Deck(),
-    Players = [];
+    Players = [],
+    PLAYING = false;
 
 function Round() {
-    document.getElementById('deal').className = 'hidden'
+    document.getElementById('deal').className = 'hidden';
+    document.getElementById('selectWager').className = 'hidden';
 
     var playerLength = Players.length;
+    PLAYING = true;
     deck.deal();
 
     for (var i = 0; i < playerLength; i++) {
@@ -274,12 +277,15 @@ function Round() {
 function newGame() {
     /// hides other screens, displays main game
     play();
+    PLAYING = false;
 
     /// ensures that 'the round 1 of 10" text is not displayed
     document.getElementById("roundText").className = "hidden";
+    document.getElementById('deal').className = "inline";
+    document.getElementById('selectWager').className = "inline";
+
     document.getElementById('dealer').style.marginTop = "0px";
     document.getElementById('dealer').style.marginLeft = "100px";
-    document.getElementById('deal').className = "inline";
 
     // Adds AI players to the page
     var hand0 = document.getElementById('hand0');
@@ -491,33 +497,39 @@ document.getElementById('deal').onclick = function () {
 };
 
 document.getElementById('10').onclick = function () {
-    Players[Players.length - 1].wager = 10;
+    if (PLAYING === false) {
+        Players[Players.length - 1].wager = 10;
 
-    var x = document.querySelectorAll(".wager");
-    for (var i = 0; i < x.length; i++) {
-        x[i].className = 'mgame wager';
+        var x = document.querySelectorAll(".wager");
+        for (var i = 0; i < x.length; i++) {
+            x[i].className = 'mgame wager';
+        }
+        document.getElementById('10').className = 'mgame wager selected';
     }
-    document.getElementById('10').className = 'mgame wager selected';
 };
 
 document.getElementById('50').onclick = function () {
-    Players[Players.length - 1].wager = 50;
+    if (PLAYING === false) {
+        Players[Players.length - 1].wager = 50;
 
-    var x = document.querySelectorAll(".wager");
-    for (var i = 0; i < x.length; i++) {
-        x[i].className = 'mgame wager';
+        var x = document.querySelectorAll(".wager");
+        for (var i = 0; i < x.length; i++) {
+            x[i].className = 'mgame wager';
+        }
+        document.getElementById('50').className = 'mgame wager selected';
     }
-    document.getElementById('50').className = 'mgame wager selected';
 };
 
 document.getElementById('100').onclick = function () {
-    Players[Players.length - 1].wager = 100;
+    if (PLAYING === false) {
+        Players[Players.length - 1].wager = 100;
 
-    var x = document.querySelectorAll(".wager");
-    for (var i = 0; i < x.length; i++) {
-        x[i].className = 'mgame wager';
+        var x = document.querySelectorAll(".wager");
+        for (var i = 0; i < x.length; i++) {
+            x[i].className = 'mgame wager';
+        }
+        document.getElementById('100').className = 'mgame wager selected';
     }
-    document.getElementById('100').className = 'mgame wager selected';
 };
 
 window.setInterval(function () {
