@@ -135,8 +135,17 @@ th:first-child {
     margin: 5% 10% 0 10%;
 }
 
+#selectWager {
+    font-size: 1.5em;
+    margin-left: 220px;
+}
+
 #player {
     margin: 25% 30px 4% 60px;
+}
+
+#players {
+    margin: 0 10%;
 }
 
 #bank {
@@ -144,6 +153,15 @@ th:first-child {
     margin-top: -5px;
     padding-top: 9px;
     text-align: center;
+}
+
+#deal {
+    border: black solid 3px;
+    border-radius: 10px;
+    font-size: 1.5em;
+    padding: 7px;
+    width: 175px;
+    margin-left: 25px;
 }
 
 #hand0 {
