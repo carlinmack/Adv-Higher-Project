@@ -275,11 +275,11 @@ function Round() {
 }
 
 function newGame() {
-    /// hides other screens, displays main game
+    // hides other screens, displays main game
     play();
     PLAYING = false;
 
-    /// ensures that 'the round 1 of 10" text is not displayed
+    // ensures that 'the round 1 of 10" text is not displayed
     document.getElementById("roundText").className = "hidden";
     document.getElementById('deal').className = "inline";
     document.getElementById('selectWager').className = "inline";
@@ -342,10 +342,15 @@ function loadGame() {
 }
 
 function tournament() {
+    // hides other screens, displays main game
     play();
+    PLAYING = false;
+
     document.getElementById('roundText').className = "inline";
     document.getElementById('dealer').style.marginTop = "-50px";
     document.getElementById('dealer').style.marginLeft = "100px";
+    document.getElementById('deal').className = "inline";
+    document.getElementById('selectWager').className = "inline";
 
     Players = [];
 
@@ -357,7 +362,7 @@ function tournament() {
     deck.cut();
 
     //for (let i = 0; i < 10; i++) {
-    Round();
+    // idk when this happens or how but it'll be banter right
     //}
 
     //Sort leaderboard
