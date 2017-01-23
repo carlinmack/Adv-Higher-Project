@@ -19,9 +19,9 @@ class Deck {
         //As there are 4 suits per deck it needs to be multiplied for the loop
         decks *= 4;
         //for the amount of suits
-        for (var j = 0; j < decks; j++) {
+        for (let j = 0; j < decks; j++) {
             //and the amount of cards in a suit
-            for (var i = 0; i < 14; i++) {
+            for (let i = 0; i < 14; i++) {
                 if (i === 11) {
                     //unicode has a knight card which is not needed for the game
                 } else {
@@ -60,7 +60,7 @@ class Deck {
 
     deal() {
         //deal 2 cards to each player and the dealer
-        for (var i = 0; i < Players.length; i++) {
+        for (let i = 0; i < Players.length; i++) {
             Players[i].cards.push(this.availableCards.pop());
             Players[i].cards.push(this.availableCards.pop());
         }
@@ -76,10 +76,10 @@ class Deck {
 
     combineDecks() {
         // when availableCards is empty, push cut and spent cards to it
-        for (var i = 0; i < this.cutCards.length; i++) {
+        for (let i = 0; i < this.cutCards.length; i++) {
             this.availableCards.push(this.cutCards[i]);
         }
-        for (var j = 0; i < this.spentCards.length; j++) {
+        for (let j = 0; j < this.spentCards.length; j++) {
             this.availableCards.push(this.spentCards[j]);
         }
     }
@@ -118,7 +118,7 @@ class Dealer {
 
     evaluate() {
         var value = 0;
-        for (var k = 0; k < this.cards.length; k++) {
+        for (let k = 0; k < this.cards.length; k++) {
             if (this.cards[k][1] < 10) {
                 value += this.cards[k][1] + 1;
             } else {
@@ -214,7 +214,7 @@ class PlayerHand extends Dealer {
     double() {
         this.hit();
         this.wager += this.wager;
-        playing = false;
+        PLAYING = false;
         //double wager
         //receive card
         //end playing
@@ -246,7 +246,7 @@ function Round() {
     PLAYING = true;
     deck.deal();
 
-    for (var i = 0; i < playerLength; i++) {
+    for (let i = 0; i < playerLength; i++) {
         Players[i].store(i);
     }
 
@@ -254,14 +254,14 @@ function Round() {
 
     //checking for naturals, dealer can have one
     var natural = false;
-    for (var n = 1; n < playerLength; n++) {
+    for (let n = 1; n < playerLength; n++) {
         if (Players[n].evaluate() == 21) {
             natural = true;
         }
     }
 
     //    if (natural === false) {
-    //        for (var l = 1; l < playerLength - 1; l++) {
+    //        for (let l = 1; l < playerLength - 1; l++) {
     //            Players[l].turn = true;
     //            while (Players[l].turn) {
     //                if (Players[l].evaluate() > Players[l].cardBalance) {
@@ -296,7 +296,7 @@ function newGame() {
     //adds dealer to array
     Players.push(new Dealer());
 
-    for (var i = 1; i < deck.players; i++) {
+    for (let i = 1; i < deck.players; i++) {
         //adds AI Players to array
         Players.push(new VirtualHand());
     }
@@ -326,7 +326,7 @@ function loadGame() {
 
     Players[0].cards = localStorage.getItem('0cards');
 
-    for (var i = 1; i < Players.length + 1; i++) {
+    for (let i = 1; i < Players.length + 1; i++) {
         Players[i].cards = localStorage.getItem(i + 'cards');
         Players[i].bank = localStorage.getItem(i + 'bank');
         Players[i].balance = localStorage.getItem(i + 'balance');
@@ -356,7 +356,7 @@ function tournament() {
     deck.shuffle();
     deck.cut();
 
-    //for (var i = 0; i < 10; i++) {
+    //for (let i = 0; i < 10; i++) {
     Round();
     //}
 
@@ -371,20 +371,20 @@ function display() {
     }
     // for each card in hand
     var dealer = Players[0];
-    for (var Cd = 0; Cd < dealer.cards.length; Cd++) {
-        var card = dealer.cards[Cd];
-        var content = document.createTextNode(dealer.display(card));
+    for (let Cd = 0; Cd < dealer.cards.length; Cd++) {
+        let card = dealer.cards[Cd];
+        let content = document.createTextNode(dealer.display(card));
 
-        var span = document.createElement("span");
+        let span = document.createElement("span");
         span.className = "card";
         span.appendChild(content);
         dealerNode.appendChild(span);
     }
 
     if (dealer.cards.length === 0) {
-        var card = [0, -1];
-        var content = document.createTextNode(dealer.display(card));
-        var span = document.createElement("span");
+        let card = [0, -1];
+        let content = document.createTextNode(dealer.display(card));
+        let span = document.createElement("span");
         span.className = "card";
         span.appendChild(content);
         dealerNode.appendChild(span);
@@ -392,8 +392,8 @@ function display() {
 
 
     //clearing ai players
-    for (var x = 1; x < 5; x++) {
-        var aiNode = document.getElementById("ai" + (x));
+    for (let x = 1; x < 5; x++) {
+        let aiNode = document.getElementById("ai" + (x));
         while (aiNode.firstChild) {
             aiNode.removeChild(aiNode.firstChild);
         }
@@ -402,16 +402,16 @@ function display() {
     //if there are ai players
     if (Players.length > 2) {
         //for each player
-        for (var Pl = 1; Pl < deck.players; Pl++) {
-            var aiNode = document.getElementById("ai" + (Pl));
+        for (let Pl = 1; Pl < deck.players; Pl++) {
+            let aiNode = document.getElementById("ai" + (Pl));
 
             // for each card in their hand
-            for (var Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
+            for (let Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
 
-                var card = Players[Pl].cards[Cd];
-                var content = document.createTextNode(Players[Pl].display(card));
+                let card = Players[Pl].cards[Cd];
+                let content = document.createTextNode(Players[Pl].display(card));
 
-                var span = document.createElement("span");
+                let span = document.createElement("span");
                 span.className = "card";
                 span.appendChild(content);
                 aiNode.appendChild(span);
@@ -426,7 +426,7 @@ function display() {
     }
     // for each card in their hand
     var player = Players[Players.length - 1];
-    for (var Cd = 0; Cd < player.cards.length; Cd++) {
+    for (let Cd = 0; Cd < player.cards.length; Cd++) {
         var card = player.cards[Cd];
         var content = document.createTextNode(player.display(card));
 
@@ -450,7 +450,7 @@ var game2 = makeClicker("gameScreen2");
 function makeClicker(Button) {
     return function () {
         var x = document.querySelectorAll(".screen");
-        for (var i = 0; i < x.length; i++) {
+        for (let i = 0; i < x.length; i++) {
             x[i].className = 'screen hidden';
         }
         document.getElementById(Button).className = 'screen';
@@ -464,7 +464,7 @@ document.getElementById('leaderboard').onclick = leaderboard;
 document.getElementById('exit').onclick = exit;
 
 var y = document.querySelectorAll(".return");
-for (var k = 0; k < y.length; k++) {
+for (let k = 0; k < y.length; k++) {
     y[k].onclick = main;
 }
 
@@ -501,7 +501,7 @@ document.getElementById('10').onclick = function () {
         Players[Players.length - 1].wager = 10;
 
         var x = document.querySelectorAll(".wager");
-        for (var i = 0; i < x.length; i++) {
+        for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
         document.getElementById('10').className = 'mgame wager selected';
@@ -513,7 +513,7 @@ document.getElementById('50').onclick = function () {
         Players[Players.length - 1].wager = 50;
 
         var x = document.querySelectorAll(".wager");
-        for (var i = 0; i < x.length; i++) {
+        for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
         document.getElementById('50').className = 'mgame wager selected';
@@ -525,7 +525,7 @@ document.getElementById('100').onclick = function () {
         Players[Players.length - 1].wager = 100;
 
         var x = document.querySelectorAll(".wager");
-        for (var i = 0; i < x.length; i++) {
+        for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
         document.getElementById('100').className = 'mgame wager selected';
@@ -540,7 +540,7 @@ window.setInterval(function () {
 /* DISPLAYING PLAYER MOVES
 
 var display = Math.floor(playerLength / 2);
-    for (var j = 1; j < display + 1; j++) {
+    for (let j = 1; j < display + 1; j++) {
     */
 
 /* SPLIT and DOUBLE
