@@ -41,7 +41,7 @@ CLASS Deck:
     END METHOD
     
     METHOD hit() 
-        return availableCards.pop()
+        RETURN LAST availableCards INDEX
     END METHOD
     
     METHOD returnCards(cards) 
@@ -185,10 +185,10 @@ END CLASS
 
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
-SET Players TO [] 
-APPEND NEW dealer TO Players
+SET Players TO []
 
 FUNCTION Round():    
+    SET playerLength TO Players.length
     deck.deal()
     
     FOR EACH iterG FROM Players DO
@@ -254,10 +254,19 @@ FUNCTION Round():
 END FUNCTION
 
 FUNCTION newGame():  
-    SET deck.players TO INT FROM GUI
+    DISPLAY 'mainGame'
+    
+    HIDE 'roundText'
+    
+    SET hand0 TO document.hand0
+    SET hand1 TO document.hand1
+    
+    SET Players TO NEW ARRAY
+    
+    APPEND NEW dealer TO Players
+    
     FOR iterH FROM 0 TO deck.players DO
-        SET player & iterH TO NEW AIhand
-        APPEND player & iterH TO Players
+         APPEND NEW AIhand TO Players
     END FOR
 
     APPEND NEW playerHand TO Players
