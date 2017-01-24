@@ -95,6 +95,7 @@ class Deck {
 class Dealer {
     constructor() {
         this.cards = [];
+        this.turn = false;
     }
 
     display(card) {
@@ -156,7 +157,6 @@ class VirtualHand extends Dealer {
         this.bank = 5000;
         this.wagerBalance = Math.random();
         this.cardBalance = 16;
-        this.turn = false;
     }
 
     wager() {
@@ -238,12 +238,20 @@ var deck = new Deck(),
     Players = [],
     PLAYING = false;
 
-function Round() {
+
+
+function round() {
     document.getElementById('deal').className = 'hidden';
     document.getElementById('selectWager').className = 'hidden';
+    document.getElementById('nextRound').className = 'hidden';
 
-    var playerLength = Players.length;
+    var playerLength = Players.length - 1;
     PLAYING = true;
+
+    for (let i = 0; i < playerLength + 1; i++) {
+        Players[i].returnCards();
+    }
+
     deck.deal();
 
     for (let i = 0; i < playerLength; i++) {
@@ -260,18 +268,21 @@ function Round() {
         }
     }
 
-    //    if (natural === false) {
-    //        for (let l = 1; l < playerLength - 1; l++) {
-    //            Players[l].turn = true;
-    //            while (Players[l].turn) {
-    //                if (Players[l].evaluate() > Players[l].cardBalance) {
-    //                    Players[l].hit();
-    //                } else {
-    //                    Players[l].stand();
-    //                }
-    //            }
-    //        }
-    //    }
+    if (natural === false) {
+        for (let l = 1; l < playerLength; l++) {
+            // Players[l].turn = true;
+            while (Players[l].turn) {
+                if (Players[l].evaluate() > Players[l].cardBalance) {
+                    //Players[l].hit();
+                } else {
+                    //Players[l].stand();
+                }
+            }
+        }
+    }
+
+    //while (PLAYING) {
+    //}
 }
 
 function newGame() {
@@ -281,7 +292,8 @@ function newGame() {
 
     // ensures that 'the round 1 of 10" text is not displayed
     document.getElementById("roundText").className = "hidden";
-    document.getElementById('deal').className = "inline";
+    document.getElementById('deal').className = "inline bigGameButton";
+    document.getElementById('nextRound').className = "hidden";
     document.getElementById('selectWager').className = "inline";
 
     document.getElementById('dealer').style.marginTop = "0px";
@@ -318,6 +330,15 @@ function newGame() {
     //    }
 }
 
+function settlement() {
+    document.getElementById('nextRound').className = "inline bigGameButton";
+    PLAYING = false;
+
+    for (let i = 0; i < Players.length; i++) {
+        Players[i].bank += Players[i].wager;
+    }
+}
+
 function loadGame() {
     deck.availableCards = localStorage.getItem('availableCards');
     deck.cutCards = localStorage.getItem('cutCards');
@@ -347,10 +368,12 @@ function tournament() {
     PLAYING = false;
 
     document.getElementById('roundText').className = "inline";
+    document.getElementById('deal').className = "inline bigGameButton";
+    document.getElementById('nextRound').className = "hidden";
+    document.getElementById('selectWager').className = "inline";
+
     document.getElementById('dealer').style.marginTop = "-50px";
     document.getElementById('dealer').style.marginLeft = "100px";
-    document.getElementById('deal').className = "inline";
-    document.getElementById('selectWager').className = "inline";
 
     Players = [];
 
@@ -361,6 +384,8 @@ function tournament() {
     deck.shuffle();
     deck.cut();
 
+    Players[Players.length - 1].handle = prompt('Handle: ');
+
     //for (let i = 0; i < 10; i++) {
     // idk when this happens or how but it'll be banter right
     //}
@@ -369,12 +394,18 @@ function tournament() {
 }
 
 function display() {
-    //for dealer
+    // for bank
+
+    //for (let i = 0; i < Players.length - 1; i++) {
+    document.getElementById("total").innerHTML = Players[Players.length - 1].bank;
+    //}
+
+    // clearing dealer
     var dealerNode = document.getElementById("dealer");
     while (dealerNode.firstChild) {
         dealerNode.removeChild(dealerNode.firstChild);
     }
-    // for each card in hand
+    // for each card in dealer hand
     var dealer = Players[0];
     for (let Cd = 0; Cd < dealer.cards.length; Cd++) {
         let card = dealer.cards[Cd];
@@ -386,6 +417,7 @@ function display() {
         dealerNode.appendChild(span);
     }
 
+    // for showing back of card if no cards
     if (dealer.cards.length === 0) {
         let card = [0, -1];
         let content = document.createTextNode(dealer.display(card));
@@ -406,6 +438,7 @@ function display() {
 
     //if there are ai players
     if (Players.length > 2) {
+
         //for each player
         for (let Pl = 1; Pl < deck.players; Pl++) {
             let aiNode = document.getElementById("ai" + (Pl));
@@ -424,7 +457,7 @@ function display() {
         }
     }
 
-    //for player
+    // clearing player
     var playerNode = document.getElementById("player");
     while (playerNode.firstChild) {
         playerNode.removeChild(playerNode.firstChild);
@@ -490,15 +523,23 @@ document.getElementById('tournament').onclick = function () {
 };
 
 document.getElementById('hit').onclick = function () {
-    Players[Players.length - 1].hit();
+    if (PLAYING === true) {
+        Players[Players.length - 1].hit();
+    }
 };
 
 document.getElementById('stand').onclick = function () {
-    Players[Players.length - 1].stand();
+    if (PLAYING === true) {
+        Players[Players.length - 1].stand();
+    }
 };
 
 document.getElementById('deal').onclick = function () {
-    Round();
+    round();
+};
+
+document.getElementById('nextRound').onclick = function () {
+    round();
 };
 
 document.getElementById('10').onclick = function () {
@@ -540,6 +581,11 @@ document.getElementById('100').onclick = function () {
 window.setInterval(function () {
     document.getElementById('players').innerHTML = deck.players;
     display();
+
+
+    if (Players[Players.length - 1].evaluate() > 21 && PLAYING === true) {
+        settlement();
+    }
 }, 100);
 
 /* DISPLAYING PLAYER MOVES
