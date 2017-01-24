@@ -119,6 +119,15 @@ th:first-child {
     background: linear-gradient(#fff, #d0d0d0);
 }
 
+.bigGameButton {
+    border: black solid 3px;
+    border-radius: 10px;
+    font-size: 1.5em;
+    padding: 7px;
+    width: 175px;
+    margin-left: 25px;
+}
+
 .return,
 #hand0,
 .wagers {
@@ -153,15 +162,6 @@ th:first-child {
     margin-top: -5px;
     padding-top: 9px;
     text-align: center;
-}
-
-#deal {
-    border: black solid 3px;
-    border-radius: 10px;
-    font-size: 1.5em;
-    padding: 7px;
-    width: 175px;
-    margin-left: 25px;
 }
 
 #hand0 {
