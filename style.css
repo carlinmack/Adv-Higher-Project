@@ -120,12 +120,13 @@ th:first-child {
 }
 
 .bigGameButton {
+    position: relative;
+    right: 25px;
     border: black solid 3px;
     border-radius: 10px;
     font-size: 1.5em;
     padding: 7px;
     width: 175px;
-    margin-left: 25px;
 }
 
 .return,
@@ -158,9 +159,9 @@ th:first-child {
 }
 
 #bank {
-    font: 1.3em;
+    font: 1.5em;
     margin-top: -5px;
-    padding-top: 9px;
+    padding-top: 25px;
     text-align: center;
 }
 
