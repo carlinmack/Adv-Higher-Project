@@ -158,8 +158,10 @@ th:first-child {
     margin: 0 10%;
 }
 
-#bank {
-    font: 1.5em;
+#bank,
+#won,
+#loss {
+    font-size: 1.3em;
     margin-top: -5px;
     padding-top: 25px;
     text-align: center;
