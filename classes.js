@@ -238,12 +238,17 @@ var deck = new Deck(),
     Players = [],
     PLAYING = false;
 
-
+//helper function to make code easier to read
+function getID(x) {
+    return document.getElementById(x);
+}
 
 function round() {
-    document.getElementById('deal').className = 'hidden';
-    document.getElementById('selectWager').className = 'hidden';
-    document.getElementById('nextRound').className = 'hidden';
+    getID('deal').className = 'hidden';
+    getID('selectWager').className = 'hidden';
+    getID('nextRound').className = 'hidden';
+    getID('won').className = 'hidden';
+    getID('loss').className = 'hidden';
 
     var playerLength = Players.length - 1;
     PLAYING = true;
@@ -291,17 +296,17 @@ function newGame() {
     PLAYING = false;
 
     // ensures that 'the round 1 of 10" text is not displayed
-    document.getElementById("roundText").className = "hidden";
-    document.getElementById('deal').className = "inline bigGameButton";
-    document.getElementById('nextRound').className = "hidden";
-    document.getElementById('selectWager').className = "inline";
+    getID("roundText").className = "hidden";
+    getID('deal').className = "inline bigGameButton";
+    getID('nextRound').className = "hidden";
+    getID('selectWager').className = "inline";
 
-    document.getElementById('dealer').style.marginTop = "0px";
-    document.getElementById('dealer').style.marginLeft = "100px";
+    getID('dealer').style.marginTop = "0px";
+    getID('dealer').style.marginLeft = "100px";
 
     // Adds AI players to the page
-    var hand0 = document.getElementById('hand0');
-    var hand1 = document.getElementById('hand1');
+    var hand0 = getID('hand0');
+    var hand1 = getID('hand1');
 
     // creates player array
     Players = [];
@@ -331,8 +336,11 @@ function newGame() {
 }
 
 function settlement() {
-    document.getElementById('nextRound').className = "inline bigGameButton";
     PLAYING = false;
+
+    getID('nextRound').className = "inline bigGameButton";
+    getID('won').className = "inline";
+    getID('winnings').innerHTML = Players[Players.length - 1].wager;
 
     for (let i = 0; i < Players.length; i++) {
         Players[i].bank += Players[i].wager;
@@ -367,13 +375,13 @@ function tournament() {
     play();
     PLAYING = false;
 
-    document.getElementById('roundText').className = "inline";
-    document.getElementById('deal').className = "inline bigGameButton";
-    document.getElementById('nextRound').className = "hidden";
-    document.getElementById('selectWager').className = "inline";
+    getID('roundText').className = "inline";
+    getID('deal').className = "inline bigGameButton";
+    getID('nextRound').className = "hidden";
+    getID('selectWager').className = "inline";
 
-    document.getElementById('dealer').style.marginTop = "-50px";
-    document.getElementById('dealer').style.marginLeft = "100px";
+    getID('dealer').style.marginTop = "-50px";
+    getID('dealer').style.marginLeft = "100px";
 
     Players = [];
 
@@ -397,14 +405,15 @@ function display() {
     // for bank
 
     //for (let i = 0; i < Players.length - 1; i++) {
-    document.getElementById("total").innerHTML = Players[Players.length - 1].bank;
+    getID("total").innerHTML = Players[Players.length - 1].bank;
     //}
 
     // clearing dealer
-    var dealerNode = document.getElementById("dealer");
+    var dealerNode = getID("dealer");
     while (dealerNode.firstChild) {
         dealerNode.removeChild(dealerNode.firstChild);
     }
+
     // for each card in dealer hand
     var dealer = Players[0];
     for (let Cd = 0; Cd < dealer.cards.length; Cd++) {
@@ -430,7 +439,7 @@ function display() {
 
     //clearing ai players
     for (let x = 1; x < 5; x++) {
-        let aiNode = document.getElementById("ai" + (x));
+        let aiNode = getID("ai" + (x));
         while (aiNode.firstChild) {
             aiNode.removeChild(aiNode.firstChild);
         }
@@ -441,7 +450,7 @@ function display() {
 
         //for each player
         for (let Pl = 1; Pl < deck.players; Pl++) {
-            let aiNode = document.getElementById("ai" + (Pl));
+            let aiNode = getID("ai" + (Pl));
 
             // for each card in their hand
             for (let Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
@@ -458,10 +467,11 @@ function display() {
     }
 
     // clearing player
-    var playerNode = document.getElementById("player");
+    var playerNode = getID("player");
     while (playerNode.firstChild) {
         playerNode.removeChild(playerNode.firstChild);
     }
+
     // for each card in their hand
     var player = Players[Players.length - 1];
     for (let Cd = 0; Cd < player.cards.length; Cd++) {
@@ -491,58 +501,58 @@ function makeClicker(Button) {
         for (let i = 0; i < x.length; i++) {
             x[i].className = 'screen hidden';
         }
-        document.getElementById(Button).className = 'screen';
+        getID(Button).className = 'screen';
     };
 }
 
-document.getElementById('game').onclick = game;
-document.getElementById('create').onclick = game2;
-document.getElementById('rules').onclick = rules;
-document.getElementById('leaderboard').onclick = leaderboard;
-document.getElementById('exit').onclick = exit;
+getID('game').onclick = game;
+getID('create').onclick = game2;
+getID('rules').onclick = rules;
+getID('leaderboard').onclick = leaderboard;
+getID('exit').onclick = exit;
 
 var y = document.querySelectorAll(".return");
 for (let k = 0; k < y.length; k++) {
     y[k].onclick = main;
 }
 
-document.getElementById('decPlayers').onclick = function () {
+getID('decPlayers').onclick = function () {
     if (deck.players > 1) deck.players--;
 };
 
-document.getElementById('incPlayers').onclick = function () {
+getID('incPlayers').onclick = function () {
     if (deck.players < 5) deck.players++;
 };
 
-document.getElementById('play').onclick = function () {
+getID('play').onclick = function () {
     newGame();
 };
 
-document.getElementById('tournament').onclick = function () {
+getID('tournament').onclick = function () {
     tournament();
 };
 
-document.getElementById('hit').onclick = function () {
+getID('hit').onclick = function () {
     if (PLAYING === true) {
         Players[Players.length - 1].hit();
     }
 };
 
-document.getElementById('stand').onclick = function () {
+getID('stand').onclick = function () {
     if (PLAYING === true) {
         Players[Players.length - 1].stand();
     }
 };
 
-document.getElementById('deal').onclick = function () {
+getID('deal').onclick = function () {
     round();
 };
 
-document.getElementById('nextRound').onclick = function () {
+getID('nextRound').onclick = function () {
     round();
 };
 
-document.getElementById('10').onclick = function () {
+getID('10').onclick = function () {
     if (PLAYING === false) {
         Players[Players.length - 1].wager = 10;
 
@@ -550,11 +560,11 @@ document.getElementById('10').onclick = function () {
         for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
-        document.getElementById('10').className = 'mgame wager selected';
+        getID('10').className = 'mgame wager selected';
     }
 };
 
-document.getElementById('50').onclick = function () {
+getID('50').onclick = function () {
     if (PLAYING === false) {
         Players[Players.length - 1].wager = 50;
 
@@ -562,11 +572,11 @@ document.getElementById('50').onclick = function () {
         for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
-        document.getElementById('50').className = 'mgame wager selected';
+        getID('50').className = 'mgame wager selected';
     }
 };
 
-document.getElementById('100').onclick = function () {
+getID('100').onclick = function () {
     if (PLAYING === false) {
         Players[Players.length - 1].wager = 100;
 
@@ -574,18 +584,18 @@ document.getElementById('100').onclick = function () {
         for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
-        document.getElementById('100').className = 'mgame wager selected';
+        getID('100').className = 'mgame wager selected';
     }
 };
 
 window.setInterval(function () {
-    document.getElementById('players').innerHTML = deck.players;
+    getID('players').innerHTML = deck.players;
     display();
-
 
     if (Players[Players.length - 1].evaluate() > 21 && PLAYING === true) {
         settlement();
     }
+
 }, 100);
 
 /* DISPLAYING PLAYER MOVES
