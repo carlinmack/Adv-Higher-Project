@@ -129,6 +129,16 @@ class Dealer {
         return value;
     }
 
+    natural() {
+        if (this.cards[0][1] === 0 && this.cards[1][1] > 8) {
+            return true;
+        } else if (this.cards[0][1] > 8 && this.cards[1][1] === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     stand() {
         this.turn = false;
     }
@@ -155,19 +165,19 @@ class VirtualHand extends Dealer {
     constructor() {
         super();
         this.bank = 5000;
-        this.wagerBalance = Math.random();
+        this.wagerBalance = 0;
         this.cardBalance = 16;
     }
 
-    wager() {
-        let wager = Math.floor(Math.random() * 3);
+    wagerBalanceCalc() {
+        this.wagerBalance = Math.floor(Math.random() * 3);
     }
 
-    cardBalance() {
+    cardBalanceCalc() {
         //to get a normal (bell curve) distribution I'm adding two random numbers
         //not a statistically sound method but it should do the trick
-        var max = 18;
-        var min = 14;
+        var max = 9;
+        var min = 7;
         var x = Math.floor(Math.random() * (max - min + 1) + min);
         var y = Math.floor(Math.random() * (max - min + 1) + min);
         this.cardBalance = x + y;
@@ -209,6 +219,10 @@ class PlayerHand extends Dealer {
         //        if (splitCards != [])
         //            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
         //        END IF
+    }
+
+    stand() {
+        settlement();
     }
 
     double() {
@@ -257,6 +271,12 @@ function round() {
         Players[i].returnCards();
     }
 
+    // generates new values for wager and card balances.
+    for (let i = 1; i < playerLength - 1; i++) {
+        Players[i].wagerBalanceCalc();
+        Players[i].cardBalanceCalc();
+    }
+
     deck.deal();
 
     for (let i = 0; i < playerLength; i++) {
@@ -268,11 +288,12 @@ function round() {
     //checking for naturals, dealer can have one
     var natural = false;
     for (let n = 1; n < playerLength; n++) {
-        if (Players[n].evaluate() == 21) {
+        if (Players[n].natural()) {
             natural = true;
         }
     }
 
+    // if there is a natural then the game instantly ends, cards are evaled
     if (natural === false) {
         for (let l = 1; l < playerLength; l++) {
             // Players[l].turn = true;
@@ -284,6 +305,8 @@ function round() {
                 }
             }
         }
+    } else {
+        settlement();
     }
 
     //while (PLAYING) {
@@ -592,7 +615,7 @@ window.setInterval(function () {
     getID('players').innerHTML = deck.players;
     display();
 
-    if (Players[Players.length - 1].evaluate() > 21 && PLAYING === true) {
+    if (PLAYING === true && Players[Players.length - 1].evaluate() > 21) {
         settlement();
     }
 
