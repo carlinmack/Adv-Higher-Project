@@ -61,7 +61,7 @@ th:first-child {
     border-radius: 10px;
     padding: 7px;
     font-size: 1.3em;
-    margin: 0 8px;
+    margin: 0 4px;
 }
 
 .card {
@@ -90,10 +90,6 @@ th:first-child {
     width: 750px;
     height: 550px;
     margin: 0 auto;
-}
-
-div {
-    border: black solid 1px;
 }
 
 .return {
@@ -155,7 +151,6 @@ div {
 #loss {
     font-size: 1.3em;
     margin-top: -5px;
-    padding-top: 25px;
     text-align: center;
 }
 
