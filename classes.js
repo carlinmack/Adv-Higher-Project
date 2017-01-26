@@ -642,7 +642,9 @@ getID('100').onclick = function () {
 };
 
 window.setInterval(function () {
-    getID('players').innerHTML = deck.players;
+    if (PLAYING === false) {
+        getID('players').innerHTML = deck.players
+    }
     display();
 
     if (PLAYING === true && Players[Players.length - 1].evaluate() > 21) {
