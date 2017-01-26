@@ -320,9 +320,9 @@ function newGame() {
 
     // ensures that 'the round 1 of 10" text is not displayed
     getID("roundText").className = "hidden";
-    getID('deal').className = "inline bigGameButton";
+    getID('deal').className = "bigGameButton center";
     getID('nextRound').className = "hidden";
-    getID('selectWager').className = "inline";
+    getID('selectWager').className = "center";
 
     getID('dealer').style.marginTop = "0px";
     getID('dealer').style.marginLeft = "100px";
@@ -361,8 +361,8 @@ function newGame() {
 function settlement() {
     PLAYING = false;
 
-    getID('nextRound').className = "inline bigGameButton";
-    getID('won').className = "inline";
+    getID('nextRound').className = "center bigGameButton";
+    getID('won').className = "center";
     getID('winnings').innerHTML = Players[Players.length - 1].wager;
 
     for (let i = 0; i < Players.length; i++) {
@@ -399,7 +399,7 @@ function tournament() {
     PLAYING = false;
 
     getID('roundText').className = "inline";
-    getID('deal').className = "inline bigGameButton";
+    getID('deal').className = "center bigGameButton";
     getID('nextRound').className = "hidden";
     getID('selectWager').className = "inline";
 
