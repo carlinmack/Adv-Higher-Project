@@ -119,6 +119,11 @@ th:first-child {
     width: 175px;
 }
 
+.locked {
+    border: #ddd solid 3px;
+    color: #aaa;
+}
+
 .return,
 #hand0 {
     float: right;
@@ -139,7 +144,7 @@ th:first-child {
 }
 
 #player {
-    margin: 0 30px 4% 60px;
+    margin: 40px 30px 4% 60px;
 }
 
 #players {
