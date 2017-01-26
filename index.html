@@ -1,6 +1,8 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+    <title>Blackjack</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
@@ -53,49 +55,51 @@
         <p id="roundText" class="hidden">Round <span>1</span> of 10</p>
         <button class="return"> Return </button>
 
-        <div id='dealer' class="center"></div>
-        <div id='hand0'>
-            <div id='ai1'>
+        <div id="dealer" class="center"></div>
+        <div id="hand0">
+            <div id="ai1">
             </div>
-            <div id='ai2'>
-            </div>
-        </div>
-        <div id='hand1'>
-            <div id='ai3'>
-            </div>
-            <div id='ai4'>
+            <div id="ai2">
             </div>
         </div>
-
-        <div class="center">
-            <button class='inline bigGameButton' id='deal'>Deal</button>
-
-            <button class='inline bigGameButton' id='nextRound'>Next Round</button>
-
-            <button class='mgame action hidden' id='split'>Split</button>
-
-            <div id='player' class="inline"></div>
-
-            <button class='mgame hidden' id='double'>Double</button>
-
-            <p id="selectWager" class="inline">Select Wager</p>
+        <div id="hand1">
+            <div id="ai3">
+            </div>
+            <div id="ai4">
+            </div>
         </div>
+        <div style="clear:both"></div>
+        <div class="inline">
+            <button class="inline bigGameButton center" id="deal">Deal</button>
 
-        <br>
-        <div style="width: 750px">
+            <button class="inline bigGameButton center" id="nextRound">Next Round</button>
+            <br>
             <span class="actions">
-                <button class='mgame action' id='stand'>Stand</button>
-                <button class='mgame action' id='hit'>Hit</button>
+                <button class="mgame action" id="stand">Stand</button>
+                <button class="mgame action" id="hit">Hit</button>
             </span>
+        </div>
 
-            <p id="won" class="hidden"> Won £<span id='winnings'>50</span>!</p>
-            <p id="loss" class="hidden"> Lost £<span id='losings'>50</span></p>
+        <div class="inline" style="margin-top: -60px; width: 250px;">
+            <button class="mgame action hidden" id="split">Split</button>
+
+            <div id="player" class="inline"></div>
+
+            <button class="mgame hidden" id="double">Double</button>
+            <br>
+            <p id="won" class="hidden"> Won £<span id="winnings">50</span>!</p>
+            <p id="loss" class="hidden"> Lost £<span id="losings">50</span></p>
+            <br>
+            <p id="bank"> Bank £<span id="total">5000</span> </p>
+        </div>
+        <div class="inline">
+            <p id="selectWager" class="center">Select Wager</p>
+            <br>
             <span class="wagers">
-                <button class='mgame wager' id='10'>£10</button>
-                <button class='mgame wager selected' id='50'>£50</button>
-                <button class='mgame wager' id='100'>£100</button>
+                <button class="mgame wager" id="10">£10</button>
+                <button class="mgame wager selected" id="50">£50</button>
+                <button class="mgame wager" id="100">£100</button>
             </span>
-            <p id="bank"> Bank £<span id='total'>5000</span> </p>
         </div>
     </div>
     <!-- End Game -->
