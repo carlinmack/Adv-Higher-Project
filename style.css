@@ -24,7 +24,8 @@ button {
 }
 
 li {
-    margin: 10px 0;
+    margin: 15px 30px;
+    font-size: 1.1em;
 }
 
 table {
@@ -61,7 +62,7 @@ th:first-child {
     border-radius: 10px;
     padding: 7px;
     font-size: 1.3em;
-    margin: 0 4px;
+    margin: 0 8px;
 }
 
 .card {
@@ -139,6 +140,7 @@ th:first-child {
 }
 
 #selectWager {
+    margin-top: 320px;
     font-size: 1.5em;
     font-weight: bold;
 }
