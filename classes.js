@@ -264,6 +264,15 @@ function round() {
     getID('won').className = 'hidden';
     getID('loss').className = 'hidden';
 
+    getID('stand').className = 'mgame action';
+    getID('hit').className = 'mgame action';
+
+    var x = document.querySelectorAll(".wager");
+    for (let i = 0; i < x.length; i++) {
+        x[i].className += ' locked';
+    }
+
+
     var playerLength = Players.length - 1;
     PLAYING = true;
 
@@ -327,6 +336,11 @@ function newGame() {
     getID('dealer').style.marginTop = "0px";
     getID('dealer').style.marginLeft = "100px";
 
+    var x = document.querySelectorAll(".wager");
+    for (let i = 0; i < x.length; i++) {
+        x[i].className = 'mgame wager';
+    }
+
     // Adds AI players to the page
     var hand0 = getID('hand0');
     var hand1 = getID('hand1');
@@ -343,6 +357,9 @@ function newGame() {
 
     //adds player to array
     Players.push(new PlayerHand());
+
+    var wager = Players[Players.length - 1].wager;
+    getID(wager).className = 'mgame wager selected';
 
     deck.createDeck(6);
     deck.shuffle();
@@ -363,7 +380,17 @@ function settlement() {
 
     getID('nextRound').className = "center bigGameButton";
     getID('won').className = "center";
+    getID('stand').className += " locked";
+    getID('hit').className += " locked";
     getID('winnings').innerHTML = Players[Players.length - 1].wager;
+
+    var x = document.querySelectorAll(".wager");
+    for (let i = 0; i < x.length; i++) {
+        x[i].className = 'mgame wager';
+    }
+
+    var wager = Players[Players.length - 1].wager;
+    getID(wager).className = 'mgame wager selected';
 
     for (let i = 0; i < Players.length; i++) {
         Players[i].bank += Players[i].wager;
@@ -579,10 +606,13 @@ getID('10').onclick = function () {
     if (PLAYING === false) {
         Players[Players.length - 1].wager = 10;
 
+        //select all wagers and unselect them
         var x = document.querySelectorAll(".wager");
         for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
         }
+
+        //add the class selected to the clicked wager
         getID('10').className = 'mgame wager selected';
     }
 };
