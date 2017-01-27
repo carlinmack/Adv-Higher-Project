@@ -6,6 +6,26 @@
 /*globals localStorage:false */
 // end debug lines
 
+
+
+/*TODO
+    AI turns
+    storing and loading
+    leaderboard
+    split/double
+    red cards
+    make wager button
+
+    UI
+    add banks
+    winning tournament text
+    split cards
+    dealer card back
+    big margin for tournament/1 player
+*/
+
+
+
 class Deck {
     constructor() {
         //initialises arrays for cards
@@ -320,12 +340,12 @@ function round() {
     // if there is a natural then the game instantly ends, cards are evaled
     if (natural === false) {
         for (let l = 1; l < playerLength; l++) {
-            // Players[l].turn = true;
+            Players[l].turn = true;
             while (Players[l].turn) {
-                if (Players[l].evaluate() > Players[l].cardBalance) {
-                    //Players[l].hit();
+                if (Players[l].evaluate() < Players[l].cardBalance) {
+                    Players[l].hit();
                 } else {
-                    //Players[l].stand();
+                    Players[l].stand();
                 }
             }
         }
@@ -696,12 +716,11 @@ getID('100').onclick = function () {
 };
 
 window.setInterval(function () {
-    if (PLAYING === false) {
-        getID('players').innerHTML = deck.players;
-    }
+    getID('players').innerHTML = deck.players;
     display();
 
-    if (PLAYING === true && Players[Players.length - 1].evaluate() > 21) {
+    if (PLAYING === true &&
+        Players[Players.length - 1].evaluate() > 21) {
         settlement();
     }
 
