@@ -119,15 +119,29 @@ class Dealer {
 
     evaluate() {
         var value = 0;
+        var flag = false;
+
         for (let k = 0; k < this.cards.length; k++) {
-            if (this.cards[k][1] < 10) {
+            if (this.cards[k][1] === 0 && flag === false) {
+                value += 11;
+                flag = true;
+            }
+            //if card is less than ten, value of it is card val + 1
+            else if (this.cards[k][1] < 10) {
                 value += this.cards[k][1] + 1;
             } else {
+                //all cards above ten are valued at 10
                 value += 10;
             }
         }
-        return value;
+        if (value > 21 && flag) {
+            value -= 10;
+            return value;
+        } else {
+            return value;
+        }
     }
+
 
     natural() {
         if (this.cards[0][1] === 0 && this.cards[1][1] > 8) {
@@ -263,6 +277,7 @@ function round() {
     getID('nextRound').className = 'hidden';
     getID('won').className = 'hidden';
     getID('loss').className = 'hidden';
+    getID('tied').className = 'hidden';
 
     getID('stand').className = 'mgame action';
     getID('hit').className = 'mgame action';
@@ -296,7 +311,7 @@ function round() {
 
     //checking for naturals, dealer can have one
     var natural = false;
-    for (let n = 1; n < playerLength; n++) {
+    for (let n = 1; n < playerLength + 1; n++) {
         if (Players[n].natural()) {
             natural = true;
         }
@@ -379,22 +394,61 @@ function settlement() {
     PLAYING = false;
 
     getID('nextRound').className = "center bigGameButton";
-    getID('won').className = "center";
     getID('stand').className += " locked";
     getID('hit').className += " locked";
     getID('winnings').innerHTML = Players[Players.length - 1].wager;
+    getID('losings').innerHTML = Players[Players.length - 1].wager;
 
+    // unlocks wagers
     var x = document.querySelectorAll(".wager");
     for (let i = 0; i < x.length; i++) {
         x[i].className = 'mgame wager';
     }
 
+    // selects previosly selected wager
     var wager = Players[Players.length - 1].wager;
     getID(wager).className = 'mgame wager selected';
 
-    for (let i = 0; i < Players.length; i++) {
-        Players[i].bank += Players[i].wager;
+    // Settling
+    for (let i = 1; i < Players.length; i++) {
+        console.log('player ' + i);
+        if (Players[i].evaluate() > 21 ||
+            Players[i].evaluate() < Players[0].evaluate()) {
+            console.log('loss ');
+
+            if (i === Players.length - 1) {
+                getID('loss').className = "center";
+                getID('won').className = "hidden";
+            }
+
+            Players[i].bank -= Players[i].wager;
+        } else if (Players[i].evaluate() > Players[0].evaluate()) {
+            console.log('won ');
+
+            if (i === Players.length - 1) {
+                getID('won').className = "center";
+                getID('loss').className = "hidden";
+            }
+
+            Players[i].bank += Players[i].wager;
+        } else {
+            console.log('tied ');
+
+            if (i === Players.length - 1) {
+                getID('tied').className = "center";
+            }
+
+            // tied, do nothing
+        }
+
+
+
     }
+
+
+    //    for (let i = 0; i < Players.length; i++) {
+    //        Players[i].bank += Players[i].wager;
+    //    }
 }
 
 function loadGame() {
@@ -643,7 +697,7 @@ getID('100').onclick = function () {
 
 window.setInterval(function () {
     if (PLAYING === false) {
-        getID('players').innerHTML = deck.players
+        getID('players').innerHTML = deck.players;
     }
     display();
 
