@@ -519,9 +519,9 @@ function tournament() {
     getID('roundText').className = "inline";
     getID('deal').className = "center bigGameButton";
     getID('nextRound').className = "hidden";
-    getID('selectWager').className = "inline";
+    getID('selectWager').className = "center";
 
-    getID('dealer').style.marginTop = "-50px";
+    getID('dealer').style.marginTop = "-75px";
     getID('dealer').style.marginLeft = "100px";
 
     Players = [];
@@ -627,17 +627,16 @@ function display() {
 }
 
 ////////////////////// CLICKING //////////////////////
+getID('game').onclick = makeClicker("gameScreen");
+getID('rules').onclick = makeClicker("rulesScreen");
+getID('leaderboard').onclick = makeClicker("leaderboardScreen");
+getID('exit').onclick = makeClicker("exit");
+getID('create').onclick = makeClicker("gameScreen2");
+getID('10').onclick = makeWager("10");
+getID('50').onclick = makeWager("50");
+getID('100').onclick = makeWager("100");
 var main = makeClicker("mainScreen");
-var game = makeClicker("gameScreen");
-var rules = makeClicker("rulesScreen");
-var leaderboard = makeClicker("leaderboardScreen");
-var exit = makeClicker("exit");
 var play = makeClicker("mainGame");
-var game2 = makeClicker("gameScreen2");
-var wager10 = makeWager("10");
-var wager50 = makeWager("50");
-var wager100 = makeWager("100");
-
 
 function makeClicker(Button) {
     return function () {
@@ -665,15 +664,6 @@ function makeWager(Button) {
         }
     }
 }
-
-getID('game').onclick = game;
-getID('create').onclick = game2;
-getID('rules').onclick = rules;
-getID('leaderboard').onclick = leaderboard;
-getID('exit').onclick = exit;
-getID('10').onclick = wager10;
-getID('50').onclick = wager50;
-getID('100').onclick = wager100;
 
 var y = document.querySelectorAll(".return");
 for (let k = 0; k < y.length; k++) {
