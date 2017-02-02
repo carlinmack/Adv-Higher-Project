@@ -1,27 +1,31 @@
 // following are debug comment lines
+
 /*jshint esversion: 6 */
 /*globals console:false */
 /*globals document:false */
 /*globals window:false */
 /*globals localStorage:false */
+
 // end debug lines
 
 
 
 /*TODO
-    AI turns
-    storing and loading
-    leaderboard
-    split/double
-    red cards
-    make wager button
+    JAVASCRIPT
+        storing and loading
+        leaderboard
+        split and double methods
+        red cards
+        fix bug if always lose
+        fragments
 
     UI
-    add banks
-    winning tournament text
-    split cards
-    dealer card back
-    big margin for tournament/1 player
+        AI play stopping
+        add banks
+        winning tournament text
+        split cards
+        hide dealer first card
+        big margin for tournament/1 player
 */
 
 
@@ -116,6 +120,7 @@ class Dealer {
     constructor() {
         this.cards = [];
         this.turn = false;
+        this.cardBalance = 16;
     }
 
     display(card) {
@@ -339,7 +344,8 @@ function round() {
 
     // if there is a natural then the game instantly ends, cards are evaled
     if (natural === false) {
-        for (let l = 1; l < playerLength; l++) {
+        var showPlayers = Math.floor(playerLength / 2) + 1;
+        for (let l = 1; l < showPlayers; l++) {
             Players[l].turn = true;
             while (Players[l].turn) {
                 if (Players[l].evaluate() < Players[l].cardBalance) {
@@ -429,6 +435,17 @@ function settlement() {
     var wager = Players[Players.length - 1].wager;
     getID(wager).className = 'mgame wager selected';
 
+    // Dealer and other player moves
+    for (let l = 0; l < Players.length - 1; l++) {
+        Players[l].turn = true;
+        while (Players[l].turn) {
+            if (Players[l].evaluate() < Players[l].cardBalance) {
+                Players[l].hit();
+            } else {
+                Players[l].stand();
+            }
+        }
+    }
     // Settling
     for (let i = 1; i < Players.length; i++) {
         console.log('player ' + i);
@@ -617,6 +634,9 @@ var leaderboard = makeClicker("leaderboardScreen");
 var exit = makeClicker("exit");
 var play = makeClicker("mainGame");
 var game2 = makeClicker("gameScreen2");
+var wager10 = makeWager("10");
+var wager50 = makeWager("50");
+var wager100 = makeWager("100");
 
 
 function makeClicker(Button) {
@@ -629,11 +649,31 @@ function makeClicker(Button) {
     };
 }
 
+function makeWager(Button) {
+    return function () {
+        if (PLAYING === false) {
+            Players[Players.length - 1].wager = Button;
+
+            //select all wagers and unselect them
+            var x = document.querySelectorAll(".wager");
+            for (let i = 0; i < x.length; i++) {
+                x[i].className = 'mgame wager';
+            }
+
+            //add the class selected to the clicked wager
+            getID(Button).className = 'mgame wager selected';
+        }
+    }
+}
+
 getID('game').onclick = game;
 getID('create').onclick = game2;
 getID('rules').onclick = rules;
 getID('leaderboard').onclick = leaderboard;
 getID('exit').onclick = exit;
+getID('10').onclick = wager10;
+getID('50').onclick = wager50;
+getID('100').onclick = wager100;
 
 var y = document.querySelectorAll(".return");
 for (let k = 0; k < y.length; k++) {
@@ -676,45 +716,6 @@ getID('nextRound').onclick = function () {
     round();
 };
 
-getID('10').onclick = function () {
-    if (PLAYING === false) {
-        Players[Players.length - 1].wager = 10;
-
-        //select all wagers and unselect them
-        var x = document.querySelectorAll(".wager");
-        for (let i = 0; i < x.length; i++) {
-            x[i].className = 'mgame wager';
-        }
-
-        //add the class selected to the clicked wager
-        getID('10').className = 'mgame wager selected';
-    }
-};
-
-getID('50').onclick = function () {
-    if (PLAYING === false) {
-        Players[Players.length - 1].wager = 50;
-
-        var x = document.querySelectorAll(".wager");
-        for (let i = 0; i < x.length; i++) {
-            x[i].className = 'mgame wager';
-        }
-        getID('50').className = 'mgame wager selected';
-    }
-};
-
-getID('100').onclick = function () {
-    if (PLAYING === false) {
-        Players[Players.length - 1].wager = 100;
-
-        var x = document.querySelectorAll(".wager");
-        for (let i = 0; i < x.length; i++) {
-            x[i].className = 'mgame wager';
-        }
-        getID('100').className = 'mgame wager selected';
-    }
-};
-
 window.setInterval(function () {
     getID('players').innerHTML = deck.players;
     display();
@@ -728,7 +729,7 @@ window.setInterval(function () {
 
 /* DISPLAYING PLAYER MOVES
 
-var display = Math.floor(playerLength / 2);
+var display = Math.floor(playerLength / 2) + 1;
     for (let j = 1; j < display + 1; j++) {
     */
 
