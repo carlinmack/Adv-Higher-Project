@@ -17,6 +17,7 @@
         split and double methods
         red cards
         fix bug if always lose
+        fix players receiving cards after natural
         fragments
 
     UI
@@ -110,8 +111,8 @@ class Deck {
 
     store() {
         localStorage.availableCards = this.availableCards;
-        localStorage.cutCards = this.availableCards;
-        localStorage.spentCards = this.availableCards;
+        localStorage.cutCards = this.cutCards;
+        localStorage.spentCards = this.spentCards;
         localStorage.players = this.players;
     }
 }
@@ -193,10 +194,9 @@ class Dealer {
     }
 
     store() {
-        localStorage.availableCards = this.availableCards;
-        localStorage.cutCards = this.cutCards;
-        localStorage.spentCards = this.spentCards;
-        localStorage.players = this.players;
+        localStorage.cards = this.cards;
+        localStorage.turn = this.turn;
+        localStorage.cardBalance = this.cardBalance;
     }
 }
 
@@ -223,9 +223,11 @@ class VirtualHand extends Dealer {
     }
 
     store(i) {
-        localStorage.setItem(i + "bank", this.bank);
-        localStorage.setItem(i + "wagerBalance", this.wagerBalance);
+        localStorage.setItem(i + "cards", this.cards);
+        localStorage.setItem(i + "turn", this.turn);
         localStorage.setItem(i + "cardBalance", this.cardBalance);
+        localStorage.setItem(i + "wagerBalance", this.wagerBalance);
+        localStorage.setItem(i + "bank", this.bank);
     }
 }
 
@@ -279,6 +281,9 @@ class PlayerHand extends Dealer {
     }
 
     store(i) {
+        localStorage.setItem(i + "cards", this.cards);
+        localStorage.setItem(i + "turn", this.turn);
+        localStorage.setItem(i + "cardBalance", this.cardBalance);
         localStorage.setItem(i + "bank", this.bank);
         localStorage.setItem(i + "wager", this.wager);
         localStorage.setItem(i + "splitCards", this.splitCards);
@@ -312,7 +317,6 @@ function round() {
         x[i].className += ' locked';
     }
 
-
     var playerLength = Players.length - 1;
     PLAYING = true;
 
@@ -328,6 +332,7 @@ function round() {
 
     deck.deal();
 
+    //stores all players
     for (let i = 0; i < playerLength; i++) {
         Players[i].store(i);
     }
@@ -399,21 +404,13 @@ function newGame() {
     //adds player to array
     Players.push(new PlayerHand());
 
+    //selects default wager
     var wager = Players[Players.length - 1].wager;
     getID(wager).className = 'mgame wager selected';
 
     deck.createDeck(6);
     deck.shuffle();
     deck.cut();
-    //    while (playing) {
-    //        if (deck.availableCards.length > 4 * Players.length) {
-    //
-    //        } else {
-    //            deck.combineDecks();
-    //            deck.shuffle();
-    //            deck.cut();
-    //        }
-    //    }
 }
 
 function settlement() {
@@ -489,26 +486,73 @@ function settlement() {
 }
 
 function loadGame() {
+    // hides other screens, displays main game
+    play();
+    PLAYING = false;
+
+    // ensures that 'the round 1 of 10" text is not displayed
+    getID("roundText").className = "hidden";
+
+    getID('dealer').style.marginTop = "0px";
+    getID('dealer').style.marginLeft = "100px";
+
+    var x = document.querySelectorAll(".wager");
+    for (let i = 0; i < x.length; i++) {
+        x[i].className = 'mgame wager';
+    }
+
+    // Adds AI players to the page
+    var hand0 = getID('hand0');
+    var hand1 = getID('hand1');
+
+    // creates player array
+    Players = [];
+    //adds dealer to array
+    Players.push(new Dealer());
+
+    for (let i = 1; i < deck.players; i++) {
+        //adds AI Players to array
+        Players.push(new VirtualHand());
+    }
+
+    prompt('hey');
+    //adds player to array
+    Players.push(new PlayerHand());
+
+    deck = new Deck();
     deck.availableCards = localStorage.getItem('availableCards');
     deck.cutCards = localStorage.getItem('cutCards');
     deck.spentCards = localStorage.getItem('spentCards');
     deck.players = localStorage.getItem('players');
 
-    Players[0].cards = localStorage.getItem('0cards');
+    console.log(deck);
+
+    Players[0].cards = localStorage.getItem('cards');
+    Players[0].turn = localStorage.getItem('turn');
+    Players[0].cardBalance = localStorage.getItem('cardBalance');
 
     for (let i = 1; i < Players.length + 1; i++) {
-        Players[i].cards = localStorage.getItem(i + 'cards');
-        Players[i].bank = localStorage.getItem(i + 'bank');
-        Players[i].balance = localStorage.getItem(i + 'balance');
-
         if (i === Players.length) {
             Players[i].cards = localStorage.getItem(i + 'cards');
             Players[i].bank = localStorage.getItem(i + 'bank');
             Players[i].wager = localStorage.getItem(i + 'wager');
             Players[i].splitCards = localStorage.getItem(i + 'splitCards');
             Players[i].handle = localStorage.getItem(i + 'handle');
+        } else {
+            Players[i].cards = localStorage.getItem(i + 'cards');
+            Players[i].bank = localStorage.getItem(i + 'bank');
+            Players[i].turn = localStorage.getItem(i + 'turn');
+            Players[i].wagerBalance = localStorage.getItem(i + 'wagerBalance');
+            Players[i].cardBalance = localStorage.getItem(i + 'cardBalance');
         }
     }
+
+    console.log(Players);
+    prompt('hey');
+
+    //selects default wager
+    var wager = Players[Players.length - 1].wager;
+    getID(wager).className = 'mgame wager selected';
 }
 
 function tournament() {
@@ -682,6 +726,10 @@ getID('play').onclick = function () {
     newGame();
 };
 
+getID('previous').onclick = function () {
+    loadGame();
+};
+
 getID('tournament').onclick = function () {
     tournament();
 };
@@ -716,12 +764,6 @@ window.setInterval(function () {
     }
 
 }, 100);
-
-/* DISPLAYING PLAYER MOVES
-
-var display = Math.floor(playerLength / 2) + 1;
-    for (let j = 1; j < display + 1; j++) {
-    */
 
 /* SPLIT and DOUBLE
 
