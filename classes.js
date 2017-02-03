@@ -13,11 +13,12 @@
 /*TODO
     JAVASCRIPT
         storing and loading
+        double
+
         leaderboard
-        split and double methods
+        split method
         red cards
         fix bug if always lose
-        fix players receiving cards after natural
         fragments
 
     UI
@@ -121,7 +122,7 @@ class Dealer {
     constructor() {
         this.cards = [];
         this.turn = false;
-        this.cardBalance = 16;
+        this.cardBalance = 17;
     }
 
     display(card) {
@@ -204,12 +205,24 @@ class VirtualHand extends Dealer {
     constructor() {
         super();
         this.bank = 5000;
+        this.wager = 50;
         this.wagerBalance = 0;
         this.cardBalance = 16;
     }
 
     wagerBalanceCalc() {
         this.wagerBalance = Math.floor(Math.random() * 3);
+        switch (this.wagerBalance) {
+        case 0:
+            this.wager = 10;
+            break;
+        case 1:
+            this.wager = 50;
+            break;
+        case 2:
+            this.wager = 100;
+            break;
+        }
     }
 
     cardBalanceCalc() {
@@ -263,13 +276,12 @@ class PlayerHand extends Dealer {
     }
 
     stand() {
-        settlement();
+        settlement(true);
     }
 
     double() {
         this.hit();
         this.wager += this.wager;
-        PLAYING = false;
         //double wager
         //receive card
         //end playing
@@ -320,12 +332,18 @@ function round() {
     var playerLength = Players.length - 1;
     PLAYING = true;
 
+    if (deck.availableCards.length < Players.length * 5) {
+        deck.combineDecks();
+        deck.shuffle();
+        deck.cut();
+    }
+
     for (let i = 0; i < playerLength + 1; i++) {
         Players[i].returnCards();
     }
 
     // generates new values for wager and card balances.
-    for (let i = 1; i < playerLength - 1; i++) {
+    for (let i = 1; i < playerLength; i++) {
         Players[i].wagerBalanceCalc();
         Players[i].cardBalanceCalc();
     }
@@ -349,6 +367,7 @@ function round() {
 
     // if there is a natural then the game instantly ends, cards are evaled
     if (natural === false) {
+        //turn for players before user
         var showPlayers = Math.floor(playerLength / 2) + 1;
         for (let l = 1; l < showPlayers; l++) {
             Players[l].turn = true;
@@ -361,7 +380,7 @@ function round() {
             }
         }
     } else {
-        settlement();
+        settlement(false);
     }
 
     //while (PLAYING) {
@@ -413,14 +432,17 @@ function newGame() {
     deck.cut();
 }
 
-function settlement() {
+function settlement(noNatural) {
     PLAYING = false;
+
+    console.log(Players[0].cards)
 
     getID('nextRound').className = "center bigGameButton";
     getID('stand').className += " locked";
     getID('hit').className += " locked";
     getID('winnings').innerHTML = Players[Players.length - 1].wager;
     getID('losings').innerHTML = Players[Players.length - 1].wager;
+    getID('double').className = 'hidden';
 
     // unlocks wagers
     var x = document.querySelectorAll(".wager");
@@ -428,25 +450,40 @@ function settlement() {
         x[i].className = 'mgame wager';
     }
 
-    // selects previosly selected wager
+    // selects previously selected wager
     var wager = Players[Players.length - 1].wager;
     getID(wager).className = 'mgame wager selected';
 
-    // Dealer and other player moves
-    for (let l = 0; l < Players.length - 1; l++) {
-        Players[l].turn = true;
-        while (Players[l].turn) {
-            if (Players[l].evaluate() < Players[l].cardBalance) {
-                Players[l].hit();
-            } else {
-                Players[l].stand();
+    if (noNatural) {
+        // Dealer and other player moves
+        for (let l = 0; l < Players.length - 1; l++) {
+            Players[l].turn = true;
+            while (Players[l].turn) {
+                if (Players[l].evaluate() < Players[l].cardBalance) {
+                    Players[l].hit();
+                } else {
+                    Players[l].stand();
+                }
             }
         }
     }
     // Settling
     for (let i = 1; i < Players.length; i++) {
         console.log('player ' + i);
-        if (Players[i].evaluate() > 21 ||
+
+        //if dealer goes bust and player still standing
+        if (Players[0].evaluate > 21 && Players[i].evaluate < 21) {
+            console.log('won ');
+
+            if (i === Players.length - 1) {
+                getID('won').className = "center";
+                getID('loss').className = "hidden";
+            }
+
+            Players[i].bank += Players[i].wager;
+
+            //if player goes bust or less than 21
+        } else if (Players[i].evaluate() > 21 ||
             Players[i].evaluate() < Players[0].evaluate()) {
             console.log('loss ');
 
@@ -456,6 +493,8 @@ function settlement() {
             }
 
             Players[i].bank -= Players[i].wager;
+
+            //if player is above dealer
         } else if (Players[i].evaluate() > Players[0].evaluate()) {
             console.log('won ');
 
@@ -515,7 +554,7 @@ function loadGame() {
         Players.push(new VirtualHand());
     }
 
-    prompt('hey');
+    prompt('1');
     //adds player to array
     Players.push(new PlayerHand());
 
@@ -525,13 +564,19 @@ function loadGame() {
     deck.spentCards = localStorage.getItem('spentCards');
     deck.players = localStorage.getItem('players');
 
+    prompt('2');
+
     console.log(deck);
 
     Players[0].cards = localStorage.getItem('cards');
     Players[0].turn = localStorage.getItem('turn');
     Players[0].cardBalance = localStorage.getItem('cardBalance');
 
+    prompt('3');
+
     for (let i = 1; i < Players.length + 1; i++) {
+
+        prompt('4' + i);
         if (i === Players.length) {
             Players[i].cards = localStorage.getItem(i + 'cards');
             Players[i].bank = localStorage.getItem(i + 'bank');
@@ -548,7 +593,7 @@ function loadGame() {
     }
 
     console.log(Players);
-    prompt('hey');
+    prompt('5');
 
     //selects default wager
     var wager = Players[Players.length - 1].wager;
@@ -746,6 +791,11 @@ getID('stand').onclick = function () {
     }
 };
 
+getID('double').onclick = function () {
+    Players[Players.length - 1].double();
+    settlement(true);
+};
+
 getID('deal').onclick = function () {
     round();
 };
@@ -758,9 +808,15 @@ window.setInterval(function () {
     getID('players').innerHTML = deck.players;
     display();
 
-    if (PLAYING === true &&
-        Players[Players.length - 1].evaluate() > 21) {
-        settlement();
+    if (PLAYING === true) {
+        let user = Players[Players.length - 1];
+        if (user.evaluate() > 21) {
+            settlement(true);
+        }
+
+        if (user.evaluate() > 8 && user.evaluate() < 12) {
+            getID('double').className = "mgame inline";
+        }
     }
 
 }, 100);
