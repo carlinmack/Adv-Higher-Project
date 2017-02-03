@@ -21,6 +21,8 @@
         fix bug if always lose
         fragments
 
+        when return remove all objects?
+
     UI
         AI play stopping
         add banks
@@ -435,8 +437,6 @@ function newGame() {
 function settlement(noNatural) {
     PLAYING = false;
 
-    console.log(Players[0].cards)
-
     getID('nextRound').className = "center bigGameButton";
     getID('stand').className += " locked";
     getID('hit').className += " locked";
@@ -549,55 +549,85 @@ function loadGame() {
     //adds dealer to array
     Players.push(new Dealer());
 
+    alert('1');;
+
+    deck = new Deck();
+
+    //Function to map CSV to 2d array
+    var string = localStorage.getItem('availableCards');
+    var data = string.split(',');
+    var newArray = []
+    for (let i = 0; i < data.length; i += 2) {
+        var tempArray = []
+        tempArray.push(data[i])
+        tempArray.push(data[i + 1])
+        deck.availableCards.push(tempArray);
+    }
+
+    deck.cutCards = localStorage.getItem('cutCards');
+    deck.spentCards = localStorage.getItem('spentCards');
+    deck.players = localStorage.getItem('players');
+
     for (let i = 1; i < deck.players; i++) {
         //adds AI Players to array
         Players.push(new VirtualHand());
     }
 
-    prompt('1');
     //adds player to array
-    Players.push(new PlayerHand());
+    Players.push(new PlayerHand())
 
-    deck = new Deck();
-    deck.availableCards = localStorage.getItem('availableCards');
-    deck.cutCards = localStorage.getItem('cutCards');
-    deck.spentCards = localStorage.getItem('spentCards');
-    deck.players = localStorage.getItem('players');
+    //Function to map CSV to 2d array
+    var string = localStorage.getItem('cards');
+    var data = string.split(',');
+    var newArray = []
+    for (let i = 0; i < data.length; i += 2) {
+        var tempArray = []
+        tempArray.push(data[i])
+        tempArray.push(data[i + 1])
+        Players[0].cards.push(tempArray);
+    }
 
-    prompt('2');
-
-    console.log(deck);
-
-    Players[0].cards = localStorage.getItem('cards');
     Players[0].turn = localStorage.getItem('turn');
     Players[0].cardBalance = localStorage.getItem('cardBalance');
 
-    prompt('3');
+    console.log(Players[0].cards);
 
-    for (let i = 1; i < Players.length + 1; i++) {
+    for (let i = 1; i < deck.players; i++) {
 
-        prompt('4' + i);
-        if (i === Players.length) {
-            Players[i].cards = localStorage.getItem(i + 'cards');
-            Players[i].bank = localStorage.getItem(i + 'bank');
-            Players[i].wager = localStorage.getItem(i + 'wager');
+        //Function to map CSV to 2d array
+        var string = localStorage.getItem(i + 'cards');
+        var data = string.split(',');
+        var newArray = []
+        for (let j = 0; j < data.length; j += 2) {
+            var tempArray = []
+            tempArray.push(data[j])
+            tempArray.push(data[j + 1])
+            Players[i].cards.push(tempArray);
+        }
+
+        Players[i].bank = localStorage.getItem(i + 'bank');
+        Players[i].wager = localStorage.getItem(i + 'wager');
+
+        if (i === deck.players - 1) {
             Players[i].splitCards = localStorage.getItem(i + 'splitCards');
             Players[i].handle = localStorage.getItem(i + 'handle');
+            alert('4.player.' + i);
         } else {
-            Players[i].cards = localStorage.getItem(i + 'cards');
-            Players[i].bank = localStorage.getItem(i + 'bank');
             Players[i].turn = localStorage.getItem(i + 'turn');
             Players[i].wagerBalance = localStorage.getItem(i + 'wagerBalance');
             Players[i].cardBalance = localStorage.getItem(i + 'cardBalance');
+            alert('4.virtual.' + i);
         }
     }
 
+    alert('-5');
     console.log(Players);
-    prompt('5');
+    alert('5');
 
     //selects default wager
     var wager = Players[Players.length - 1].wager;
     getID(wager).className = 'mgame wager selected';
+    alert('6');
 }
 
 function tournament() {
