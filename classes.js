@@ -549,19 +549,17 @@ function loadGame() {
     //adds dealer to array
     Players.push(new Dealer());
 
-    alert('1');;
-
     deck = new Deck();
 
     //Function to map CSV to 2d array
-    var string = localStorage.getItem('availableCards');
-    var data = string.split(',');
-    var newArray = []
-    for (let i = 0; i < data.length; i += 2) {
-        var tempArray = []
-        tempArray.push(data[i])
-        tempArray.push(data[i + 1])
-        deck.availableCards.push(tempArray);
+    var string0 = localStorage.getItem('availableCards');
+    var data0 = string0.split(',');
+    var newArray0 = []
+    for (let i = 0; i < data0.length; i += 2) {
+        var tempArray0 = []
+        tempArray0.push(data0[i])
+        tempArray0.push(data0[i + 1])
+        deck.availableCards.push(tempArray0);
     }
 
     deck.cutCards = localStorage.getItem('cutCards');
@@ -577,14 +575,14 @@ function loadGame() {
     Players.push(new PlayerHand())
 
     //Function to map CSV to 2d array
-    var string = localStorage.getItem('cards');
-    var data = string.split(',');
-    var newArray = []
-    for (let i = 0; i < data.length; i += 2) {
-        var tempArray = []
-        tempArray.push(data[i])
-        tempArray.push(data[i + 1])
-        Players[0].cards.push(tempArray);
+    var string1 = localStorage.getItem('cards');
+    var data1 = string1.split(',');
+    var newArray1 = []
+    for (let i = 0; i < data1.length; i += 2) {
+        var tempArray1 = []
+        tempArray1.push(data1[i])
+        tempArray1.push(data1[i + 1])
+        Players[0].cards.push(tempArray1);
     }
 
     Players[0].turn = localStorage.getItem('turn');
@@ -592,8 +590,7 @@ function loadGame() {
 
     console.log(Players[0].cards);
 
-    for (let i = 1; i < deck.players; i++) {
-
+    for (let i = 1; i < 60; i++) {
         //Function to map CSV to 2d array
         var string = localStorage.getItem(i + 'cards');
         var data = string.split(',');
@@ -607,22 +604,19 @@ function loadGame() {
 
         Players[i].bank = localStorage.getItem(i + 'bank');
         Players[i].wager = localStorage.getItem(i + 'wager');
-
-        if (i === deck.players - 1) {
+        alert(i + " " + deck.players);
+        if (i == deck.players) {
+            alert("player");
             Players[i].splitCards = localStorage.getItem(i + 'splitCards');
             Players[i].handle = localStorage.getItem(i + 'handle');
-            alert('4.player.' + i);
+            alert('player');
         } else {
             Players[i].turn = localStorage.getItem(i + 'turn');
             Players[i].wagerBalance = localStorage.getItem(i + 'wagerBalance');
             Players[i].cardBalance = localStorage.getItem(i + 'cardBalance');
-            alert('4.virtual.' + i);
         }
     }
-
-    alert('-5');
     console.log(Players);
-    alert('5');
 
     //selects default wager
     var wager = Players[Players.length - 1].wager;
@@ -845,7 +839,7 @@ window.setInterval(function () {
         }
 
         if (user.evaluate() > 8 && user.evaluate() < 12) {
-            getID('double').className = "mgame inline";
+            getID('double').className = "mgame action inline";
         }
     }
 
