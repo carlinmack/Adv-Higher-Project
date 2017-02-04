@@ -15,21 +15,31 @@
         storing and loading
         double
 
+        tournament functioning rounds
         leaderboard
         split method
         red cards
         fix bug if always lose
-        fragments
 
-        when return remove all objects?
+        when new game try, catch - remove all objects?
 
     UI
-        AI play stopping
         add banks
         winning tournament text
         split cards
         hide dealer first card
         big margin for tournament/1 player
+
+    EFFICIENCY
+        simplify duplicated code
+            - map function?
+        don't update hidden things
+
+    STRETCH GOALS
+        feedback for natural
+        delay ai players turns a bit
+        fragments
+        new game button below 0
 */
 
 
@@ -470,9 +480,13 @@ function settlement(noNatural) {
     // Settling
     for (let i = 1; i < Players.length; i++) {
         console.log('player ' + i);
-
-        //if dealer goes bust and player still standing
-        if (Players[0].evaluate > 21 && Players[i].evaluate < 21) {
+        //if there is a natural
+        if (noNatural === false) {
+            if (Players[i].natural()) {
+                Players[i].bank = Players[i].bank + (Players[i].wager * 1.5);
+            }
+            //if dealer goes bust and player still standing
+        } else if (Players[0].evaluate > 21 && Players[i].evaluate < 21) {
             console.log('won ');
 
             if (i === Players.length - 1) {
@@ -554,11 +568,11 @@ function loadGame() {
     //Function to map CSV to 2d array
     var string0 = localStorage.getItem('availableCards');
     var data0 = string0.split(',');
-    var newArray0 = []
+    var newArray0 = [];
     for (let i = 0; i < data0.length; i += 2) {
-        var tempArray0 = []
-        tempArray0.push(data0[i])
-        tempArray0.push(data0[i + 1])
+        var tempArray0 = [];
+        tempArray0.push(data0[i]);
+        tempArray0.push(data0[i + 1]);
         deck.availableCards.push(tempArray0);
     }
 
@@ -572,16 +586,16 @@ function loadGame() {
     }
 
     //adds player to array
-    Players.push(new PlayerHand())
+    Players.push(new PlayerHand());
 
     //Function to map CSV to 2d array
     var string1 = localStorage.getItem('cards');
     var data1 = string1.split(',');
-    var newArray1 = []
+    var newArray1 = [];
     for (let i = 0; i < data1.length; i += 2) {
-        var tempArray1 = []
-        tempArray1.push(data1[i])
-        tempArray1.push(data1[i + 1])
+        var tempArray1 = [];
+        tempArray1.push(data1[i]);
+        tempArray1.push(data1[i + 1]);
         Players[0].cards.push(tempArray1);
     }
 
@@ -594,11 +608,11 @@ function loadGame() {
         //Function to map CSV to 2d array
         var string = localStorage.getItem(i + 'cards');
         var data = string.split(',');
-        var newArray = []
+        var newArray = [];
         for (let j = 0; j < data.length; j += 2) {
-            var tempArray = []
-            tempArray.push(data[j])
-            tempArray.push(data[j + 1])
+            var tempArray = [];
+            tempArray.push(data[j]);
+            tempArray.push(data[j + 1]);
             Players[i].cards.push(tempArray);
         }
 
