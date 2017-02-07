@@ -1,7 +1,7 @@
 // following are debug comment lines
 
 /*jshint esversion: 6 */
-/*globals console:false */
+/*globals prompt:false */
 /*globals document:false */
 /*globals window:false */
 /*globals localStorage:false */
@@ -12,6 +12,7 @@
 
 /*TODO
     JAVASCRIPT
+        IN PROGRESS
         storing and loading
         double
 
@@ -19,8 +20,9 @@
         leaderboard
         split method
         red cards
-        fix bug if always lose
 
+    BUGS
+        always losing destroys game
         when new game try, catch - remove all objects?
 
     UI
@@ -32,7 +34,6 @@
 
     EFFICIENCY
         simplify duplicated code
-            - map function?
         don't update hidden things
 
     STRETCH GOALS
@@ -40,6 +41,7 @@
         delay ai players turns a bit
         fragments
         new game button below 0
+        missing semicolon on make button
 */
 
 
@@ -336,10 +338,7 @@ function round() {
     getID('stand').className = 'mgame action';
     getID('hit').className = 'mgame action';
 
-    var x = document.querySelectorAll(".wager");
-    for (let i = 0; i < x.length; i++) {
-        x[i].className += ' locked';
-    }
+    toggleWagers(false);
 
     var playerLength = Players.length - 1;
     PLAYING = true;
@@ -413,10 +412,7 @@ function newGame() {
     getID('dealer').style.marginTop = "0px";
     getID('dealer').style.marginLeft = "100px";
 
-    var x = document.querySelectorAll(".wager");
-    for (let i = 0; i < x.length; i++) {
-        x[i].className = 'mgame wager';
-    }
+    toggleWagers(true);
 
     // Adds AI players to the page
     var hand0 = getID('hand0');
@@ -455,10 +451,7 @@ function settlement(noNatural) {
     getID('double').className = 'hidden';
 
     // unlocks wagers
-    var x = document.querySelectorAll(".wager");
-    for (let i = 0; i < x.length; i++) {
-        x[i].className = 'mgame wager';
-    }
+    toggleWagers(true);
 
     // selects previously selected wager
     var wager = Players[Players.length - 1].wager;
@@ -549,10 +542,7 @@ function loadGame() {
     getID('dealer').style.marginTop = "0px";
     getID('dealer').style.marginLeft = "100px";
 
-    var x = document.querySelectorAll(".wager");
-    for (let i = 0; i < x.length; i++) {
-        x[i].className = 'mgame wager';
-    }
+    toggleWagers(true);
 
     // Adds AI players to the page
     var hand0 = getID('hand0');
@@ -566,15 +556,7 @@ function loadGame() {
     deck = new Deck();
 
     //Function to map CSV to 2d array
-    var string0 = localStorage.getItem('availableCards');
-    var data0 = string0.split(',');
-    var newArray0 = [];
-    for (let i = 0; i < data0.length; i += 2) {
-        var tempArray0 = [];
-        tempArray0.push(data0[i]);
-        tempArray0.push(data0[i + 1]);
-        deck.availableCards.push(tempArray0);
-    }
+    csvTO2d(deck.availableCards, 'availableCards');
 
     deck.cutCards = localStorage.getItem('cutCards');
     deck.spentCards = localStorage.getItem('spentCards');
@@ -589,53 +571,63 @@ function loadGame() {
     Players.push(new PlayerHand());
 
     //Function to map CSV to 2d array
-    var string1 = localStorage.getItem('cards');
-    var data1 = string1.split(',');
-    var newArray1 = [];
-    for (let i = 0; i < data1.length; i += 2) {
-        var tempArray1 = [];
-        tempArray1.push(data1[i]);
-        tempArray1.push(data1[i + 1]);
-        Players[0].cards.push(tempArray1);
-    }
+    csvTO2d(Players[0].cards, 'cards');
 
     Players[0].turn = localStorage.getItem('turn');
     Players[0].cardBalance = localStorage.getItem('cardBalance');
 
     console.log(Players[0].cards);
 
-    for (let i = 1; i < 60; i++) {
+    for (let j = 1; j < deck.players; j++) {
         //Function to map CSV to 2d array
-        var string = localStorage.getItem(i + 'cards');
-        var data = string.split(',');
-        var newArray = [];
-        for (let j = 0; j < data.length; j += 2) {
-            var tempArray = [];
-            tempArray.push(data[j]);
-            tempArray.push(data[j + 1]);
-            Players[i].cards.push(tempArray);
-        }
+        csvTO2d(Players[j].cards, j + 'cards');
 
-        Players[i].bank = localStorage.getItem(i + 'bank');
-        Players[i].wager = localStorage.getItem(i + 'wager');
-        alert(i + " " + deck.players);
-        if (i == deck.players) {
+        Players[j].bank = localStorage.getItem(j + 'bank');
+        Players[j].wager = localStorage.getItem(j + 'wager');
+        if (j == deck.players) {
             alert("player");
-            Players[i].splitCards = localStorage.getItem(i + 'splitCards');
-            Players[i].handle = localStorage.getItem(i + 'handle');
-            alert('player');
+            Players[j].splitCards = localStorage.getItem(j + 'splitCards');
+            Players[j].handle = localStorage.getItem(j + 'handle');
         } else {
-            Players[i].turn = localStorage.getItem(i + 'turn');
-            Players[i].wagerBalance = localStorage.getItem(i + 'wagerBalance');
-            Players[i].cardBalance = localStorage.getItem(i + 'cardBalance');
+            alert(j);
+            Players[j].turn = localStorage.getItem(j + 'turn');
+            Players[j].wagerBalance = localStorage.getItem(j + 'wagerBalance');
+            Players[j].cardBalance = localStorage.getItem(j + 'cardBalance');
         }
     }
+
+    console.log(Players[0].cards);
+    alert('shit fuck');
     console.log(Players);
 
     //selects default wager
     var wager = Players[Players.length - 1].wager;
     getID(wager).className = 'mgame wager selected';
-    alert('6');
+}
+
+function csvTO2d(object, item) {
+    var string = localStorage.getItem(item);
+    var data = string.split(',');
+    var newArray = [];
+    for (let k = 0; k < data.length; k += 2) {
+        var tempArray = [];
+        tempArray.push(data[k]);
+        tempArray.push(data[k + 1]);
+        object.push(tempArray);
+    }
+}
+
+function toggleWagers(bool) {
+    var x = document.querySelectorAll(".wager");
+    if (bool) {
+        for (let i = 0; i < x.length; i++) {
+            x[i].className = 'mgame wager';
+        }
+    } else {
+        for (let i = 0; i < x.length; i++) {
+            x[i].className += ' locked';
+        }
+    }
 }
 
 function tournament() {
@@ -650,6 +642,8 @@ function tournament() {
 
     getID('dealer').style.marginTop = "-75px";
     getID('dealer').style.marginLeft = "100px";
+
+    toggleWagers(true);
 
     Players = [];
 
@@ -781,10 +775,7 @@ function makeWager(Button) {
             Players[Players.length - 1].wager = Button;
 
             //select all wagers and unselect them
-            var x = document.querySelectorAll(".wager");
-            for (let i = 0; i < x.length; i++) {
-                x[i].className = 'mgame wager';
-            }
+            toggleWagers(true);
 
             //add the class selected to the clicked wager
             getID(Button).className = 'mgame wager selected';
