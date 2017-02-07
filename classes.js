@@ -90,10 +90,13 @@ class Deck {
         return this.availableCards;
     }
 
+    //remove last 20% of cards
     cut() {
-        //remove last 20% of cards
+        // select the last 20%
         var len = this.availableCards.length / 5;
         for (let i = 0; i < len; i++) {
+            // remove them from the end of the array
+            // and add it to the front of the cut cards arry
             this.cutCards.push(this.availableCards.pop());
         }
     }
@@ -472,53 +475,54 @@ function settlement(noNatural) {
     }
     // Settling
     for (let i = 1; i < Players.length; i++) {
-        console.log('player ' + i);
+
         //if there is a natural
         if (noNatural === false) {
+            // if the player has a natural
             if (Players[i].natural()) {
                 Players[i].bank = Players[i].bank + (Players[i].wager * 1.5);
+                // if the player is the user
+                if (i === Players.length - 1) {
+                    getID('won').className = "center";
+                    getID('loss').className = "hidden";
+                }
             }
             //if dealer goes bust and player still standing
         } else if (Players[0].evaluate > 21 && Players[i].evaluate < 21) {
-            console.log('won ');
+            console.log('player ' + i + ' won ');
+            Players[i].bank += Players[i].wager;
 
             if (i === Players.length - 1) {
                 getID('won').className = "center";
                 getID('loss').className = "hidden";
             }
 
-            Players[i].bank += Players[i].wager;
-
             //if player goes bust or less than 21
-        } else if (Players[i].evaluate() > 21 ||
-            Players[i].evaluate() < Players[0].evaluate()) {
-            console.log('loss ');
+        } else if (Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate()) {
+            console.log('player ' + i + 'loss ');
+            Players[i].bank -= Players[i].wager;
 
             if (i === Players.length - 1) {
                 getID('loss').className = "center";
                 getID('won').className = "hidden";
             }
 
-            Players[i].bank -= Players[i].wager;
-
             //if player is above dealer
         } else if (Players[i].evaluate() > Players[0].evaluate()) {
-            console.log('won ');
+            console.log('player ' + i + 'won ');
+            Players[i].bank += Players[i].wager;
 
             if (i === Players.length - 1) {
                 getID('won').className = "center";
                 getID('loss').className = "hidden";
             }
-
-            Players[i].bank += Players[i].wager;
+            //if they have the same value cards
         } else {
-            console.log('tied ');
+            console.log('player ' + i + 'tied ');
 
             if (i === Players.length - 1) {
                 getID('tied').className = "center";
             }
-
-            // tied, do nothing
         }
 
 
@@ -619,6 +623,7 @@ function csvTO2d(object, item) {
 
 function toggleWagers(bool) {
     var x = document.querySelectorAll(".wager");
+
     if (bool) {
         for (let i = 0; i < x.length; i++) {
             x[i].className = 'mgame wager';
