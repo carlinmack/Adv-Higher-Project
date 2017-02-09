@@ -42,6 +42,7 @@
         fragments
         new game button below 0
         missing semicolon on make button
+        getIDs function mess
 */
 
 
@@ -224,7 +225,6 @@ class VirtualHand extends Dealer {
         this.bank = 5000;
         this.wager = 50;
         this.wagerBalance = 0;
-        this.cardBalance = 16;
     }
 
     wagerBalanceCalc() {
@@ -258,6 +258,7 @@ class VirtualHand extends Dealer {
         localStorage.setItem(i + "cardBalance", this.cardBalance);
         localStorage.setItem(i + "wagerBalance", this.wagerBalance);
         localStorage.setItem(i + "bank", this.bank);
+        localStorage.setItem(i + "wager", this.wager);
     }
 }
 
@@ -321,9 +322,7 @@ class PlayerHand extends Dealer {
 }
 
 ////////////////////// MAIN FUNCTION //////////////////////
-var deck = new Deck(),
-    Players = [],
-    PLAYING = false;
+var deck, Players, PLAYING = false;
 
 //helper function to make code easier to read
 function getID(x) {
@@ -365,7 +364,7 @@ function round() {
     deck.deal();
 
     //stores all players
-    for (let i = 0; i < playerLength; i++) {
+    for (let i = 0; i < playerLength + 1; i++) {
         Players[i].store(i);
     }
 
@@ -421,8 +420,8 @@ function newGame() {
     var hand0 = getID('hand0');
     var hand1 = getID('hand1');
 
-    // creates player array
     Players = [];
+    deck = new Deck();
     //adds dealer to array
     Players.push(new Dealer());
 
@@ -552,15 +551,19 @@ function loadGame() {
     var hand0 = getID('hand0');
     var hand1 = getID('hand1');
 
+    Players = undefined;
     // creates player array
     Players = [];
     //adds dealer to array
     Players.push(new Dealer());
 
+    deck = undefined;
     deck = new Deck();
 
     //Function to map CSV to 2d array
     csvTO2d(deck.availableCards, 'availableCards');
+
+    console.log(deck.availableCards);
 
     deck.cutCards = localStorage.getItem('cutCards');
     deck.spentCards = localStorage.getItem('spentCards');
@@ -582,25 +585,28 @@ function loadGame() {
 
     console.log(Players[0].cards);
 
-    for (let j = 1; j < deck.players; j++) {
+    for (let j = 1; j < parseInt(deck.players) + 1; j++) {
         //Function to map CSV to 2d array
         csvTO2d(Players[j].cards, j + 'cards');
 
+        console.log('players ' + j);
+        console.log(Players[j].cards);
+
         Players[j].bank = localStorage.getItem(j + 'bank');
         Players[j].wager = localStorage.getItem(j + 'wager');
+        Players[j].turn = localStorage.getItem(j + 'turn');
+        Players[j].cardBalance = localStorage.getItem(j + 'cardBalance');
+
         if (j == deck.players) {
             alert("player");
             Players[j].splitCards = localStorage.getItem(j + 'splitCards');
             Players[j].handle = localStorage.getItem(j + 'handle');
         } else {
             alert(j);
-            Players[j].turn = localStorage.getItem(j + 'turn');
             Players[j].wagerBalance = localStorage.getItem(j + 'wagerBalance');
-            Players[j].cardBalance = localStorage.getItem(j + 'cardBalance');
         }
     }
 
-    console.log(Players[0].cards);
     alert('shit fuck');
     console.log(Players);
 
@@ -615,8 +621,8 @@ function csvTO2d(object, item) {
     var newArray = [];
     for (let k = 0; k < data.length; k += 2) {
         var tempArray = [];
-        tempArray.push(data[k]);
-        tempArray.push(data[k + 1]);
+        tempArray.push(parseInt(data[k]));
+        tempArray.push(parseInt(data[k + 1]));
         object.push(tempArray);
     }
 }
@@ -854,8 +860,3 @@ window.setInterval(function () {
     }
 
 }, 100);
-
-/* SPLIT and DOUBLE
-
-change hidden to inline
-*/
