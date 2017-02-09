@@ -45,8 +45,6 @@
         getIDs function mess
 */
 
-
-
 class Deck {
     constructor() {
         //initialises arrays for cards
@@ -553,21 +551,19 @@ function loadGame() {
 
     Players = undefined;
     // creates player array
-    Players = [];
+    window.Players = [];
     //adds dealer to array
     Players.push(new Dealer());
 
     deck = undefined;
-    deck = new Deck();
+    window.deck = new Deck();
 
     //Function to map CSV to 2d array
     csvTO2d(deck.availableCards, 'availableCards');
+    csvTO2d(deck.cutCards, 'cutCards');
+    csvTO2d(deck.spentCards, 'spentCards');
 
-    console.log(deck.availableCards);
-
-    deck.cutCards = localStorage.getItem('cutCards');
-    deck.spentCards = localStorage.getItem('spentCards');
-    deck.players = localStorage.getItem('players');
+    deck.players = parseInt(localStorage.getItem('players'));
 
     for (let i = 1; i < deck.players; i++) {
         //adds AI Players to array
@@ -585,30 +581,22 @@ function loadGame() {
 
     console.log(Players[0].cards);
 
-    for (let j = 1; j < parseInt(deck.players) + 1; j++) {
+    for (let j = 1; j < deck.players + 1; j++) {
         //Function to map CSV to 2d array
         csvTO2d(Players[j].cards, j + 'cards');
 
-        console.log('players ' + j);
-        console.log(Players[j].cards);
-
-        Players[j].bank = localStorage.getItem(j + 'bank');
-        Players[j].wager = localStorage.getItem(j + 'wager');
+        Players[j].bank = parseInt(localStorage.getItem(j + 'bank'));
+        Players[j].wager = parseInt(localStorage.getItem(j + 'wager'));
         Players[j].turn = localStorage.getItem(j + 'turn');
-        Players[j].cardBalance = localStorage.getItem(j + 'cardBalance');
+        Players[j].cardBalance = parseInt(localStorage.getItem(j + 'cardBalance'));
 
         if (j == deck.players) {
-            alert("player");
             Players[j].splitCards = localStorage.getItem(j + 'splitCards');
             Players[j].handle = localStorage.getItem(j + 'handle');
         } else {
-            alert(j);
-            Players[j].wagerBalance = localStorage.getItem(j + 'wagerBalance');
+            Players[j].wagerBalance = parseInt(localStorage.getItem(j + 'wagerBalance'));
         }
     }
-
-    alert('shit fuck');
-    console.log(Players);
 
     //selects default wager
     var wager = Players[Players.length - 1].wager;
