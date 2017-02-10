@@ -644,18 +644,9 @@ function display() {
 
     // for each card in dealer hand
     var dealer = Players[0];
-    for (let Cd = 0; Cd < dealer.cards.length; Cd++) {
-        let card = dealer.cards[Cd];
-        let content = document.createTextNode(dealer.display(card));
-
-        let span = document.createElement("span");
-        span.className = "card";
-        span.appendChild(content);
-        dealerNode.appendChild(span);
-    }
 
     // for showing back of card if no cards
-    if (dealer.cards.length === 0) {
+    if (dealer.cards.length === 0 || PLAYING === true) {
         let card = [0, -1];
         let content = document.createTextNode(dealer.display(card));
         let span = document.createElement("span");
@@ -664,6 +655,16 @@ function display() {
         dealerNode.appendChild(span);
     }
 
+    let Cd = (PLAYING) ? 1 : 0;
+    for (; Cd < dealer.cards.length; Cd++) {
+        let card = dealer.cards[Cd];
+        let content = document.createTextNode(dealer.display(card));
+
+        let span = document.createElement("span");
+        span.className = "card";
+        span.appendChild(content);
+        dealerNode.appendChild(span);
+    }
 
     //clearing ai players
     for (let x = 1; x < 5; x++) {
