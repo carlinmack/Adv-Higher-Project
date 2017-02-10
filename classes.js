@@ -12,11 +12,8 @@
 
 /*TODO
     JAVASCRIPT
-        IN PROGRESS
-        storing and loading
-        double
-
         tournament functioning rounds
+
         leaderboard
         split method
         red cards
@@ -320,11 +317,38 @@ class PlayerHand extends Dealer {
 }
 
 ////////////////////// MAIN FUNCTION //////////////////////
-var deck, Players, PLAYING = false;
+var deck = new Deck(),
+    Players, PLAYING = false;
 
 //helper function to make code easier to read
 function getID(x) {
     return document.getElementById(x);
+}
+
+function csvTO2d(object, item) {
+    var string = localStorage.getItem(item);
+    var data = string.split(',');
+    var newArray = [];
+    for (let k = 0; k < data.length; k += 2) {
+        var tempArray = [];
+        tempArray.push(parseInt(data[k]));
+        tempArray.push(parseInt(data[k + 1]));
+        object.push(tempArray);
+    }
+}
+
+function toggleWagers(bool) {
+    var x = document.querySelectorAll(".wager");
+
+    if (bool) {
+        for (let i = 0; i < x.length; i++) {
+            x[i].className = 'mgame wager';
+        }
+    } else {
+        for (let i = 0; i < x.length; i++) {
+            x[i].className += ' locked';
+        }
+    }
 }
 
 function round() {
@@ -398,19 +422,10 @@ function round() {
     //}
 }
 
-function newGame() {
+function newGame(players) {
     // hides other screens, displays main game
     play();
     PLAYING = false;
-
-    // ensures that 'the round 1 of 10" text is not displayed
-    getID("roundText").className = "hidden";
-    getID('deal').className = "bigGameButton center";
-    getID('nextRound').className = "hidden";
-    getID('selectWager').className = "center";
-
-    getID('dealer').style.marginTop = "0px";
-    getID('dealer').style.marginLeft = "100px";
 
     toggleWagers(true);
 
@@ -423,7 +438,7 @@ function newGame() {
     //adds dealer to array
     Players.push(new Dealer());
 
-    for (let i = 1; i < deck.players; i++) {
+    for (let i = 1; i < players; i++) {
         //adds AI Players to array
         Players.push(new VirtualHand());
     }
@@ -603,32 +618,6 @@ function loadGame() {
     getID(wager).className = 'mgame wager selected';
 }
 
-function csvTO2d(object, item) {
-    var string = localStorage.getItem(item);
-    var data = string.split(',');
-    var newArray = [];
-    for (let k = 0; k < data.length; k += 2) {
-        var tempArray = [];
-        tempArray.push(parseInt(data[k]));
-        tempArray.push(parseInt(data[k + 1]));
-        object.push(tempArray);
-    }
-}
-
-function toggleWagers(bool) {
-    var x = document.querySelectorAll(".wager");
-
-    if (bool) {
-        for (let i = 0; i < x.length; i++) {
-            x[i].className = 'mgame wager';
-        }
-    } else {
-        for (let i = 0; i < x.length; i++) {
-            x[i].className += ' locked';
-        }
-    }
-}
-
 function tournament() {
     // hides other screens, displays main game
     play();
@@ -796,7 +785,16 @@ getID('incPlayers').onclick = function () {
 };
 
 getID('play').onclick = function () {
-    newGame();
+    // ensures that 'the round 1 of 10" text is not displayed
+    getID("roundText").className = "hidden";
+    getID('deal').className = "bigGameButton center";
+    getID('nextRound').className = "hidden";
+    getID('selectWager').className = "center";
+
+    getID('dealer').style.marginTop = "0px";
+    getID('dealer').style.marginLeft = "100px";
+
+    newGame(deck.players);
 };
 
 getID('previous').onclick = function () {
@@ -804,7 +802,17 @@ getID('previous').onclick = function () {
 };
 
 getID('tournament').onclick = function () {
-    tournament();
+    getID('roundText').className = "inline";
+    getID('deal').className = "center bigGameButton";
+    getID('nextRound').className = "hidden";
+    getID('selectWager').className = "center";
+
+    getID('dealer').style.marginTop = "-75px";
+    getID('dealer').style.marginLeft = "100px";
+
+    Players[Players.length - 1].handle = prompt('Handle: ');
+
+    newGame(1);
 };
 
 getID('hit').onclick = function () {
