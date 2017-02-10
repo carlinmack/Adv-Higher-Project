@@ -2,7 +2,7 @@ CLASS Deck:
     SET availableCards TO []
     SET cutCards TO []
     SET spentCards TO []
-    SET players TO 2
+    SET players TO 5
 
     METHOD CreateDeck(decks)
         SET decks TO decks * 4
@@ -68,6 +68,8 @@ END CLASS
     
 CLASS dealer:
     SET cards TO []
+    SET turn TO false
+    SET cardBalance TO 17
     
     METHOD display()
         FOR EACH card FROM cards
@@ -78,9 +80,9 @@ CLASS dealer:
                 3:  SET suit TO 'D'
             END SWITCH
 
-            SET cardVal TO card[1] + 1 TO HEXADECIMAL
+            SET cardVal TO cards[1] + 1 TO HEXADECIMAL
             SET temp TO "0x0001F0" & suit & cardVal
-            RETURN temp TO UNICODE;
+            RETURN temp TO UNICODE
         END FOR    
     END METHOD
     
@@ -97,7 +99,18 @@ CLASS dealer:
             END SWITCH
         END FOR
         RETURN value
+    END METHOD  
+    
+    METHOD natural()
+        IF cards[0][1] IS ZERO AND cards[1][1] IS GREATER THAN 9 
+            RETURN True
+        IF cards[0][1] GREATER THAN 9 AND cards[1][1] IS ZERO
+            RETURN True
+        ELSE
+            RETURN False
+        END IF    
     END METHOD    
+            
     
     METHOD stand()
         SET turn TO False 
@@ -122,19 +135,30 @@ END CLASS
     
 CLASS AIhand INHERITS dealer:
     SET bank TO 5000
-    SET wagerBalance TO Math.random()
-    SET cardBalance TO 16
+    SET wager TO 50
+    SET wagerBalance TO 0
     
-    METHOD wager()
-        SET wager TO Random(0,1,2)
-    END METHOD
+    METHOD wagerBalanceCalc()
+        SET wagerBalance TO RoundFloor(Math.random() * 3)
+        SWITCH (wagerBalance) {
+            CASE 0:
+                SET wager TO 10
+                break
+            CASE 1:
+                SET wager TO 50
+                break
+            CASE 2:
+                SET wager TO 100
+                break
+            }
+    }
 
     METHOD cardBalance ()
-        SET max TO 18;
-        SET min TO 14;
-        SET x TO Math.floor(Math.random() * (max - min + 1) + min);
-        SET y TO Math.floor(Math.random() * (max - min + 1) + min);
-        SET cardBalance TO x + y;
+        SET max TO 9
+        SET min TO 7
+        SET x TO Math.floor(Math.random() * (max - min + 1) + min)
+        SET y TO Math.floor(Math.random() * (max - min + 1) + min)
+        SET cardBalance TO x + y
     }
     
     METHOD store(i)
@@ -151,6 +175,7 @@ CLASS playerHand INHERITS dealer:
     SET wager TO 50
     SET splitCards TO []
     SET handle TO ""
+    SET rounds TO 0
     
     METHOD display()
         FOR EACH card FROM cards
@@ -186,6 +211,7 @@ END CLASS
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
 SET Players TO []
+SET PLAYING TO False
 
 FUNCTION Round():    
     SET playerLength TO Players.length
@@ -279,7 +305,7 @@ FUNCTION newGame():
     
     WHILE playing:
         IF Length(deck.availableCards) > 4 * Length(Players)
-            Round();
+            Round()
         ELSE
             deck.combineDecks()
             deck.shuffle()
@@ -318,7 +344,7 @@ FUNCTION tournament():
     deck.cut()
     
     FOR iterJ FROM 0 TO 10:
-        Round();
+        Round()
         iterJ++
     END FOR
     
