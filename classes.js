@@ -337,6 +337,10 @@ function csvTO2d(object, item) {
     }
 }
 
+Array.prototype.last = function () {
+    return this[this.length - 1];
+}
+
 function toggleWagers(bool) {
     var x = document.querySelectorAll(".wager");
 
@@ -352,6 +356,7 @@ function toggleWagers(bool) {
 }
 
 function round() {
+    console.log(Players.last());
     getID('deal').className = 'hidden';
     getID('selectWager').className = 'hidden';
     getID('nextRound').className = 'hidden';
@@ -449,7 +454,7 @@ function newGame(players) {
     Players.push(new PlayerHand());
 
     //selects default wager
-    var wager = Players[Players.length - 1].wager;
+    var wager = Players.last().wager;
     getID(wager).className = 'mgame wager selected';
 
     deck.createDeck(6);
@@ -463,15 +468,15 @@ function settlement(noNatural) {
     getID('nextRound').className = "center bigGameButton";
     getID('stand').className += " locked";
     getID('hit').className += " locked";
-    getID('winnings').innerHTML = Players[Players.length - 1].wager;
-    getID('losings').innerHTML = Players[Players.length - 1].wager;
+    getID('winnings').innerHTML = Players.last().wager;
+    getID('losings').innerHTML = Players.last().wager;
     getID('double').className = 'hidden';
 
     // unlocks wagers
     toggleWagers(true);
 
     // selects previously selected wager
-    var wager = Players[Players.length - 1].wager;
+    var wager = Players.last().wager;
     getID(wager).className = 'mgame wager selected';
 
     if (noNatural) {
@@ -538,9 +543,6 @@ function settlement(noNatural) {
                 getID('tied').className = "center";
             }
         }
-
-
-
     }
 
 
@@ -616,7 +618,7 @@ function loadGame() {
     }
 
     //selects default wager
-    var wager = Players[Players.length - 1].wager;
+    var wager = Players.last().wager;
     getID(wager).className = 'mgame wager selected';
 }
 
@@ -644,7 +646,7 @@ function tournament() {
     deck.shuffle();
     deck.cut();
 
-    Players[Players.length - 1].handle = prompt('Handle: ');
+    Players.last().handle = prompt('Handle: ');
 
     //for (let i = 0; i < 10; i++) {
     // idk when this happens or how but it'll be banter right
@@ -657,7 +659,7 @@ function display() {
     // for bank
 
     //for (let i = 0; i < Players.length - 1; i++) {
-    getID("total").innerHTML = Players[Players.length - 1].bank;
+    getID("total").innerHTML = Players.last().bank;
     //}
 
     // clearing dealer
@@ -725,7 +727,7 @@ function display() {
     }
 
     // for each card in their hand
-    var player = Players[Players.length - 1];
+    var player = Players.last();
     for (let Cd = 0; Cd < player.cards.length; Cd++) {
         var card = player.cards[Cd];
         var content = document.createTextNode(player.display(card));
@@ -762,7 +764,7 @@ function makeClicker(Button) {
 function makeWager(Button) {
     return function () {
         if (PLAYING === false) {
-            Players[Players.length - 1].wager = Button;
+            Players.last().wager = Button;
 
             //select all wagers and unselect them
             toggleWagers(true);
@@ -812,25 +814,25 @@ getID('tournament').onclick = function () {
     getID('dealer').style.marginTop = "-75px";
     getID('dealer').style.marginLeft = "100px";
 
-    Players[Players.length - 1].handle = prompt('Handle: ');
+    Players.last().handle = prompt('Handle: ');
 
     newGame(1);
 };
 
 getID('hit').onclick = function () {
     if (PLAYING === true) {
-        Players[Players.length - 1].hit();
+        Players.last().hit();
     }
 };
 
 getID('stand').onclick = function () {
     if (PLAYING === true) {
-        Players[Players.length - 1].stand();
+        Players.last().stand();
     }
 };
 
 getID('double').onclick = function () {
-    Players[Players.length - 1].double();
+    Players.last().double();
     settlement(true);
 };
 
@@ -847,7 +849,7 @@ window.setInterval(function () {
     display();
 
     if (PLAYING === true) {
-        let user = Players[Players.length - 1];
+        let user = Players.last();
         if (user.evaluate() > 21) {
             settlement(true);
         }
