@@ -12,7 +12,6 @@
 
 /*TODO
     JAVASCRIPT
-        tournament functioning rounds
 
         leaderboard
         split method
@@ -264,6 +263,7 @@ class PlayerHand extends Dealer {
         this.wager = 50;
         this.splitCards = [];
         this.handle = "";
+        this.rounds = 0;
     }
 
     display(card) {
@@ -355,7 +355,7 @@ function toggleWagers(bool) {
     }
 }
 
-function round() {
+function round(Tournament) {
     console.log(Players.last());
     getID('deal').className = 'hidden';
     getID('selectWager').className = 'hidden';
@@ -423,8 +423,11 @@ function round() {
         settlement(false);
     }
 
-    //while (PLAYING) {
-    //}
+    if (Tournament) {
+        Players.last().rounds += 1;
+    }
+
+    if (Players.last().rounds >= 12) tournament();
 }
 
 function newGame(players) {
@@ -551,6 +554,10 @@ function settlement(noNatural) {
     //    }
 }
 
+function tournament() {
+    prompt(':3');
+}
+
 function loadGame() {
     // hides other screens, displays main game
     play();
@@ -620,39 +627,6 @@ function loadGame() {
     //selects default wager
     var wager = Players.last().wager;
     getID(wager).className = 'mgame wager selected';
-}
-
-function tournament() {
-    // hides other screens, displays main game
-    play();
-    PLAYING = false;
-
-    getID('roundText').className = "inline";
-    getID('deal').className = "center bigGameButton";
-    getID('nextRound').className = "hidden";
-    getID('selectWager').className = "center";
-
-    getID('dealer').style.marginTop = "-75px";
-    getID('dealer').style.marginLeft = "100px";
-
-    toggleWagers(true);
-
-    Players = [];
-
-    Players.push(new Dealer()); //adds dealer to array
-    Players.push(new PlayerHand()); //adds player to array
-
-    deck.createDeck(6);
-    deck.shuffle();
-    deck.cut();
-
-    Players.last().handle = prompt('Handle: ');
-
-    //for (let i = 0; i < 10; i++) {
-    // idk when this happens or how but it'll be banter right
-    //}
-
-    //Sort leaderboard
 }
 
 function display() {
@@ -772,7 +746,7 @@ function makeWager(Button) {
             //add the class selected to the clicked wager
             getID(Button).className = 'mgame wager selected';
         }
-    }
+    };
 }
 
 var y = document.querySelectorAll(".return");
@@ -814,9 +788,11 @@ getID('tournament').onclick = function () {
     getID('dealer').style.marginTop = "-75px";
     getID('dealer').style.marginLeft = "100px";
 
-    Players.last().handle = prompt('Handle: ');
-
     newGame(1);
+
+
+    Players.last().rounds = 1;
+    Players.last().handle = prompt('Handle: ');
 };
 
 getID('hit').onclick = function () {
@@ -837,11 +813,11 @@ getID('double').onclick = function () {
 };
 
 getID('deal').onclick = function () {
-    round();
+    round(Players.last().rounds);
 };
 
 getID('nextRound').onclick = function () {
-    round();
+    round(Players.last().rounds);
 };
 
 window.setInterval(function () {
@@ -857,6 +833,10 @@ window.setInterval(function () {
         if (user.evaluate() > 8 && user.evaluate() < 12) {
             getID('double').className = "mgame action inline";
         }
+    }
+
+    if (Players.last().rounds) {
+        getID('rounds').innerHTML = Players.last().rounds - 1;
     }
 
 }, 100);
