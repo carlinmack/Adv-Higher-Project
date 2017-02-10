@@ -435,6 +435,8 @@ function newGame(players) {
 
     Players = [];
     deck = new Deck();
+
+    deck.players = players;
     //adds dealer to array
     Players.push(new Dealer());
 
