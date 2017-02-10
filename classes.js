@@ -12,7 +12,6 @@
     JAVASCRIPT
         leaderboard
         split method
-        red cards
 
     BUGS
         always losing destroys game
@@ -142,11 +141,18 @@ class Dealer {
             '2': 'C',
             '3': 'D'
         };
+
+        var colour = {
+            '0': 'black',
+            '1': 'red',
+            '2': 'red',
+            '3': 'black'
+        };
         var value = (card[0] % 4).toString();
         suit = suits[value];
         cardVal = (card[1] + 1).toString(16);
         temp = prefix.concat(suit, cardVal);
-        return String.fromCodePoint(temp);
+        return [String.fromCodePoint(temp), colour[value]];
     }
 
     evaluate() {
@@ -271,10 +277,18 @@ class PlayerHand extends Dealer {
             '2': 'C',
             '3': 'D'
         };
-        suit = suits[card[0] % 4];
+
+        var colour = {
+            '0': 'black',
+            '1': 'red',
+            '2': 'red',
+            '3': 'black'
+        };
+        var value = (card[0] % 4).toString();
+        suit = suits[value];
         cardVal = (card[1] + 1).toString(16);
         temp = prefix.concat(suit, cardVal);
-        return String.fromCodePoint(temp);
+        return [String.fromCodePoint(temp), colour[value]];
 
         //        if (splitCards != [])
         //            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
@@ -628,14 +642,15 @@ function clearNode(node) {
     }
 }
 
-function displayNode(node, player, i) {
+function displayNode(node, object, i) {
     // for each card in their hand
-    for (var Cd = i; Cd < player.cards.length; Cd++) {
-        let card = player.cards[Cd];
-        var content = document.createTextNode(player.display(card));
+    for (var Cd = i; Cd < object.cards.length; Cd++) {
+        let card = object.cards[Cd];
+        var content = document.createTextNode(object.display(card)[0]);
         var span = document.createElement("span");
         span.className = "card";
         span.appendChild(content);
+        span.style.color = object.display(card)[1];
         node.appendChild(span);
     }
 }
@@ -656,10 +671,13 @@ function display() {
     // for showing back of card if no cards
     if (dealer.cards.length === 0 || PLAYING === true) {
         let card = [0, -1];
-        let content = document.createTextNode(dealer.display(card));
+        let content = document.createTextNode(dealer.display(card)[0]);
         let span = document.createElement("span");
         span.className = "card";
         span.appendChild(content);
+        if (PLAYING) {
+            span.style.color = dealer.display(dealer.cards[0])[1];
+        }
         dealerNode.appendChild(span);
     }
 
