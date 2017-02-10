@@ -25,8 +25,6 @@
         add banks
         winning tournament text
         split cards
-        hide dealer first card
-        big margin for tournament/1 player
 
     EFFICIENCY
         simplify duplicated code
@@ -773,6 +771,23 @@ getID('play').onclick = function () {
     getID('dealer').style.marginTop = "0px";
     getID('dealer').style.marginLeft = "100px";
 
+    switch (deck.players) {
+    case 1:
+        getID('rightBlock').style.marginTop = "300px";
+        getID('selectWager').style.marginTop = "-27px";
+        break;
+    case 2:
+        getID('rightBlock').style.marginTop = "220px";
+        getID('selectWager').style.marginTop = "80px";
+        break;
+    case 3:
+    case 4:
+    case 5:
+        getID('rightBlock').style.marginTop = "100px";
+        getID('selectWager').style.marginTop = "220px";
+        break;
+    }
+
     newGame(deck.players);
 };
 
@@ -786,8 +801,10 @@ getID('tournament').onclick = function () {
     getID('nextRound').className = "hidden";
     getID('selectWager').className = "center";
 
-    getID('dealer').style.marginTop = "-75px";
+    getID('dealer').style.marginTop = "-50px";
     getID('dealer').style.marginLeft = "100px";
+    getID('rightBlock').style.marginTop = "300px"
+    getID('selectWager').style.marginTop = "-27px";
 
     newGame(1);
 
