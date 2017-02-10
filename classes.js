@@ -8,18 +8,14 @@
 
 // end debug lines
 
-
-
 /*TODO
     JAVASCRIPT
-
         leaderboard
         split method
         red cards
 
     BUGS
         always losing destroys game
-        when new game try, catch - remove all objects?
 
     UI
         add banks
@@ -35,7 +31,6 @@
         delay ai players turns a bit
         fragments
         new game button below 0
-        missing semicolon on make button
         getIDs function mess
 */
 
@@ -627,6 +622,24 @@ function loadGame() {
     getID(wager).className = 'mgame wager selected';
 }
 
+function clearNode(node) {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
+}
+
+function displayNode(node, player, i) {
+    // for each card in their hand
+    for (var Cd = i; Cd < player.cards.length; Cd++) {
+        let card = player.cards[Cd];
+        var content = document.createTextNode(player.display(card));
+        var span = document.createElement("span");
+        span.className = "card";
+        span.appendChild(content);
+        node.appendChild(span);
+    }
+}
+
 function display() {
     // for bank
 
@@ -634,14 +647,11 @@ function display() {
     getID("total").innerHTML = Players.last().bank;
     //}
 
-    // clearing dealer
     var dealerNode = getID("dealer");
-    while (dealerNode.firstChild) {
-        dealerNode.removeChild(dealerNode.firstChild);
-    }
-
-    // for each card in dealer hand
     var dealer = Players[0];
+
+    // clearing dealer
+    clearNode(dealerNode);
 
     // for showing back of card if no cards
     if (dealer.cards.length === 0 || PLAYING === true) {
@@ -653,63 +663,36 @@ function display() {
         dealerNode.appendChild(span);
     }
 
+    //if playing, set iterator to 1, otherwise 0 so all cards are displayed
     let Cd = (PLAYING) ? 1 : 0;
-    for (; Cd < dealer.cards.length; Cd++) {
-        let card = dealer.cards[Cd];
-        let content = document.createTextNode(dealer.display(card));
 
-        let span = document.createElement("span");
-        span.className = "card";
-        span.appendChild(content);
-        dealerNode.appendChild(span);
-    }
+    //displays dealer cards
+    displayNode(dealerNode, dealer, Cd);
 
     //clearing ai players
     for (let x = 1; x < 5; x++) {
-        let aiNode = getID("ai" + (x));
-        while (aiNode.firstChild) {
-            aiNode.removeChild(aiNode.firstChild);
-        }
+        clearNode(getID("ai" + x));
     }
 
     //if there are ai players
     if (Players.length > 2) {
-
         //for each player
         for (let Pl = 1; Pl < deck.players; Pl++) {
             let aiNode = getID("ai" + (Pl));
 
             // for each card in their hand
-            for (let Cd = 0; Cd < Players[Pl].cards.length; Cd++) {
-
-                let card = Players[Pl].cards[Cd];
-                let content = document.createTextNode(Players[Pl].display(card));
-
-                let span = document.createElement("span");
-                span.className = "card";
-                span.appendChild(content);
-                aiNode.appendChild(span);
-            }
+            displayNode(aiNode, Players[Pl], 0);
         }
     }
 
+    var playerNode = getID('player');
+    var player = Players.last();
+
     // clearing player
-    var playerNode = getID("player");
-    while (playerNode.firstChild) {
-        playerNode.removeChild(playerNode.firstChild);
-    }
+    clearNode(getID("player"));
 
     // for each card in their hand
-    var player = Players.last();
-    for (let Cd = 0; Cd < player.cards.length; Cd++) {
-        var card = player.cards[Cd];
-        var content = document.createTextNode(player.display(card));
-
-        var span = document.createElement("span");
-        span.className = "card";
-        span.appendChild(content);
-        playerNode.appendChild(span);
-    }
+    displayNode(playerNode, player, 0);
 }
 
 ////////////////////// CLICKING //////////////////////
@@ -803,7 +786,7 @@ getID('tournament').onclick = function () {
 
     getID('dealer').style.marginTop = "-50px";
     getID('dealer').style.marginLeft = "100px";
-    getID('rightBlock').style.marginTop = "300px"
+    getID('rightBlock').style.marginTop = "300px";
     getID('selectWager').style.marginTop = "-27px";
 
     newGame(1);
