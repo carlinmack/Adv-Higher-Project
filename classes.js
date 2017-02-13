@@ -11,11 +11,12 @@
 /*TODO
     JAVASCRIPT
         leaderboard
+		styleID
+
         split method
 
     BUGS
         always losing destroys game
-        5000100
 
     UI
         add banks
@@ -333,6 +334,10 @@ function getID(x) {
 	return document.getElementById(x);
 }
 
+function styleID(x) {
+	return document.getElementById(x).style;
+}
+
 function parse2D(object, item) {
 	var string = localStorage.getItem(item);
 	var data = string.split(',');
@@ -479,9 +484,9 @@ function settlement(noNatural) {
 	getID('nextRound').className = "center bigGameButton";
 	getID('stand').className += " locked";
 	getID('hit').className += " locked";
+	getID('double').className = 'hidden';
 	getID('winnings').innerHTML = Players.last().wager;
 	getID('losings').innerHTML = Players.last().wager;
-	getID('double').className = 'hidden';
 
 	// unlocks wagers
 	toggleWagers(true);
@@ -556,10 +561,12 @@ function settlement(noNatural) {
 		}
 	}
 
+	//stores all players
+	for (let i = 0; i < playerLength + 1; i++) {
+		Players[i].store(i);
+	}
 
-	//    for (let i = 0; i < Players.length; i++) {
-	//        Players[i].bank += Players[i].wager;
-	//    }
+	deck.store();
 }
 
 function tournament(bank, handle) {
@@ -570,8 +577,6 @@ function tournament(bank, handle) {
 	var lastRowValue = lastCell.innerHTML;
 	var value = parseInt(lastRowValue.substr(1));
 
-	console.log('x')
-
 	// if lastRval < bank
 	if (value < bank) {
 		// display well done
@@ -581,7 +586,7 @@ function tournament(bank, handle) {
 		table.deleteRow(lastRow);
 
 		//add to table
-		var newRow = table.insertRow(0);
+		var newRow = table.insertRow(0); //change 0
 
 		// Insert a cell in the row at index 0
 		var newCol1 = newRow.insertCell(0);
@@ -608,8 +613,8 @@ function loadGame() {
 	// ensures that 'the round 1 of 10" text is not displayed
 	getID("roundText").className = "hidden";
 
-	getID('dealer').style.marginTop = "0px";
-	getID('dealer').style.marginLeft = "100px";
+	styleID('dealer').marginTop = "0px";
+	styleID('dealer').marginLeft = "100px";
 
 	toggleWagers(true);
 
@@ -804,23 +809,23 @@ getID('play').onclick = function () {
 	getID('nextRound').className = "hidden";
 	getID('selectWager').className = "center";
 
-	getID('dealer').style.marginTop = "0px";
-	getID('dealer').style.marginLeft = "100px";
+	styleID('dealer').marginTop = "0px";
+	styleID('dealer').marginLeft = "100px";
 
 	switch (deck.players) {
 	case 1:
-		getID('rightBlock').style.marginTop = "300px";
-		getID('selectWager').style.marginTop = "-27px";
+		styleID('rightBlock').marginTop = "300px";
+		styleID('selectWager').marginTop = "-27px";
 		break;
 	case 2:
-		getID('rightBlock').style.marginTop = "220px";
-		getID('selectWager').style.marginTop = "80px";
+		styleID('rightBlock').marginTop = "220px";
+		styleID('selectWager').marginTop = "80px";
 		break;
 	case 3:
 	case 4:
 	case 5:
-		getID('rightBlock').style.marginTop = "100px";
-		getID('selectWager').style.marginTop = "220px";
+		styleID('rightBlock').marginTop = "100px";
+		styleID('selectWager').marginTop = "220px";
 		break;
 	}
 
@@ -837,10 +842,10 @@ getID('tournament').onclick = function () {
 	getID('nextRound').className = "hidden";
 	getID('selectWager').className = "center";
 
-	getID('dealer').style.marginTop = "-50px";
-	getID('dealer').style.marginLeft = "100px";
-	getID('rightBlock').style.marginTop = "300px";
-	getID('selectWager').style.marginTop = "-27px";
+	styleID('dealer').marginTop = "-50px";
+	styleID('dealer').marginLeft = "100px";
+	styleID('rightBlock').marginTop = "300px";
+	styleID('selectWager').marginTop = "-27px";
 
 	newGame(1);
 
@@ -892,5 +897,4 @@ window.setInterval(function () {
 	if (Players.last().rounds) {
 		getID('rounds').innerHTML = Players.last().rounds - 1;
 	}
-
 }, 100);
