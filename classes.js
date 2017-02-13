@@ -435,7 +435,7 @@ function round(Tournament) {
 		Players.last().rounds += 1;
 	}
 
-	if (Players.last().rounds >= 12) tournament(Players.last().bank);
+	if (Players.last().rounds >= 12) tournament(Players.last().bank, Players.last().handle);
 }
 
 function newGame(players) {
@@ -562,7 +562,7 @@ function settlement(noNatural) {
 	//    }
 }
 
-function tournament(bank) {
+function tournament(bank, handle) {
 	// get last row value
 	var table = getID('leaderboardTable');
 	var lastRow = table.rows[4]
@@ -584,11 +584,17 @@ function tournament(bank) {
 		var newRow = table.insertRow(0);
 
 		// Insert a cell in the row at index 0
-		var newCell = newRow.insertCell(0);
+		var newCol1 = newRow.insertCell(0);
+		var newCol2 = newRow.insertCell(1);
+		var newCol3 = newRow.insertCell(2);
 
 		// Append a text node to the cell
-		var newText = document.createTextNode('bank');
-		newCell.appendChild(newText);
+		var col1 = document.createTextNode('0');
+		var col2 = document.createTextNode(handle);
+		var col3 = document.createTextNode(bank);
+		newCol1.appendChild(col1);
+		newCol2.appendChild(col2);
+		newCol3.appendChild('£' + col3);
 	} else {
 		alert('3:');
 	}
