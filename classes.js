@@ -13,6 +13,7 @@
         leaderboard
 
         split method
+		store leaderboard and load it (:
 
     BUGS
         always losing destroys game
@@ -571,7 +572,7 @@ function settlement(noNatural) {
 function tournament(bank, handle) {
 	// get last row value
 	var table = getID('leaderboardTable');
-	var lastRow = table.rows[4];
+	var lastRow = table.rows[5];
 	var lastCellValue = lastRow.cells[2].innerHTML;
 	var value = parseInt(lastCellValue.substr(1));
 
@@ -596,15 +597,15 @@ function tournament(bank, handle) {
 				var tempVal = tempArr[i];
 				tempArr[i] = tempArr[i + 1];
 				tempArr[i + 1] = tempVal;
-				index = i + 1;
+				index = i + 2;
 			}
 		}
 
-		//remove last row - doesn't work?
-		table.deleteRow(lastRow);
+		//remove last row
+		table.deleteRow(5);
 
 		//add to table
-		var newRow = table.insertRow(index); //change 0
+		var newRow = table.insertRow(index);
 
 		// Insert a cell in the row at index 0
 		var newCol1 = newRow.insertCell(0);
@@ -614,12 +615,15 @@ function tournament(bank, handle) {
 		// Append a text node to the cell
 		var col1 = document.createTextNode(index);
 		var col2 = document.createTextNode(handle);
-		var col3 = document.createTextNode(bank);
+		var col3 = document.createTextNode('£' + bank);
 		newCol1.appendChild(col1);
 		newCol2.appendChild(col2);
-		newCol3.appendChild('£' + col3);
+		newCol3.appendChild(col3);
 
 		//need to reindex other rows
+		for (let i = index + 1; i < 6; i++) {
+			table.rows[i].cells[0].innerHTML = i;
+		}
 	} else {
 		alert('3:');
 	}
@@ -860,6 +864,7 @@ getID('tournament').onclick = function () {
 	getID('roundText').className = "inline";
 	getID('deal').className = "center bigGameButton";
 	getID('nextRound').className = "hidden";
+	getID('double').className = "hidden";
 	getID('selectWager').className = "center";
 
 	styleID('dealer').marginTop = "-50px";
