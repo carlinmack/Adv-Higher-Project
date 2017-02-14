@@ -11,12 +11,12 @@
 /*TODO
     JAVASCRIPT
         leaderboard
-		styleID
 
         split method
 
     BUGS
         always losing destroys game
+		fix double
 
     UI
         add banks
@@ -55,7 +55,7 @@ class Deck {
 					//unicode has a knight card which is not needed for the game
 				} else {
 					// adds a card to the main array
-					this.availableCards.push([j, i]);
+					this.availableCards.unshift([j, i]);
 				}
 			}
 		}
@@ -369,7 +369,6 @@ function toggleWagers(bool) {
 }
 
 function round(Tournament) {
-	console.log(Players.last());
 	getID('deal').className = 'hidden';
 	getID('selectWager').className = 'hidden';
 	getID('nextRound').className = 'hidden';
@@ -562,7 +561,7 @@ function settlement(noNatural) {
 	}
 
 	//stores all players
-	for (let i = 0; i < playerLength + 1; i++) {
+	for (let i = 0; i < Players.length + 1; i++) {
 		Players[i].store(i);
 	}
 
@@ -572,21 +571,40 @@ function settlement(noNatural) {
 function tournament(bank, handle) {
 	// get last row value
 	var table = getID('leaderboardTable');
-	var lastRow = table.rows[4]
-	var lastCell = lastRow.cells[2];
-	var lastRowValue = lastCell.innerHTML;
-	var value = parseInt(lastRowValue.substr(1));
+	var lastRow = table.rows[4];
+	var lastCellValue = lastRow.cells[2].innerHTML;
+	var value = parseInt(lastCellValue.substr(1));
 
 	// if lastRval < bank
 	if (value < bank) {
 		// display well done
 		prompt(':3');
 
-		//remove last row
+		var tempArr = [];
+		tempArr.push(bank);
+		//creating array of leaderboard to sort more easily
+		for (let i = 1; i < 6; i++) {
+			var rowVal = table.rows[i].cells[2].innerHTML;
+			var Val = parseInt(rowVal.substr(1));
+			tempArr.push(Val);
+		}
+
+		//finding position with bubble sort, only doing one pass
+		var index;
+		for (let i = 0; i < 6; i++) {
+			if (tempArr[i] < tempArr[i + 1]) {
+				var tempVal = tempArr[i];
+				tempArr[i] = tempArr[i + 1];
+				tempArr[i + 1] = tempVal;
+				index = i + 1;
+			}
+		}
+
+		//remove last row - doesn't work?
 		table.deleteRow(lastRow);
 
 		//add to table
-		var newRow = table.insertRow(0); //change 0
+		var newRow = table.insertRow(index); //change 0
 
 		// Insert a cell in the row at index 0
 		var newCol1 = newRow.insertCell(0);
@@ -594,12 +612,14 @@ function tournament(bank, handle) {
 		var newCol3 = newRow.insertCell(2);
 
 		// Append a text node to the cell
-		var col1 = document.createTextNode('0');
+		var col1 = document.createTextNode(index);
 		var col2 = document.createTextNode(handle);
 		var col3 = document.createTextNode(bank);
 		newCol1.appendChild(col1);
 		newCol2.appendChild(col2);
 		newCol3.appendChild('£' + col3);
+
+		//need to reindex other rows
 	} else {
 		alert('3:');
 	}
