@@ -10,8 +10,6 @@
 
 /*TODO
     JAVASCRIPT
-        leaderboard
-
         split method
 		store leaderboard and load it (:
 
@@ -495,8 +493,8 @@ function settlement(noNatural) {
 	var wager = Players.last().wager;
 	getID(wager).className = 'mgame wager selected';
 
+	// Dealer and other player moves
 	if (noNatural) {
-		// Dealer and other player moves
 		for (let l = 0; l < Players.length - 1; l++) {
 			Players[l].turn = true;
 			while (Players[l].turn) {
@@ -508,6 +506,7 @@ function settlement(noNatural) {
 			}
 		}
 	}
+
 	// Settling
 	for (let i = 1; i < Players.length; i++) {
 
@@ -562,7 +561,7 @@ function settlement(noNatural) {
 	}
 
 	//stores all players
-	for (let i = 0; i < Players.length + 1; i++) {
+	for (let i = 0; i < Players.length; i++) {
 		Players[i].store(i);
 	}
 
