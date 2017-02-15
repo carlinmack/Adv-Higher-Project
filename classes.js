@@ -1,10 +1,10 @@
 // following are debug comment lines
 
-/*jshint esversion: 6 */
-/*globals prompt:false */
-/*globals document:false */
-/*globals window:false */
-/*globals localStorage:false */
+/* jshint esversion: 6 */
+/* globals prompt:false */
+/* globals document:false */
+/* globals window:false */
+/* globals localStorage:false */
 
 // end debug lines
 
@@ -261,7 +261,7 @@ class PlayerHand extends Dealer {
 		super();
 		this.bank = 5000;
 		this.wager = 50;
-		this.splitCards = [];
+		this.splitCards = undefined;
 		this.handle = "";
 		this.rounds = 0;
 	}
@@ -308,8 +308,23 @@ class PlayerHand extends Dealer {
 		//end playing
 	}
 
-	splitCards() {
+	splitCardsCheck() {
+		if (this.cards[0][1] === this.cards[1][1]) {
+			return true;
+		} else if (this.cards[0][1] > 9 && this.cards[1][1] > 9) {
+			return true;
+		} else {
+			return false;
+		}
 		//create two seperate hands
+		//this.splitCards.push(this.cards.pop);
+	}
+
+	splitTheCards() {
+		//create two seperate hands
+		this.splitCards.push(this.cards.pop);
+		this.hit();
+		this.hit();
 		this.splitCards.push(this.cards.pop);
 	}
 
@@ -340,7 +355,6 @@ function styleID(x) {
 function parse2D(object, item) {
 	var string = localStorage.getItem(item);
 	var data = string.split(',');
-	var newArray = [];
 	for (let k = 0; k < data.length; k += 2) {
 		var tempArray = [];
 		tempArray.push(parseInt(data[k]));
@@ -447,10 +461,6 @@ function newGame(players) {
 	PLAYING = false;
 
 	toggleWagers(true);
-
-	// Adds AI players to the page
-	var hand0 = getID('hand0');
-	var hand1 = getID('hand1');
 
 	Players = [];
 	deck = new Deck();
@@ -641,10 +651,6 @@ function loadGame() {
 
 	toggleWagers(true);
 
-	// Adds AI players to the page
-	var hand0 = getID('hand0');
-	var hand1 = getID('hand1');
-
 	Players = undefined;
 	// creates player array
 	window.Players = [];
@@ -774,6 +780,10 @@ function display() {
 
 	// for each card in their hand
 	displayNode(playerNode, player, 0);
+
+	if (player.splitCards) {
+		displayNode(playerNode, player, 0);
+	}
 }
 
 ////////////////////// CLICKING //////////////////////
@@ -895,6 +905,10 @@ getID('double').onclick = function () {
 	settlement(true);
 };
 
+getID('split').onclick = function () {
+	Players.last().splitTheCards();
+};
+
 getID('deal').onclick = function () {
 	round(Players.last().rounds);
 };
@@ -909,12 +923,15 @@ window.setInterval(function () {
 
 	if (PLAYING === true) {
 		let user = Players.last();
-		if (user.evaluate() > 21) {
-			settlement(true);
-		}
+
+		if (user.evaluate() > 21) settlement(true);
 
 		if (user.evaluate() > 8 && user.evaluate() < 12) {
 			getID('double').className = "mgame action inline";
+		}
+
+		if (user.splitCardsCheck()) {
+			getID('split').className = "mgame action inline";
 		}
 	}
 
