@@ -25,6 +25,7 @@
     EFFICIENCY
         simplify duplicated code
         don't update hidden things
+		only check double and split once
 
     STRETCH GOALS
         feedback for natural
@@ -32,6 +33,7 @@
         fragments
         new game button below 0
         getIDs function mess
+		fix jank
 */
 
 class Deck {
@@ -261,7 +263,7 @@ class PlayerHand extends Dealer {
 		super();
 		this.bank = 5000;
 		this.wager = 50;
-		this.splitCards = undefined;
+		this.splitCards = [];
 		this.handle = "";
 		this.rounds = 0;
 	}
@@ -300,6 +302,13 @@ class PlayerHand extends Dealer {
 		settlement(true);
 	}
 
+	returnCards(cards) {
+		deck.returnCards(this.cards);
+		this.cards = [];
+		deck.returnCards(this.splitCards);
+		this.splitCards = [];
+	}
+
 	double() {
 		this.hit();
 		this.wager += this.wager;
@@ -322,10 +331,12 @@ class PlayerHand extends Dealer {
 
 	splitTheCards() {
 		//create two seperate hands
-		this.splitCards.push(this.cards.pop);
+		this.splitCards.push(this.cards.pop());
+		//hit to player hand
 		this.hit();
+		//hit to splitCards
 		this.hit();
-		this.splitCards.push(this.cards.pop);
+		this.splitCards.push(this.cards.pop());
 	}
 
 	store(i) {
@@ -711,7 +722,7 @@ function clearNode(node) {
 	}
 }
 
-function displayNode(node, object, i) {
+function displayNode(node, object, cards, i) {
 	// for each card in their hand
 	for (var Cd = i; Cd < object.cards.length; Cd++) {
 		let card = object.cards[Cd];
@@ -754,7 +765,7 @@ function display() {
 	let Cd = (PLAYING) ? 1 : 0;
 
 	//displays dealer cards
-	displayNode(dealerNode, dealer, Cd);
+	displayNode(dealerNode, dealer, 'cards', Cd);
 
 	//clearing ai players
 	for (let x = 1; x < 5; x++) {
@@ -768,7 +779,7 @@ function display() {
 			let aiNode = getID("ai" + (Pl));
 
 			// for each card in their hand
-			displayNode(aiNode, Players[Pl], 0);
+			displayNode(aiNode, Players[Pl], 'cards', 0);
 		}
 	}
 
@@ -779,10 +790,10 @@ function display() {
 	clearNode(getID("player"));
 
 	// for each card in their hand
-	displayNode(playerNode, player, 0);
+	displayNode(playerNode, player, 'cards', 0);
 
-	if (player.splitCards) {
-		displayNode(playerNode, player, 0);
+	if (player.splitCards.length > 0) {
+		displayNode(playerNode, player, 'splitCards', 0);
 	}
 }
 
@@ -926,6 +937,7 @@ window.setInterval(function () {
 
 		if (user.evaluate() > 21) settlement(true);
 
+		//if haven't checked, have a check
 		if (user.evaluate() > 8 && user.evaluate() < 12) {
 			getID('double').className = "mgame action inline";
 		}
