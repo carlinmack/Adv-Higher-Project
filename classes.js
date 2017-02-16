@@ -469,6 +469,13 @@ function round(Tournament) {
 function newGame(players) {
 	// hides other screens, displays main game
 	play();
+
+	getID('deal').className = "bigGameButton center";
+	getID('nextRound').className = "hidden";
+	getID('selectWager').className = "center";
+	getID('double').className = "hidden";
+	getID('split').className = "hidden";
+
 	PLAYING = false;
 
 	toggleWagers(true);
@@ -861,11 +868,6 @@ getID('incPlayers').onclick = function () {
 getID('play').onclick = function () {
 	// ensures that 'the round 1 of 10" text is not displayed
 	getID("roundText").className = "hidden";
-	getID('deal').className = "bigGameButton center";
-	getID('nextRound').className = "hidden";
-	getID('selectWager').className = "center";
-	getID('double').className = "hidden";
-	getID('split').className = "hidden";
 
 	styleID('dealer').marginTop = "0px";
 	styleID('dealer').marginLeft = "100px";
@@ -896,11 +898,6 @@ getID('previous').onclick = function () {
 
 getID('tournament').onclick = function () {
 	getID('roundText').className = "inline";
-	getID('deal').className = "center bigGameButton";
-	getID('nextRound').className = "hidden";
-	getID('double').className = "hidden";
-	getID('split').className = "hidden";
-	getID('selectWager').className = "center";
 
 	styleID('dealer').marginTop = "-50px";
 	styleID('dealer').marginLeft = "100px";
@@ -908,7 +905,6 @@ getID('tournament').onclick = function () {
 	styleID('selectWager').marginTop = "-27px";
 
 	newGame(1);
-
 
 	Players.last().rounds = 1;
 	Players.last().handle = prompt('Handle: ');
