@@ -501,9 +501,11 @@ function settlement(noNatural) {
 	PLAYING = false;
 
 	getID('nextRound').className = "center bigGameButton";
+	getID('player').className = 'center';
 	getID('stand').className += " locked";
 	getID('hit').className += " locked";
 	getID('double').className = 'hidden';
+	getID('split').className = 'hidden';
 	getID('winnings').innerHTML = Players.last().wager;
 	getID('losings').innerHTML = Players.last().wager;
 
@@ -649,6 +651,11 @@ function tournament(bank, handle) {
 	}
 }
 
+function splitCards() {
+	styleID('splitCards').marginLeft = '50px';
+	getID('split').className = 'hidden';
+	getID('player').className = '';
+}
 function loadGame() {
 	// hides other screens, displays main game
 	play();
@@ -787,13 +794,18 @@ function display() {
 	var player = Players.last();
 
 	// clearing player
-	clearNode(getID("player"));
+	clearNode(playerNode);
 
 	// for each card in their hand
 	displayNode(playerNode, player, 'cards', 0);
 
+	var splitNode = getID('splitCards');
+
+	// clearing player
+	clearNode(splitNode);
+
 	if (player.splitCards.length > 0) {
-		displayNode(playerNode, player, 'splitCards', 0);
+		displayNode(splitNode, player, 'splitCards', 0);
 	}
 }
 
@@ -852,6 +864,8 @@ getID('play').onclick = function () {
 	getID('deal').className = "bigGameButton center";
 	getID('nextRound').className = "hidden";
 	getID('selectWager').className = "center";
+	getID('double').className = "hidden";
+	getID('split').className = "hidden";
 
 	styleID('dealer').marginTop = "0px";
 	styleID('dealer').marginLeft = "100px";
@@ -885,6 +899,7 @@ getID('tournament').onclick = function () {
 	getID('deal').className = "center bigGameButton";
 	getID('nextRound').className = "hidden";
 	getID('double').className = "hidden";
+	getID('split').className = "hidden";
 	getID('selectWager').className = "center";
 
 	styleID('dealer').marginTop = "-50px";
