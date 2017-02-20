@@ -215,6 +215,23 @@ SET PLAYING TO False
 
 FUNCTION Round():    
     SET playerLength TO Players.length
+	SET PLAYING TO True
+	
+	IF Length(deck.availableCards) < Length(Players) * 5 DO
+		deck.combineDecks()
+		deck.shuffle()
+		deck.cut()
+	END IF
+	
+	FOR iterX FROM 0 TO playerLength DO 
+		Players[iterX].returnCards()
+	END FOR
+	
+	FOR iterY FROM 1 TO playerLength-1 DO 
+		Players[iterY].wagerBalanceCalc()
+		Players[iterY].cardBalanceCalc()
+	END FOR
+		
     deck.deal()
     
     FOR EACH iterG FROM Players DO
@@ -223,22 +240,19 @@ FUNCTION Round():
     
     deck.store()
     
-    SET display TO ROUND DOWN (LENGTH Players / 2)
-    FOR iterE FROM 1 TO display + 1 DO
-        Players[iterE].display()
-    END FOR
-    
     # checking for naturals, dealer can have one
     SET natural TO False
-    FOR iter5 FROM 1 TO Length(Players)
+    FOR iter5 FROM 1 TO playerLength
         IF Players[iter5].evaluate() = 21
             SET natural TO True
         END IF
     END FOR
     
-    IF natural != True
-        FOR iterD FROM 1 TO Length(Players) - 1
-            WHILE Players[iterD].turn IS True Then
+    IF natural == False
+		SET display TO ROUND DOWN (players / 2)
+		FOR iterE FROM 1 TO display + 1 DO
+			SET Players[iterD].turn = True
+			WHILE Players[iterD].turn IS True Then
                 IF Players[iterD].evaluate() > Players[iterD].balance THEN
                     Players[iterD].hit()
                 ELSE
@@ -246,20 +260,8 @@ FUNCTION Round():
                 END IF
             END WHILE
         END FOR
-
-        SET turn TO True
-        WHILE turn
-            SWITCH input:
-                hit:
-                    Player[length(Player) - 1].hit()
-                stand:
-                    Player[length(Player) - 1].stand()
-                double:
-                    Player[length(Player) - 1].double()
-                split:
-                    Player[length(Player) - 1].split()
-            END SWITCH
-        END WHILE
+	ELSE
+		settlement(false, true)
     END IF
     
     FOR iterF FROM 1 TO Length(Players) DO
