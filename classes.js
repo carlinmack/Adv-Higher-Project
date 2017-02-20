@@ -10,6 +10,7 @@
 
 /*TODO
     JAVASCRIPT
+	pointer events???
         split method
 		store leaderboard and load it (:
 
@@ -42,6 +43,7 @@ class Deck {
 		this.availableCards = [];
 		this.cutCards = [];
 		this.spentCards = [];
+		//initialises default number of players
 		this.players = 5;
 	}
 
@@ -55,7 +57,7 @@ class Deck {
 				if (i === 11) {
 					//unicode has a knight card which is not needed for the game
 				} else {
-					// adds a card to the main array
+					// adds a card to the front of the main array
 					this.availableCards.unshift([j, i]);
 				}
 			}
@@ -94,21 +96,24 @@ class Deck {
 	deal() {
 		//deal 2 cards to each player and the dealer
 		for (let i = 0; i < Players.length; i++) {
-			Players[i].cards.push(this.availableCards.pop());
-			Players[i].cards.push(this.availableCards.pop());
+			//adds the last two cards of the deck to the front of the Players cards
+			Players[i].cards.unshift(this.availableCards.pop());
+			Players[i].cards.unshift(this.availableCards.pop());
 		}
 	}
 
 	hit() {
+		//returns the last card of the deck and removes it from the array
 		return this.availableCards.pop();
 	}
 
 	returnCards(cards) {
+		// add the cards from the player to the end of the array
 		this.spentCards.push(cards);
 	}
 
 	combineDecks() {
-		// when availableCards is empty, push cut and spent cards to it
+		// add cut and spent cards to the end of available cards
 		for (let i = 0; i < this.cutCards.length; i++) {
 			this.availableCards.push(this.cutCards[i]);
 		}
@@ -118,6 +123,7 @@ class Deck {
 	}
 
 	store() {
+		//store all object parameters
 		localStorage.availableCards = this.availableCards;
 		localStorage.cutCards = this.cutCards;
 		localStorage.spentCards = this.spentCards;
@@ -320,7 +326,7 @@ class PlayerHand extends Dealer {
 	splitCardsCheck() {
 		if (this.cards[0][1] === this.cards[1][1]) {
 			return true;
-		} else if (this.cards[0][1] > 9 && this.cards[1][1] > 9) {
+		} else if (this.cards[0][1] > 8 && this.cards[1][1] > 8) {
 			return true;
 		} else {
 			return false;
@@ -508,7 +514,7 @@ function settlement(noNatural) {
 	PLAYING = false;
 
 	getID('nextRound').className = "center bigGameButton";
-	getID('player').className = 'center';
+	getID('player').className = 'inline';
 	getID('stand').className += " locked";
 	getID('hit').className += " locked";
 	getID('double').className = 'hidden';
@@ -663,6 +669,7 @@ function splitCards() {
 	getID('split').className = 'hidden';
 	getID('player').className = '';
 }
+
 function loadGame() {
 	// hides other screens, displays main game
 	play();
