@@ -533,8 +533,14 @@ function settlement(noNatural, noDouble) {
 		}
 	}
 
+	if (noNatural === false) {
+		if (Players.last().natural()) {
+			Players.last().wager = Players.last().wager * 1.5;
+		}
+	}
+
 	if (noDouble === false) {
-		Players.last().wager = Players.last().wager + Players.last().wager;
+		Players.last().wager += Players.last().wager;
 	}
 
 	getID('winnings').innerHTML = Players.last().wager;
@@ -547,12 +553,14 @@ function settlement(noNatural, noDouble) {
 		if (noNatural === false) {
 			// if the player has a natural
 			if (Players[i].natural()) {
-				Players[i].bank = Players[i].bank + (Players[i].wager * 1.5);
 				// if the player is the user
 				if (i === Players.length - 1) {
+					Players[i].bank += Players[i].wager;
 					getID('won').className = "center";
 					getID('loss').className = "hidden";
+					continue;
 				}
+				Players[i].bank += Players[i].wager * 1.5;
 			}
 			//if dealer goes bust and player still standing
 		} else if (Players[0].evaluate() > 21 && Players[i].evaluate() < 21) {
@@ -590,6 +598,12 @@ function settlement(noNatural, noDouble) {
 			if (i === Players.length - 1) {
 				getID('tied').className = "center";
 			}
+		}
+	}
+
+	if (noNatural === false) {
+		if (Players.last().natural()) {
+			Players.last().wager = Players.last().wager / 1.5;
 		}
 	}
 
