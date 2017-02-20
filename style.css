@@ -66,7 +66,6 @@ th:first-child {
 }
 
 .card {
-    background-position: 90% 90%;
     background-color: white;
     font-size: 5.5em;
     margin-left: -30px;
@@ -144,10 +143,6 @@ th:first-child {
     font-weight: bold;
 }
 
-#player {
-    margin: 40px 30px 4% 60px;
-}
-
 #players {
     margin: 0 10%;
 }
@@ -166,4 +161,33 @@ th:first-child {
 
 #hand1 {
     margin-left: 120px;
+}
+
+#player {
+    position: relative;
+    margin-left: 30px;
+}
+
+#splitCards {
+    position: relative;
+    left: 50px;
+}
+
+#double {
+    position: relative;
+    left: 50px;
+    margin-right: -80px;
+}
+
+#split {
+    position: relative;
+    right: 40px;
+    margin-left: -90px;
+}
+
+#middleBlock {
+	margin: 0 -150px 0 -120px;
+	width: 500px;
+	z-index: -1;
+	position: relative;
 }
