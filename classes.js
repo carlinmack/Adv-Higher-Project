@@ -10,7 +10,7 @@
 
 /*TODO
     JAVASCRIPT
-	pointer events???
+		pointer events stuff
         split method
 		store leaderboard and load it (:
 
@@ -19,13 +19,13 @@
 		fix double
 
     UI
+        winning losing tournament text
         add banks
-        winning tournament text
-        split cards
 
     EFFICIENCY
         simplify duplicated code
         don't update hidden things
+		only update cards when they need to
 		only check double and split once
 
     STRETCH GOALS
@@ -107,18 +107,18 @@ class Deck {
 		return this.availableCards.pop();
 	}
 
-	returnCards(cards) {
+	returnCards(card) {
 		// add the cards from the player to the end of the array
-		this.spentCards.push(cards);
+		this.spentCards.push(card);
 	}
 
 	combineDecks() {
 		// add cut and spent cards to the end of available cards
 		for (let i = 0; i < this.cutCards.length; i++) {
-			this.availableCards.push(this.cutCards[i]);
+			this.availableCards.push(this.cutCards[i].pop());
 		}
 		for (let j = 0; j < this.spentCards.length; j++) {
-			this.availableCards.push(this.spentCards[j]);
+			this.availableCards.push(this.spentCards[j].pop());
 		}
 	}
 
@@ -210,7 +210,9 @@ class Dealer {
 	}
 
 	returnCards(cards) {
-		deck.returnCards(this.cards);
+		for (var i = 0; i < this.cards.length; i++) {
+			deck.returnCards(this.cards.pop());
+		}
 		this.cards = [];
 	}
 
@@ -309,9 +311,13 @@ class PlayerHand extends Dealer {
 	}
 
 	returnCards(cards) {
-		deck.returnCards(this.cards);
+		for (var i = 0; i < this.cards.length; i++) {
+			deck.returnCards(this.cards.pop());
+		}
 		this.cards = [];
-		deck.returnCards(this.splitCards);
+		for (var f = 0; f < this.splitCards.length; f++) {
+			deck.returnCards(this.splitCards.pop());
+		}
 		this.splitCards = [];
 	}
 
@@ -374,7 +380,7 @@ function parse2D(object, item) {
 
 Array.prototype.last = function () {
 	return this[this.length - 1];
-}
+};
 
 function toggleWagers(bool) {
 	var x = document.querySelectorAll(".wager");
@@ -389,6 +395,8 @@ function toggleWagers(bool) {
 		}
 	}
 }
+
+//end helper function
 
 function round(Tournament) {
 	getID('deal').className = 'hidden';
@@ -408,8 +416,10 @@ function round(Tournament) {
 
 	if (deck.availableCards.length < Players.length * 5) {
 		deck.combineDecks();
+		alert('time to break?');
 		deck.shuffle();
 		deck.cut();
+
 	}
 
 	for (let i = 0; i < playerLength + 1; i++) {
@@ -564,7 +574,6 @@ function settlement(noNatural, noDouble) {
 			}
 			//if dealer goes bust and player still standing
 		} else if (Players[0].evaluate() > 21 && Players[i].evaluate() < 21) {
-			console.log('player ' + i + ' won ');
 			Players[i].bank += Players[i].wager;
 
 			if (i === Players.length - 1) {
@@ -574,7 +583,6 @@ function settlement(noNatural, noDouble) {
 
 			//if player goes bust or less than 21
 		} else if (Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate()) {
-			console.log('player ' + i + 'loss ');
 			Players[i].bank -= Players[i].wager;
 
 			if (i === Players.length - 1) {
@@ -584,7 +592,6 @@ function settlement(noNatural, noDouble) {
 
 			//if player is above dealer
 		} else if (Players[i].evaluate() > Players[0].evaluate()) {
-			console.log('player ' + i + 'won ');
 			Players[i].bank += Players[i].wager;
 
 			if (i === Players.length - 1) {
@@ -593,8 +600,6 @@ function settlement(noNatural, noDouble) {
 			}
 			//if they have the same value cards
 		} else {
-			console.log('player ' + i + 'tied ');
-
 			if (i === Players.length - 1) {
 				getID('tied').className = "center";
 			}
@@ -728,8 +733,6 @@ function loadGame() {
 	Players[0].turn = localStorage.getItem('turn');
 	Players[0].cardBalance = localStorage.getItem('cardBalance');
 
-	console.log(Players[0].cards);
-
 	for (let j = 1; j < deck.players + 1; j++) {
 		//Function to map CSV to 2d array
 		parse2D(Players[j].cards, j + 'cards');
@@ -834,7 +837,15 @@ function display() {
 	clearNode(splitNode);
 
 	if (player.splitCards.length > 0) {
-		displayNode(splitNode, player, 'splitCards', 0);
+		for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
+			let card = Players.last().splitCards[Cd];
+			var content = document.createTextNode(Players.last().display(card)[0]);
+			var span = document.createElement("span");
+			span.className = "card";
+			span.appendChild(content);
+			span.style.color = Players.last().display(card)[1];
+			getID('splitCards').appendChild(span);
+		}
 	}
 }
 
@@ -951,6 +962,7 @@ getID('double').onclick = function () {
 
 getID('split').onclick = function () {
 	Players.last().splitTheCards();
+	getID('split').className = 'hidden';
 };
 
 getID('deal').onclick = function () {
