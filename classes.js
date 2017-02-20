@@ -305,7 +305,7 @@ class PlayerHand extends Dealer {
 	}
 
 	stand() {
-		settlement(true);
+		settlement(true, true);
 	}
 
 	returnCards(cards) {
@@ -313,14 +313,6 @@ class PlayerHand extends Dealer {
 		this.cards = [];
 		deck.returnCards(this.splitCards);
 		this.splitCards = [];
-	}
-
-	double() {
-		this.hit();
-		this.wager += this.wager;
-		//double wager
-		//receive card
-		//end playing
 	}
 
 	splitCardsCheck() {
@@ -462,7 +454,7 @@ function round(Tournament) {
 			}
 		}
 	} else {
-		settlement(false);
+		settlement(false, true);
 	}
 
 	if (Tournament) {
@@ -510,7 +502,7 @@ function newGame(players) {
 	deck.cut();
 }
 
-function settlement(noNatural) {
+function settlement(noNatural, noDouble) {
 	PLAYING = false;
 
 	getID('nextRound').className = "center bigGameButton";
@@ -519,8 +511,6 @@ function settlement(noNatural) {
 	getID('hit').className += " locked";
 	getID('double').className = 'hidden';
 	getID('split').className = 'hidden';
-	getID('winnings').innerHTML = Players.last().wager;
-	getID('losings').innerHTML = Players.last().wager;
 
 	// unlocks wagers
 	toggleWagers(true);
@@ -529,7 +519,7 @@ function settlement(noNatural) {
 	var wager = Players.last().wager;
 	getID(wager).className = 'mgame wager selected';
 
-	// Dealer and other player moves
+	// Dealer and other player moves if there isn't a natural
 	if (noNatural) {
 		for (let l = 0; l < Players.length - 1; l++) {
 			Players[l].turn = true;
@@ -542,6 +532,13 @@ function settlement(noNatural) {
 			}
 		}
 	}
+
+	if (noDouble === false) {
+		Players.last().wager = Players.last().wager + Players.last().wager;
+	}
+
+	getID('winnings').innerHTML = Players.last().wager;
+	getID('losings').innerHTML = Players.last().wager;
 
 	// Settling
 	for (let i = 1; i < Players.length; i++) {
@@ -594,6 +591,10 @@ function settlement(noNatural) {
 				getID('tied').className = "center";
 			}
 		}
+	}
+
+	if (noDouble === false) {
+		Players.last().wager = Players.last().wager / 2;
 	}
 
 	//stores all players
@@ -930,8 +931,8 @@ getID('stand').onclick = function () {
 };
 
 getID('double').onclick = function () {
-	Players.last().double();
-	settlement(true);
+	Players.last().hit();
+	settlement(true, false);
 };
 
 getID('split').onclick = function () {
@@ -953,7 +954,7 @@ window.setInterval(function () {
 	if (PLAYING === true) {
 		let user = Players.last();
 
-		if (user.evaluate() > 21) settlement(true);
+		if (user.evaluate() > 21) settlement(true, true);
 
 		//if haven't checked, have a check
 		if (user.evaluate() > 8 && user.evaluate() < 12) {
