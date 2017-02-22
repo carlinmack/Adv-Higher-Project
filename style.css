@@ -86,7 +86,6 @@ th:first-child {
 }
 
 .screen {
-    border: black solid 1px;
     width: 750px;
     height: 550px;
     margin: 0 auto;
@@ -188,6 +187,6 @@ th:first-child {
 #middleBlock {
 	margin: 0 -150px 0 -120px;
 	width: 500px;
-	z-index: -1;
+	z-index: 1;
 	position: relative;
 }
