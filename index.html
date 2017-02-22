@@ -2,177 +2,178 @@
 <html>
 
 <head>
-    <title>Blackjack</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+	<title>Blackjack</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-    <!-- Main Menu -->
-    <div id="mainScreen" class="screen">
-        <!-- Main Menu -->
-        <h1> Blackjack </h1>
-        <div class="center">
-            <button class="menu" id="game"> Game </button>
-            <button class="menu" id="rules"> Rules </button>
-        </div>
-        <div class="center">
-            <button class="menu" id="leaderboard"> Leaderboard </button>
-            <button class="menu" id="exit"> Exit </button>
-        </div>
+	<!-- Main Menu -->
+	<div id="mainScreen" class="screen">
+		<!-- Main Menu -->
+		<h1> Blackjack </h1>
+		<div class="center">
+			<button class="menu" id="game"> Game </button>
+			<button class="menu" id="rules"> Rules </button>
+		</div>
+		<div class="center">
+			<button class="menu" id="leaderboard"> Leaderboard </button>
+			<button class="menu" id="exit"> Exit </button>
+		</div>
 
-    </div>
-    <!-- End Main Menu -->
+	</div>
+	<!-- End Main Menu -->
 
-    <!-- Game -->
-    <div id="gameScreen" class="screen hidden">
-        <button class="return"> Return </button>
-        <h2> Blackjack </h2>
-        <button class="menu game center" id="create"> Create New Game </button>
-        <br>
-        <button class="menu game center" id="previous"> Enter Previous </button>
-        <br>
-        <button class="menu game center" id="tournament"> Tournament </button>
+	<!-- Game -->
+	<div id="gameScreen" class="screen hidden">
+		<button class="return"> Return </button>
+		<h2> Blackjack </h2>
+		<button class="menu game center" id="create"> Create New Game </button>
+		<br>
+		<button class="menu game center" id="previous"> Enter Previous </button>
+		<br>
+		<button class="menu game center" id="tournament"> Tournament </button>
 
-    </div>
+	</div>
 
-    <div id="gameScreen2" class="screen hidden">
-        <button class="return"> Return </button>
-        <h2> Blackjack </h2>
+	<div id="gameScreen2" class="screen hidden">
+		<button class="return"> Return </button>
+		<h2> Blackjack </h2>
 
-        <p class="center menu game" style="margin-top: 50px"> Number of Players </p>
-        <br>
-        <p class="center menu">
-            <span id="decPlayers"> ⯇ </span>
-            <span id="players"> 5 </span>
-            <span id="incPlayers"> ⯈ </span>
-        </p>
-        <br>
-        <button class="menu game center" id="play"> Play </button>
+		<p class="center menu game" style="margin-top: 50px"> Number of Players </p>
+		<br>
+		<p class="center menu">
+			<span id="decPlayers"> ⯇ </span>
+			<span id="players"> 5 </span>
+			<span id="incPlayers"> ⯈ </span>
+		</p>
+		<br>
+		<button class="menu game center" id="play"> Play </button>
 
-    </div>
+	</div>
 
-    <div id="mainGame" class="screen hidden">
-        <p id="roundText" class="hidden">Round <span id='rounds'>1</span> of 10</p>
-        <button class="return"> Return </button>
+	<div id="mainGame" class="screen hidden">
+		<p id="roundText" class="hidden">Round <span id='rounds'>1</span> of 10</p>
+		<button class="return"> Return </button>
 
-        <div id="dealer" class="center"></div>
-        <div id="hand0">
-            <div id="ai1">
-            </div>
-            <div id="ai2">
-            </div>
-        </div>
-        <div id="hand1">
-            <div id="ai3">
-            </div>
-            <div id="ai4">
-            </div>
-        </div>
-        <div style="clear: both; padding-left: 20px;">
-            <div class="inline">
-                <button class="inline bigGameButton center" id="deal">Deal</button>
+		<div id="dealer" class="center"></div>
+		<div id="hand0">
+			<div id="ai1">
+			</div>
+			<div id="ai2">
+			</div>
+		</div>
+		<div id="hand1">
+			<div id="ai3">
+			</div>
+			<div id="ai4">
+			</div>
+		</div>
+		<div style="clear: both; padding-left: 20px;" class="center">
+			<div class="inline" style="z-index: 1;">
+				<button class="inline bigGameButton center" id="deal">Deal</button>
 
-                <button class="inline bigGameButton center" id="nextRound">Next Round</button>
-                <br>
-                <span class="actions">
+				<button class="inline bigGameButton center" id="nextRound">Next Round</button>
+				<br>
+				<span class="actions">
                 <button class="mgame action locked" id="stand">Stand</button>
                 <button class="mgame action locked" id="hit">Hit</button>
             </span>
-            </div>
+			</div>
 
-            <div class="inline" style="margin: -60px -45px 0 0; width: 300px;">
-                <button class="mgame action hidden" id="split">Split</button>
+			<div class="inline" id='middleBlock'>
+				<button class="mgame action hidden inline" id="split">Split</button>
 
-                <div id="player" class="center"></div>
+				<span id="player" class="inline"></span>
+				<span id="splitCards"></span>
 
-                <button class="mgame hidden" id="double">Double</button>
-                <br>
-                <p id="won" class="hidden"> Won £<span id="winnings">50</span>!</p>
-                <p id="loss" class="hidden"> Lost £<span id="losings">50</span></p>
-                <p id="tied" class="hidden"> Tied!</p>
-                <br>
-                <p id="bank"> Bank £<span id="total">5000</span> </p>
-            </div>
-            <div id='rightBlock' class="inline">
-                <p id="selectWager" class="center">Select Wager</p>
-                <br>
-                <span class="wagers">
+				<button class="mgame hidden inline" id="double">Double</button>
+				<br>
+				<p id="won" class="hidden"> Won £<span id="winnings">50</span>!</p>
+				<p id="loss" class="hidden"> Lost £<span id="losings">50</span></p>
+				<p id="tied" class="hidden"> Tied!</p>
+				<br>
+				<p id="bank"> Bank £<span id="total">5000</span> </p>
+			</div>
+			<div id='rightBlock' class="inline">
+				<p id="selectWager" class="center">Select Wager</p>
+				<br>
+				<span class="wagers">
                     <button class="mgame wager" id="10">£10</button>
                     <button class="mgame wager selected" id="50">£50</button>
                     <button class="mgame wager" id="100">£100</button>
                 </span>
-            </div>
-        </div>
-    </div>
-    <!-- End Game -->
+			</div>
+		</div>
+	</div>
+	<!-- End Game -->
 
-    <!-- Rules -->
-    <div id="rulesScreen" class="screen hidden">
-        <button class="return"> Return </button>
-        <h2> Rules </h2>
-        <ul>
-            <li>
-                Each player selects how much they will bet this turn
-            </li>
-            <li>
-                Each player is dealt 2 cards
-            </li>
-            <li>
-                They have the option to hit - receive a card - or stand - end your turn
-            </li>
-            <li>
-                In certain cases the player can Split or Double
-            </li>
-            <li>
-                Split - Seperate two equal cards into two different hands
-            </li>
-            <li>
-                Double - Receive one card and double your wager
-            </li>
-        </ul>
-    </div>
-    <!-- End Rules -->
+	<!-- Rules -->
+	<div id="rulesScreen" class="screen hidden">
+		<button class="return"> Return </button>
+		<h2> Rules </h2>
+		<ul>
+			<li>
+				Each player selects how much they will bet this turn
+			</li>
+			<li>
+				Each player is dealt 2 cards
+			</li>
+			<li>
+				They have the option to hit - receive a card - or stand - end your turn
+			</li>
+			<li>
+				In certain cases the player can Split or Double
+			</li>
+			<li>
+				Split - Seperate two equal cards into two different hands
+			</li>
+			<li>
+				Double - Receive one card and double your wager
+			</li>
+		</ul>
+	</div>
+	<!-- End Rules -->
 
-    <!-- Start Leaderboard -->
-    <div id="leaderboardScreen" class="screen hidden">
-        <button class="return"> Return </button>
-        <h2> Leaderboard </h2>
-        <table>
-            <tr>
-                <th style="width:18px">#</th>
-                <th style="width:435px">Handle</th>
-                <th>Final Bank</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>Carlin</td>
-                <td>£5200</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Neeley</td>
-                <td>£5100</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Nimrod</td>
-                <td>£4950</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>Murray</td>
-                <td>£4950</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>Ryan</td>
-                <td>£4900</td>
-            </tr>
-            <!-- Soz Ayden -->
-        </table>
-    </div>
-    <!-- End Leaderboard -->
-    <script type="text/javascript" src="classes.js"></script>
+	<!-- Start Leaderboard -->
+	<div id="leaderboardScreen" class="screen hidden">
+		<button class="return"> Return </button>
+		<h2> Leaderboard </h2>
+		<table id='leaderboardTable'>
+			<tr>
+				<th style="width:18px">#</th>
+				<th style="width:435px">Handle</th>
+				<th>Final Bank</th>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>Carlin</td>
+				<td>£5200</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>Neeley</td>
+				<td>£5100</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Nimrod</td>
+				<td>£4950</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>Murray</td>
+				<td>£4950</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>Ryan</td>
+				<td>£4900</td>
+			</tr>
+			<!-- Soz Ayden -->
+		</table>
+	</div>
+	<!-- End Leaderboard -->
+	<script type="text/javascript" src="classes.js"></script>
 </body>
 
 </html>
