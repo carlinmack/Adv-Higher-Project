@@ -17,6 +17,7 @@
     BUGS
         always losing destroys game
 		fix double
+        if other people have a naturla?
 
     UI
         winning losing tournament text
@@ -209,7 +210,7 @@ class Dealer {
 		this.cards.push(deck.hit());
 	}
 
-	returnCards(cards) {
+	returnCards() {
 		for (var i = 0; i < this.cards.length; i++) {
 			deck.returnCards(this.cards.pop());
 		}
@@ -310,7 +311,7 @@ class PlayerHand extends Dealer {
 		settlement(true, true);
 	}
 
-	returnCards(cards) {
+	returnCards() {
 		for (var i = 0; i < this.cards.length; i++) {
 			deck.returnCards(this.cards.pop());
 		}
@@ -581,7 +582,7 @@ function settlement(noNatural, noDouble) {
 				getID('loss').className = "hidden";
 			}
 
-			//if player goes bust or less than 21
+			//if player goes bust or less than dealer
 		} else if (Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate()) {
 			Players[i].bank -= Players[i].wager;
 
@@ -985,10 +986,15 @@ window.setInterval(function () {
 		//if haven't checked, have a check
 		if (user.evaluate() > 8 && user.evaluate() < 12) {
 			getID('double').className = "mgame action inline";
+		} else {
+			getID('double').className = "hidden";
 		}
 
 		if (user.splitCardsCheck()) {
 			getID('split').className = "mgame action inline";
+		} else {
+			getID('split').className = "hidden";
+
 		}
 	}
 
