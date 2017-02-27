@@ -214,6 +214,11 @@ SET Players TO []
 SET PLAYING TO False
 
 FUNCTION Round():    
+
+	< hide elements >
+	< unlock action buttons >
+	< lock wagers >
+
     SET playerLength TO Players.length
 	SET PLAYING TO True
 	
@@ -265,10 +270,10 @@ FUNCTION Round():
     END IF
     
     FOR iterF FROM 1 TO Length(Players) DO
-        #if lower than dealer or over 21
+        #IF lower than dealer or over 21
         IF Players[iterF].evaluate < Players[0].evaluate OR Players[iterF] >= 21 THEN
             SET Players[iterF].bank TO Players[iterF].bank - Players[iterF].wager
-        #if higher than dealer
+        #IF higher than dealer
         ELSE IF Players[iterF].evaluate > Players[0].evaluate THEN
             SET Players[iterF].bank TO Players[iterF].bank + Players[iterF].wager
         ELSE
@@ -359,3 +364,28 @@ FUNCTION tournament():
 	END WHILE
     SET list[position] = currentval
 END FUNCTION
+
+< call below every 0.1 seconds >
+	SET HTML players TO deck.players
+	display()
+
+	IF (PLAYING === true) {
+		let user = Players.last();
+
+		IF user.evaluate() IS GREATER THAN 21 DO 	
+			settlement(true, true);
+		END IF
+
+		IF user.evaluate() IS GREATER THAN 8 AND user.evaluate() IS SMALLER THAN 12 DO
+			< show double button >
+		END IF
+
+		IF user.splitCardsCheck() DO
+			< show split button >
+		END IF
+	END IF
+
+	IF Players.last().rounds IS GREATER THAN 0 DO
+		< show round 1 of 10 >
+	END IF
+< end call >
