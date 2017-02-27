@@ -23,6 +23,12 @@ button {
     background-color: white;
 }
 
+button:hover,
+#decPlayers,
+#incPlayers {
+    cursor: pointer;
+}
+
 li {
     margin: 15px 30px;
     font-size: 1.1em;
@@ -184,9 +190,15 @@ th:first-child {
     margin-left: -90px;
 }
 
+#leftBlock,
+#rightBlock {
+    z-index: 2;
+    position: relative;
+}
+
 #middleBlock {
-	margin: 0 -150px 0 -120px;
-	width: 500px;
-	z-index: 1;
-	position: relative;
+    margin: 0 -150px 0 -120px;
+    width: 500px;
+    z-index: 1;
+    position: relative;
 }
