@@ -10,18 +10,21 @@
 
 /*TODO
     JAVASCRIPT
-		pointer events stuff
+		recombining decks
         split method
 		store leaderboard and load it (:
+		put bugs in document
 
     BUGS
         always losing destroys game
 		fix double
-        if other people have a naturla?
+        if other people have a natural?
+		don't load if no game
 
     UI
-        winning losing tournament text
-        add banks
+        change split and player and double margin so that it doesn't move
+		winning losing tournament text
+        add banks (?)
 
     EFFICIENCY
         simplify duplicated code
@@ -424,7 +427,10 @@ function round(Tournament) {
 	}
 
 	for (let i = 0; i < playerLength + 1; i++) {
+		console.log('Player ' + i + " - card 1: " + Players[i].cards[0] + " card 2: " + Players[i].cards[1] + " card 3: " + Players[i].cards[2]);
 		Players[i].returnCards();
+		console.log('returnCards() called');
+		console.log('Player ' + i + " - card 1: " + Players[i].cards[0] + " card 2: " + Players[i].cards[1] + " card 3: " + Players[i].cards[2]);
 	}
 
 	// generates new values for wager and card balances.
@@ -984,7 +990,7 @@ window.setInterval(function () {
 		if (user.evaluate() > 21) settlement(true, true);
 
 		//if haven't checked, have a check
-		if (user.evaluate() > 8 && user.evaluate() < 12) {
+		if (user.evaluate() > 8 && user.evaluate() < 12 && user.cards.length === 2) {
 			getID('double').className = "mgame action inline";
 		} else {
 			getID('double').className = "hidden";
