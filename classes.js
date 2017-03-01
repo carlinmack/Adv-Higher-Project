@@ -23,6 +23,7 @@
 
     UI
         change split and player and double margin so that it doesn't move
+        style tied
 		winning losing tournament text
         add banks (?)
 
@@ -33,6 +34,7 @@
 		only check double and split once
 
     STRETCH GOALS
+        store all cards
         feedback for natural
         delay ai players turns a bit
         fragments
@@ -574,7 +576,6 @@ function settlement(noNatural, noDouble) {
 				if (i === Players.length - 1) {
 					Players[i].bank += Players[i].wager;
 					getID('won').className = "center";
-					getID('loss').className = "hidden";
 					continue;
 				}
 				Players[i].bank += Players[i].wager * 1.5;
@@ -585,7 +586,6 @@ function settlement(noNatural, noDouble) {
 
 			if (i === Players.length - 1) {
 				getID('won').className = "center";
-				getID('loss').className = "hidden";
 			}
 
 			//if player goes bust or less than dealer
@@ -594,7 +594,6 @@ function settlement(noNatural, noDouble) {
 
 			if (i === Players.length - 1) {
 				getID('loss').className = "center";
-				getID('won').className = "hidden";
 			}
 
 			//if player is above dealer
@@ -603,7 +602,6 @@ function settlement(noNatural, noDouble) {
 
 			if (i === Players.length - 1) {
 				getID('won').className = "center";
-				getID('loss').className = "hidden";
 			}
 			//if they have the same value cards
 		} else {
@@ -989,18 +987,19 @@ window.setInterval(function () {
 
 		if (user.evaluate() > 21) settlement(true, true);
 
-		//if haven't checked, have a check
-		if (user.evaluate() > 8 && user.evaluate() < 12 && user.cards.length === 2) {
-			getID('double').className = "mgame action inline";
-		} else {
-			getID('double').className = "hidden";
-		}
+		// add - if haven't checked, have a check
+		if (user.cards.length === 2) {
+			if (user.evaluate() > 8 && user.evaluate() < 12) {
+				getID('double').className = "mgame action inline";
+			} else {
+				getID('double').className = "hidden";
+			}
 
-		if (user.splitCardsCheck()) {
-			getID('split').className = "mgame action inline";
-		} else {
-			getID('split').className = "hidden";
-
+			if (user.splitCardsCheck()) {
+				getID('split').className = "mgame action inline";
+			} else {
+				getID('split').className = "hidden";
+			}
 		}
 	}
 
