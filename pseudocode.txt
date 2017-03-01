@@ -328,7 +328,7 @@ FUNCTION settlement(noNatural, noDouble):
 	< unlock action buttons >
 	< unlock wagers >
 
-	SET wager TO Players.last().wager;
+	SET wager TO Players.End.wager;
 	SET wager.className TO 'mgame wager selected';
 
 	IF noNatural IS True DO
@@ -345,17 +345,17 @@ FUNCTION settlement(noNatural, noDouble):
 	END IF
 
 	IF noNatural IS False DO
-		IF Players.last().natural() DO
-			Players.last().wager TO Players.last().wager * 1.5;
+		IF Players.End.natural() DO
+			Players.End.wager TO Players.End.wager * 1.5;
 		END IF
 	END IF
 
 	IF noDouble IS False {
-		Players.last().wager += Players.last().wager;
+		Players.End.wager += Players.End.wager;
 	END IF
 
-	getID('winnings').innerHTML TO Players.last().wager;
-	getID('losings').innerHTML TO Players.last().wager;
+	getID('winnings').innerHTML TO Players.End.wager;
+	getID('losings').innerHTML TO Players.End.wager;
 
     FOR iterI FROM 1 TO Length(Players) DO
 		IF noNatural IS False DO        
@@ -402,13 +402,13 @@ FUNCTION settlement(noNatural, noDouble):
 	END FOR
 
 	IF noNatural IS False DO
-		IF Players.last().natural() DO
-			SET Players.last().wager TO Players.last().wager / 1.5;
+		IF Players.End.natural() DO
+			SET Players.End.wager TO Players.End.wager / 1.5;
 		END IF
 	END IF
 
 	IF noDouble IS False DO
-		SET Players.last().wager TO Players.last().wager / 2;
+		SET Players.End.wager TO Players.End.wager / 2;
 	END FOR
 
 	FOR iterI FROM 1 TO Length(Players)
@@ -518,9 +518,9 @@ FUNCTION tournament():
     SET list[position]TOcurrentval
 END FUNCTION
 
-var y = document.querySelectorAll(".return");
-for (let k = 0; k < y.length; k++) {
-	y[k].onclick = main;
+SET y TO ALL ELEMENTS WHERE CLASS = return
+FOR iterJ FROM 0 TO LENGTH y DO
+	ON y[k] CLICK = main;
 }
 
 getID('decPlayers').onclick = function () {
@@ -572,63 +572,61 @@ getID('tournament').onclick = function () {
 
 	newGame(1);
 
-	Players.last().rounds = 1;
-	Players.last().handle = prompt('Handle: ');
+	Players.End.rounds = 1;
+	Players.End.handle = prompt('Handle: ');
 };
 
-getID('hit').onclick = function () {
-	if (PLAYING === true) {
-		Players.last().hit();
-	}
-};
+ON CLICK ID hit DO
+	IF PLAYING IS True
+		Players.End.hit();
+	END IF
+END ON CLICK
 
-getID('stand').onclick = function () {
-	if (PLAYING === true) {
-		Players.last().stand();
-	}
-};
+ON CLICK ID stand DO
+	IF PLAYING IS True
+		Players.End.stand();
+	END IF
+END ON CLICK
 
-getID('double').onclick = function () {
-	Players.last().hit();
-	settlement(true, false);
-};
+ON CLICK ID double DO
+	Players.End.hit();
+	settlement(True, False);
+END ON CLICK
 
-getID('split').onclick = function () {
-	Players.last().splitTheCards();
-	getID('split').className = 'hidden';
-};
+ON CLICK ID split DO
+	Players.End.splitTheCards();
+	< hide split button >
+END ON CLICK
 
-getID('deal').onclick = function () {
-	round(Players.last().rounds);
-};
+ON CLICK ID deal DO
+    round(Players.End.rounds)
+END ON CLICK
 
-getID('nextRound').onclick = function () {
-	round(Players.last().rounds);
-};
-
-ON ID nextRound CLICK DO
+ON CLICK ID nextRound DO
+    round(Players.End.rounds)
+END ON CLICK
 
 < call below every 0.1 seconds >
 	SET HTML players TO deck.players
 	display()
 
-	IF PLAYING IS True DO
-		let userTOPlayers.last();
+	IF PLAYING IS True
+		SET user TO Players.End;
 
-		IF user.evaluate() IS GREATER THAN 21 DO 	
+		IF user.evaluate() IS GREATER THAN 21  	
 			settlement(True, True);
 		END IF
 
-		IF user.evaluate() IS GREATER THAN 8 AND user.evaluate() IS SMALLER THAN 12 DO
+		IF user.evaluate() IS GREATER THAN 8 AND user.evaluate() IS SMALLER THAN 12
 			< show double button >
 		END IF
 
-		IF user.splitCardsCheck() DO
+		IF user.splitCardsCheck() 
 			< show split button >
 		END IF
 	END IF
 
-	IF Players.last().rounds IS GREATER THAN 0 DO
+	IF Players.End.rounds IS GREATER THAN 0 
 		< show round 1 of 10 >
 	END IF
 < end call >
