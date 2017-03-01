@@ -361,44 +361,38 @@ FUNCTION settlement(noNatural, noDouble):
 		IF noNatural IS False DO        
 			IF Players[i].natural() DO            
 				IF i IS Players.length - 1 DO
-					Players[i].bank += Players[i].wager;
-					getID('won').className TO "center";
-					getID('loss').className TO "hidden";
-					continue;
-				END
-				Players[i].bank += Players[i].wager * 1.5;
-			END
+					SET Players[i].bank += Players[i].wager;
+					< display won >
+				END IF
+				SET Players[i].bank += Players[i].wager * 1.5;
+			END IF
             
 		ELSE IF Players[0].evaluate() > 21 && Players[i].evaluate() < 21 DO
-			Players[i].bank += Players[i].wager;
+			SET Players[i].bank += Players[i].wager;
 
-			IF i IS Players.length - 1 DO
-				getID('won').className TO "center";
-				getID('loss').className TO "hidden";
-			END
-
+			IF i IS Players.length - 1
+				< display won >
+			END IF
 
 		ELSE IF Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate() DO
-			Players[i].bank -= Players[i].wager;
+			SET Players[i].bank -= Players[i].wager;
 
 			IF i IS Players.length - 1 DO
-				getID('loss').classNameTO"center";
-				getID('won').classNameTO"hidden";
-			END
+				< display lest >
+			END IF
 
 		ELSE IF Players[i].evaluate() > Players[0].evaluate() DO
-			Players[i].bank += Players[i].wager;
+			SET Players[i].bank += Players[i].wager;
 
 			IF i IS Players.length - 1 DO
-				getID('won').classNameTO"center";
-				getID('loss').classNameTO"hidden";
-			END
+				< display won >
+			END IF
             
 		ELSE
 			IF i IS Players.length - 1 DO
-				getID('tied').classNameTO"center";
+				< display tied >
 			END IF
-		END 
+		END IF
 	END FOR
 
 	IF noNatural IS False DO
@@ -431,7 +425,7 @@ FUNCTION tournament(bank, handle):
 			SET rowVal TO table.rows[i].cells[2].innerHTML;
 			SET Val TO parseInt(rowVal.substr(1));
 			tempArr.push(Val);
-		END
+		END FOR
 
 		SET index;
         
@@ -441,8 +435,8 @@ FUNCTION tournament(bank, handle):
 				tempArr[i] TO tempArr[i + 1];
 				tempArr[i + 1] TO tempVal;
 				index TO i + 2;
-			END
-		END
+			END IF
+		END FOR
 
 		table.deleteRow(5);
 
@@ -462,17 +456,17 @@ FUNCTION tournament(bank, handle):
 		FOR iter FROM index + 1 TO 6 DO
             < reindex rows below the inserted row with the iterator >
 			table.rows[i].cells[0].innerHTML TO i;
-		END
+		END FOR
 	ELSE
 		//
-	END
-END
+	END IF
+END FUNCTION
 
 FUNCTION splitCards() {
 	styleID('splitCards').marginLeft TO '50px';
 	getID('split').className TO 'hidden';
 	getID('player').className TO '';
-END
+END FUNCTION
 
 FUNCTION loadGame():
     SET deck.availableCards TO READ FILE availableCards
@@ -511,70 +505,67 @@ FUNCTION tournament():
     # SORT #
     SET currentval TO Player.bank    
 	SET position TO 1   
-	WHILE position > 0 AND list[position-1] > currentval     
-		list[position]TOlist[position-1]        
-		position -= 1    
+	WHILE position > 0 AND list[position-1] > currentval DO   
+		SET list[position] TO list[position-1]        
+		SET position -= 1    
 	END WHILE
-    SET list[position]TOcurrentval
+    SET list[position] TO currentval
 END FUNCTION
 
 SET y TO ALL ELEMENTS WHERE CLASS = return
-FOR iterJ FROM 0 TO LENGTH y DO
-	ON y[k] CLICK = main;
-}
+FOR k FROM 0 TO LENGTH y DO
+	ON CLICK y[k] = main;
+END FOR
 
-getID('decPlayers').onclick = function () {
-	if (deck.players > 1) deck.players--;
-};
+ON CLICK ID decPlayers DO
+	IF deck.players > 1
+        SET deck.player -= 1
+    END IF
+END ON CLICK
 
-getID('incPlayers').onclick = function () {
-	if (deck.players < 5) deck.players++;
-};
+ON CLICK ID incPlayers DO
+	IF deck.players < 5
+        SET deck.player += 1        
+    END IF
+END ON CLICK
 
-getID('play').onclick = function () {
-	// ensures that 'the round 1 of 10" text is not displayed
-	getID("roundText").className = "hidden";
+ON CLICK ID play DO
+	SET ID roundText.className TO hidden
 
-	styleID('dealer').marginTop = "0px";
-	styleID('dealer').marginLeft = "100px";
+	< space dealer without tournament text >
 
-	switch (deck.players) {
-	case 1:
-		styleID('rightBlock').marginTop = "300px";
-		styleID('selectWager').marginTop = "-27px";
+	SWITCH deck.players
+	CASE 1:
+		< set margin to space the player accordingly >
 		break;
-	case 2:
-		styleID('rightBlock').marginTop = "220px";
-		styleID('selectWager').marginTop = "80px";
+	CASE 2:
+		< set margin to space the player accordingly >
 		break;
-	case 3:
-	case 4:
-	case 5:
-		styleID('rightBlock').marginTop = "100px";
-		styleID('selectWager').marginTop = "220px";
+	CASE 3:
+	CASE 4:
+	CASE 5:
+		< set margin to space the player accordingly >
 		break;
 	}
 
 	newGame(deck.players);
-};
+END ON CLICK
 
-getID('previous').onclick = function () {
-	loadGame();
-};
+ON CLICK ID previous DO
+	loadGame()
+END ON CLICK
 
-getID('tournament').onclick = function () {
+ON CLICK ID tournament DO
 	getID('roundText').className = "inline";
 
-	styleID('dealer').marginTop = "-50px";
-	styleID('dealer').marginLeft = "100px";
-	styleID('rightBlock').marginTop = "300px";
-	styleID('selectWager').marginTop = "-27px";
+	< space dealer without tournament text >
+	< set margin to space the player accordingly >
 
 	newGame(1);
 
-	Players.End.rounds = 1;
-	Players.End.handle = prompt('Handle: ');
-};
+	SET Players.End.rounds TO 1;
+	SET Players.End.handle TO prompt('Handle: ');
+END ON CLICK
 
 ON CLICK ID hit DO
 	IF PLAYING IS True
