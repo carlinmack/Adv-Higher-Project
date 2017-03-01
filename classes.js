@@ -165,10 +165,13 @@ class Dealer {
 
 		// takes the first value, finds the remainder it has with 4 and casts it to a string
 		var value = (card[0] % 4).toString();
-		//
+		// select which suit by passing the raw value into the object, which returns the unicode suit value
 		suit = suits[value];
+		// adds one to the card value and converts it into hexadecimal
 		cardVal = (card[1] + 1).toString(16);
+		// concatenates the suit and the card value
 		temp = prefix.concat(suit, cardVal);
+		// 1. returns a string from the unicode code point 2. returns the colour by passing in the suit value  which returns the respective colour
 		return [String.fromCodePoint(temp), colour[value]];
 	}
 
@@ -282,36 +285,6 @@ class PlayerHand extends Dealer {
 		this.splitCards = [];
 		this.handle = "";
 		this.rounds = 0;
-	}
-
-	display(card) {
-		// Change [0, 2] to A ♦
-		var prefix = "0x0001F0",
-			suit = "",
-			cardVal, temp;
-
-		var suits = {
-			'0': 'A',
-			'1': 'B',
-			'2': 'C',
-			'3': 'D'
-		};
-
-		var colour = {
-			'0': 'black',
-			'1': 'red',
-			'2': 'red',
-			'3': 'black'
-		};
-		var value = (card[0] % 4).toString();
-		suit = suits[value];
-		cardVal = (card[1] + 1).toString(16);
-		temp = prefix.concat(suit, cardVal);
-		return [String.fromCodePoint(temp), colour[value]];
-
-		//        if (splitCards != [])
-		//            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
-		//        END IF
 	}
 
 	stand() {
