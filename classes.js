@@ -45,23 +45,23 @@
 
 class Deck {
 	constructor() {
-		//initialises arrays for cards
+		// initialises arrays for cards
 		this.availableCards = [];
 		this.cutCards = [];
 		this.spentCards = [];
-		//initialises default number of players
+		// initialises default number of players
 		this.players = 5;
 	}
 
 	createDeck(decks) {
-		//As there are 4 suits per deck it needs to be multiplied for the loop
+		// As there are 4 suits per deck it needs to be multiplied for the loop
 		decks *= 4;
-		//for the amount of suits
+		// for the amount of suits
 		for (let j = 0; j < decks; j++) {
-			//and the amount of cards in a suit
+			// and the amount of cards in a suit
 			for (let i = 0; i < 14; i++) {
 				if (i === 11) {
-					//unicode has a knight card which is not needed for the game
+					// unicode has a knight card which is not needed for the game
 				} else {
 					// adds a card to the front of the main array
 					this.availableCards.unshift([j, i]);
@@ -71,7 +71,7 @@ class Deck {
 	}
 
 	shuffle() {
-		//fisher-yates shuffle
+		// fisher-yates shuffle
 		var m = this.availableCards.length,
 			t, i;
 		// While there remain elements to shuffle…
@@ -88,7 +88,7 @@ class Deck {
 		return this.availableCards;
 	}
 
-	//remove last 20% of cards
+	// remove last 20% of cards
 	cut() {
 		// select the last 20%
 		var len = this.availableCards.length / 5;
@@ -100,16 +100,16 @@ class Deck {
 	}
 
 	deal() {
-		//deal 2 cards to each player and the dealer
+		// deal 2 cards to each player and the dealer
 		for (let i = 0; i < Players.length; i++) {
-			//adds the last two cards of the deck to the front of the Players cards
+			// adds the last two cards of the deck to the front of the Players cards
 			Players[i].cards.unshift(this.availableCards.pop());
 			Players[i].cards.unshift(this.availableCards.pop());
 		}
 	}
 
 	hit() {
-		//returns the last card of the deck and removes it from the array
+		// returns the last card of the deck and removes it from the array
 		return this.availableCards.pop();
 	}
 
@@ -129,7 +129,7 @@ class Deck {
 	}
 
 	store() {
-		//store all object parameters
+		// store all object parameters
 		localStorage.availableCards = this.availableCards;
 		localStorage.cutCards = this.cutCards;
 		localStorage.spentCards = this.spentCards;
@@ -144,26 +144,28 @@ class Dealer {
 		this.cardBalance = 17;
 	}
 
+	// Change [0, 2] to A ♦
 	display(card) {
-		//Change [0, 2] to A ♦
 		var prefix = "0x0001F0",
 			suit = "",
 			cardVal, temp;
 
 		var suits = {
-			'0': 'A',
-			'1': 'B',
-			'2': 'C',
-			'3': 'D'
-		};
+				'0': 'A',
+				'1': 'B',
+				'2': 'C',
+				'3': 'D'
+			},
+			colour = {
+				'0': 'black',
+				'1': 'red',
+				'2': 'red',
+				'3': 'black'
+			};
 
-		var colour = {
-			'0': 'black',
-			'1': 'red',
-			'2': 'red',
-			'3': 'black'
-		};
+		// takes the first value, finds the remainder it has with 4 and casts it to a string
 		var value = (card[0] % 4).toString();
+		//
 		suit = suits[value];
 		cardVal = (card[1] + 1).toString(16);
 		temp = prefix.concat(suit, cardVal);
@@ -179,11 +181,11 @@ class Dealer {
 				value += 11;
 				flag = true;
 			}
-			//if card is less than ten, value of it is card val + 1
+			// if card is less than ten, value of it is card val + 1
 			else if (this.cards[k][1] < 10) {
 				value += this.cards[k][1] + 1;
 			} else {
-				//all cards above ten are valued at 10
+				// all cards above ten are valued at 10
 				value += 10;
 			}
 		}
@@ -211,7 +213,7 @@ class Dealer {
 	}
 
 	hit() {
-		//take card from start of queue
+		// take card from start of queue
 		this.cards.push(deck.hit());
 	}
 
@@ -253,8 +255,8 @@ class VirtualHand extends Dealer {
 	}
 
 	cardBalanceCalc() {
-		//to get a normal (bell curve) distribution I'm adding two random numbers
-		//not a statistically sound method but it should do the trick
+		// to get a normal (bell curve) distribution I'm adding two random numbers
+		// not a statistically sound method but it should do the trick
 		var max = 9;
 		var min = 7;
 		var x = Math.floor(Math.random() * (max - min + 1) + min);
@@ -283,7 +285,7 @@ class PlayerHand extends Dealer {
 	}
 
 	display(card) {
-		//Change [0, 2] to A ♦
+		// Change [0, 2] to A ♦
 		var prefix = "0x0001F0",
 			suit = "",
 			cardVal, temp;
@@ -335,16 +337,16 @@ class PlayerHand extends Dealer {
 		} else {
 			return false;
 		}
-		//create two seperate hands
-		//this.splitCards.push(this.cards.pop);
+		// create two seperate hands
+		// this.splitCards.push(this.cards.pop);
 	}
 
 	splitTheCards() {
-		//create two seperate hands
+		// create two seperate hands
 		this.splitCards.push(this.cards.pop());
-		//hit to player hand
+		// hit to player hand
 		this.hit();
-		//hit to splitCards
+		// hit to splitCards
 		this.hit();
 		this.splitCards.push(this.cards.pop());
 	}
@@ -364,7 +366,7 @@ class PlayerHand extends Dealer {
 var deck = new Deck(),
 	Players, PLAYING = false;
 
-//helper function to make code easier to read
+// helper function to make code easier to read
 function getID(x) {
 	return document.getElementById(x);
 }
@@ -402,7 +404,7 @@ function toggleWagers(bool) {
 	}
 }
 
-//end helper function
+// end helper function
 
 function round(Tournament) {
 	getID('deal').className = 'hidden';
@@ -443,14 +445,14 @@ function round(Tournament) {
 
 	deck.deal();
 
-	//stores all players
+	// stores all players
 	for (let i = 0; i < playerLength + 1; i++) {
 		Players[i].store(i);
 	}
 
 	deck.store();
 
-	//checking for naturals, dealer can have one
+	// checking for naturals, dealer can have one
 	var natural = false;
 	for (let n = 1; n < playerLength + 1; n++) {
 		if (Players[n].natural()) {
@@ -460,7 +462,7 @@ function round(Tournament) {
 
 	// if there is a natural then the game instantly ends, cards are evaled
 	if (natural === false) {
-		//turn for players before user
+		// turn for players before user
 		var showPlayers = Math.floor(playerLength / 2) + 1;
 		for (let l = 1; l < showPlayers; l++) {
 			Players[l].turn = true;
@@ -501,18 +503,18 @@ function newGame(players) {
 	deck = new Deck();
 
 	deck.players = players;
-	//adds dealer to array
+	// adds dealer to array
 	Players.push(new Dealer());
 
 	for (let i = 1; i < players; i++) {
-		//adds AI Players to array
+		// adds AI Players to array
 		Players.push(new VirtualHand());
 	}
 
-	//adds player to array
+	// adds player to array
 	Players.push(new PlayerHand());
 
-	//selects default wager
+	// selects default wager
 	var wager = Players.last().wager;
 	getID(wager).className = 'mgame wager selected';
 
@@ -568,7 +570,7 @@ function settlement(noNatural, noDouble) {
 	// Settling
 	for (let i = 1; i < Players.length; i++) {
 
-		//if there is a natural
+		// if there is a natural
 		if (noNatural === false) {
 			// if the player has a natural
 			if (Players[i].natural()) {
@@ -580,7 +582,7 @@ function settlement(noNatural, noDouble) {
 				}
 				Players[i].bank += Players[i].wager * 1.5;
 			}
-			//if dealer goes bust and player still standing
+			// if dealer goes bust and player still standing
 		} else if (Players[0].evaluate() > 21 && Players[i].evaluate() < 21) {
 			Players[i].bank += Players[i].wager;
 
@@ -588,7 +590,7 @@ function settlement(noNatural, noDouble) {
 				getID('won').className = "center";
 			}
 
-			//if player goes bust or less than dealer
+			// if player goes bust or less than dealer
 		} else if (Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate()) {
 			Players[i].bank -= Players[i].wager;
 
@@ -596,14 +598,14 @@ function settlement(noNatural, noDouble) {
 				getID('loss').className = "center";
 			}
 
-			//if player is above dealer
+			// if player is above dealer
 		} else if (Players[i].evaluate() > Players[0].evaluate()) {
 			Players[i].bank += Players[i].wager;
 
 			if (i === Players.length - 1) {
 				getID('won').className = "center";
 			}
-			//if they have the same value cards
+			// if they have the same value cards
 		} else {
 			if (i === Players.length - 1) {
 				getID('tied').className = "center";
@@ -621,7 +623,7 @@ function settlement(noNatural, noDouble) {
 		Players.last().wager = Players.last().wager / 2;
 	}
 
-	//stores all players
+	// stores all players
 	for (let i = 0; i < Players.length; i++) {
 		Players[i].store(i);
 	}
@@ -643,14 +645,14 @@ function tournament(bank, handle) {
 
 		var tempArr = [];
 		tempArr.push(bank);
-		//creating array of leaderboard to sort more easily
+		// creating array of leaderboard to sort more easily
 		for (let i = 1; i < 6; i++) {
 			var rowVal = table.rows[i].cells[2].innerHTML;
 			var Val = parseInt(rowVal.substr(1));
 			tempArr.push(Val);
 		}
 
-		//finding position with bubble sort, only doing one pass
+		// finding position with bubble sort, only doing one pass
 		var index;
 		for (let i = 0; i < 6; i++) {
 			if (tempArr[i] < tempArr[i + 1]) {
@@ -661,10 +663,10 @@ function tournament(bank, handle) {
 			}
 		}
 
-		//remove last row
+		// remove last row
 		table.deleteRow(5);
 
-		//add to table
+		// add to table
 		var newRow = table.insertRow(index);
 
 		// Insert a cell in the row at index 0
@@ -680,7 +682,7 @@ function tournament(bank, handle) {
 		newCol2.appendChild(col2);
 		newCol3.appendChild(col3);
 
-		//need to reindex other rows
+		// need to reindex other rows
 		for (let i = index + 1; i < 6; i++) {
 			table.rows[i].cells[0].innerHTML = i;
 		}
@@ -711,13 +713,13 @@ function loadGame() {
 	Players = undefined;
 	// creates player array
 	window.Players = [];
-	//adds dealer to array
+	// adds dealer to array
 	Players.push(new Dealer());
 
 	deck = undefined;
 	window.deck = new Deck();
 
-	//Function to map CSV to 2d array
+	// Function to map CSV to 2d array
 	parse2D(deck.availableCards, 'availableCards');
 	parse2D(deck.cutCards, 'cutCards');
 	parse2D(deck.spentCards, 'spentCards');
@@ -725,21 +727,21 @@ function loadGame() {
 	deck.players = parseInt(localStorage.getItem('players'));
 
 	for (let i = 1; i < deck.players; i++) {
-		//adds AI Players to array
+		// adds AI Players to array
 		Players.push(new VirtualHand());
 	}
 
-	//adds player to array
+	// adds player to array
 	Players.push(new PlayerHand());
 
-	//Function to map CSV to 2d array
+	// Function to map CSV to 2d array
 	parse2D(Players[0].cards, 'cards');
 
 	Players[0].turn = localStorage.getItem('turn');
 	Players[0].cardBalance = localStorage.getItem('cardBalance');
 
 	for (let j = 1; j < deck.players + 1; j++) {
-		//Function to map CSV to 2d array
+		// Function to map CSV to 2d array
 		parse2D(Players[j].cards, j + 'cards');
 
 		Players[j].bank = parseInt(localStorage.getItem(j + 'bank'));
@@ -755,7 +757,7 @@ function loadGame() {
 		}
 	}
 
-	//selects default wager
+	// selects default wager
 	var wager = Players.last().wager;
 	getID(wager).className = 'mgame wager selected';
 }
@@ -782,9 +784,9 @@ function displayNode(node, object, cards, i) {
 function display() {
 	// for bank
 
-	//for (let i = 0; i < Players.length - 1; i++) {
+	// for (let i = 0; i < Players.length - 1; i++) {
 	getID("total").innerHTML = Players.last().bank;
-	//}
+	// }
 
 	var dealerNode = getID("dealer");
 	var dealer = Players[0];
@@ -805,20 +807,20 @@ function display() {
 		dealerNode.appendChild(span);
 	}
 
-	//if playing, set iterator to 1, otherwise 0 so all cards are displayed
+	// if playing, set iterator to 1, otherwise 0 so all cards are displayed
 	let Cd = (PLAYING) ? 1 : 0;
 
-	//displays dealer cards
+	// displays dealer cards
 	displayNode(dealerNode, dealer, 'cards', Cd);
 
-	//clearing ai players
+	// clearing ai players
 	for (let x = 1; x < 5; x++) {
 		clearNode(getID("ai" + x));
 	}
 
-	//if there are ai players
+	// if there are ai players
 	if (Players.length > 2) {
-		//for each player
+		// for each player
 		for (let Pl = 1; Pl < deck.players; Pl++) {
 			let aiNode = getID("ai" + (Pl));
 
@@ -881,10 +883,10 @@ function makeWager(Button) {
 		if (PLAYING === false) {
 			Players.last().wager = parseInt(Button);
 
-			//select all wagers and unselect them
+			// select all wagers and unselect them
 			toggleWagers(true);
 
-			//add the class selected to the clicked wager
+			// add the class selected to the clicked wager
 			getID(Button).className = 'mgame wager selected';
 		}
 	};
