@@ -4,7 +4,7 @@ CLASS Deck:
     SET spentCards TO []
     SET players TO 5
 
-    METHOD CreateDeck(decks)
+    METHOD createDeck(decks)
         SET decks TO decks * 4
         FOR iter1 FROM 0 TO decks DO
             FOR iter2 FROM 0 TO 13 DO
@@ -66,9 +66,9 @@ CLASS Deck:
     END METHOD
 END CLASS
     
-CLASS dealer:
+CLASS Dealer:
     SET cards TO []
-    SET turn TO false
+    SET turn TO False
     SET cardBalance TO 17
     
     METHOD display()
@@ -133,14 +133,14 @@ CLASS dealer:
     END METHOD
 END CLASS
     
-CLASS AIhand INHERITS dealer:
+CLASS AIhand INHERITS Dealer:
     SET bank TO 5000
     SET wager TO 50
     SET wagerBalance TO 0
     
     METHOD wagerBalanceCalc()
         SET wagerBalance TO RoundFloor(Math.random() * 3)
-        SWITCH (wagerBalance) {
+        SWITCH wagerBalance DO
             CASE 0:
                 SET wager TO 10
                 break
@@ -150,16 +150,16 @@ CLASS AIhand INHERITS dealer:
             CASE 2:
                 SET wager TO 100
                 break
-            }
-    }
+            END
+    END
 
-    METHOD cardBalance ()
+    METHOD cardBalance()
         SET max TO 9
         SET min TO 7
         SET x TO Math.floor(Math.random() * (max - min + 1) + min)
         SET y TO Math.floor(Math.random() * (max - min + 1) + min)
         SET cardBalance TO x + y
-    }
+    END
     
     METHOD store(i)
         WRITE {
@@ -170,7 +170,7 @@ CLASS AIhand INHERITS dealer:
     END METHOD
 END CLASS
 
-CLASS playerHand INHERITS dealer:
+CLASS playerHand INHERITS Dealer:
     SET bank TO 5000
     SET wager TO 50
     SET splitCards TO []
@@ -213,7 +213,7 @@ SET deck TO NEW deck
 SET Players TO []
 SET PLAYING TO False
 
-FUNCTION Round():    
+FUNCTION round(Tournament):    
 
 	< hide elements >
 	< unlock action buttons >
@@ -245,10 +245,10 @@ FUNCTION Round():
     
     deck.store()
     
-    # checking for naturals, dealer can have one
+    # checking FOR naturals, Dealer can have one
     SET natural TO False
     FOR iter5 FROM 1 TO playerLength
-        IF Players[iter5].evaluate() = 21
+        IF Players[iter5].evaluate() TO 21
             SET natural TO True
         END IF
     END FOR
@@ -256,7 +256,7 @@ FUNCTION Round():
     IF natural == False
 		SET display TO ROUND DOWN (players / 2)
 		FOR iterE FROM 1 TO display + 1 DO
-			SET Players[iterD].turn = True
+			SET Players[iterD].turn TO True
 			WHILE Players[iterD].turn IS True Then
                 IF Players[iterD].evaluate() > Players[iterD].balance THEN
                     Players[iterD].hit()
@@ -266,18 +266,18 @@ FUNCTION Round():
             END WHILE
         END FOR
 	ELSE
-		settlement(false, true)
+		settlement(False, True)
     END IF
     
     FOR iterF FROM 1 TO Length(Players) DO
-        #IF lower than dealer or over 21
+        #IF lower than Dealer or over 21
         IF Players[iterF].evaluate < Players[0].evaluate OR Players[iterF] >= 21 THEN
             SET Players[iterF].bank TO Players[iterF].bank - Players[iterF].wager
-        #IF higher than dealer
+        #IF higher than Dealer
         ELSE IF Players[iterF].evaluate > Players[0].evaluate THEN
             SET Players[iterF].bank TO Players[iterF].bank + Players[iterF].wager
         ELSE
-            #tied, do nothing
+             < tied, do nothing >
         END IF    
     END FOR
     
@@ -296,7 +296,7 @@ FUNCTION newGame():
     
     SET Players TO NEW ARRAY
     
-    APPEND NEW dealer TO Players
+    APPEND NEW Dealer TO Players
     
     FOR iterH FROM 0 TO deck.players DO
          APPEND NEW AIhand TO Players
@@ -304,15 +304,15 @@ FUNCTION newGame():
 
     APPEND NEW playerHand TO Players
 
-    deck.CreateDeck(6)
+    deck.createDeck(6)
     deck.shuffle()
     deck.cut()
     
-    SET playing TO true
+    SET playing TO True
     
     WHILE playing:
         IF Length(deck.availableCards) > 4 * Length(Players)
-            Round()
+            round()
         ELSE
             deck.combineDecks()
             deck.shuffle()
@@ -320,6 +320,159 @@ FUNCTION newGame():
         END IF
     END WHILE
 END FUNCTION
+
+FUNCTION settlement(noNatural, noDouble):
+	SET PLAYING TO False;
+
+	< hide elements >
+	< unlock action buttons >
+	< unlock wagers >
+
+	SET wager TO Players.last().wager;
+	SET wager.className TO 'mgame wager selected';
+
+	IF noNatural IS True DO
+        FOR iter FROM 0 TO playerLength -1 DO 
+			SET Players[l].turn TO True;
+			WHILE Players[l].turn IS True DO
+				IF Players[l].evaluate() < Players[l].cardBalance DO
+					Players[l].hit();
+				ELSE
+					Players[l].stand();
+				END IF
+			END WHILE
+		END FOR
+	END IF
+
+	IF noNatural IS False DO
+		IF Players.last().natural() DO
+			Players.last().wager TO Players.last().wager * 1.5;
+		END IF
+	END IF
+
+	IF noDouble IS False {
+		Players.last().wager += Players.last().wager;
+	END IF
+
+	getID('winnings').innerHTML TO Players.last().wager;
+	getID('losings').innerHTML TO Players.last().wager;
+
+    FOR iterI FROM 1 TO Length(Players) DO
+		IF noNatural IS False DO        
+			IF Players[i].natural() DO            
+				IF i IS Players.length - 1 DO
+					Players[i].bank += Players[i].wager;
+					getID('won').className TO "center";
+					getID('loss').className TO "hidden";
+					continue;
+				END
+				Players[i].bank += Players[i].wager * 1.5;
+			END
+            
+		ELSE IF Players[0].evaluate() > 21 && Players[i].evaluate() < 21 DO
+			Players[i].bank += Players[i].wager;
+
+			IF i IS Players.length - 1 DO
+				getID('won').className TO "center";
+				getID('loss').className TO "hidden";
+			END
+
+
+		ELSE IF Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate() DO
+			Players[i].bank -= Players[i].wager;
+
+			IF i IS Players.length - 1 DO
+				getID('loss').classNameTO"center";
+				getID('won').classNameTO"hidden";
+			END
+
+		ELSE IF Players[i].evaluate() > Players[0].evaluate() DO
+			Players[i].bank += Players[i].wager;
+
+			IF i IS Players.length - 1 DO
+				getID('won').classNameTO"center";
+				getID('loss').classNameTO"hidden";
+			END
+            
+		ELSE
+			IF i IS Players.length - 1 DO
+				getID('tied').classNameTO"center";
+			END IF
+		END 
+	END FOR
+
+	IF noNatural IS False DO
+		IF Players.last().natural() DO
+			SET Players.last().wager TO Players.last().wager / 1.5;
+		END IF
+	END IF
+
+	IF noDouble IS False DO
+		SET Players.last().wager TO Players.last().wager / 2;
+	END FOR
+
+	FOR iterI FROM 1 TO Length(Players)
+		Players[i].store(i);
+	END FOR
+
+	deck.store();
+END FUNCTION
+
+FUNCTION tournament(bank, handle):
+	SET table TO getID('leaderboardTable');
+	SET lastRow TO table.rows[5];
+	SET lastCellValue TO lastRow.cells[2].innerHTML;
+	SET value TO parseInt(lastCellValue.substr(1));
+
+	IF value < bank DO
+		SET tempArr TO [];
+		tempArr.push(bank);
+        FOR iter FROM 1 TO 6 DO
+			SET rowVal TO table.rows[i].cells[2].innerHTML;
+			SET Val TO parseInt(rowVal.substr(1));
+			tempArr.push(Val);
+		END
+
+		SET index;
+        
+		FOR iter FROM 1 TO 6
+			IF tempArr[i] < tempArr[i + 1] DO
+				SET tempVal TO tempArr[i];
+				tempArr[i] TO tempArr[i + 1];
+				tempArr[i + 1] TO tempVal;
+				index TO i + 2;
+			END
+		END
+
+		table.deleteRow(5);
+
+		SET newRow TO table.insertRow(index);
+
+		SET newCol1 TO newRow.insertCell(0);
+		SET newCol2 TO newRow.insertCell(1);
+		SET newCol3 TO newRow.insertCell(2);
+
+		SET col1 TO document.createTextNode(index);
+		SET col2 TO document.createTextNode(handle);
+		SET col3 TO document.createTextNode('£' + bank);
+		newCol1.appendChild(col1);
+		newCol2.appendChild(col2);
+		newCol3.appendChild(col3);
+
+		FOR iter FROM index + 1 TO 6 DO
+            < reindex rows below the inserted row with the iterator >
+			table.rows[i].cells[0].innerHTML TO i;
+		END
+	ELSE
+		//
+	END
+END
+
+FUNCTION splitCards() {
+	styleID('splitCards').marginLeft TO '50px';
+	getID('split').className TO 'hidden';
+	getID('player').className TO '';
+END
 
 FUNCTION loadGame():
     SET deck.availableCards TO READ FILE availableCards
@@ -346,12 +499,12 @@ FUNCTION tournament():
     APPEND Player TO Players
     SET Player.handle TO USER INPUT
 
-    deck.CreateDeck(6)
+    deck.createDeck(6)
     deck.shuffle()
     deck.cut()
     
     FOR iterJ FROM 0 TO 10:
-        Round()
+        round()
         iterJ++
     END FOR
     
@@ -359,21 +512,111 @@ FUNCTION tournament():
     SET currentval TO Player.bank    
 	SET position TO 1   
 	WHILE position > 0 AND list[position-1] > currentval     
-		list[position] = list[position-1]        
+		list[position]TOlist[position-1]        
 		position -= 1    
 	END WHILE
-    SET list[position] = currentval
+    SET list[position]TOcurrentval
 END FUNCTION
+
+var y = document.querySelectorAll(".return");
+for (let k = 0; k < y.length; k++) {
+	y[k].onclick = main;
+}
+
+getID('decPlayers').onclick = function () {
+	if (deck.players > 1) deck.players--;
+};
+
+getID('incPlayers').onclick = function () {
+	if (deck.players < 5) deck.players++;
+};
+
+getID('play').onclick = function () {
+	// ensures that 'the round 1 of 10" text is not displayed
+	getID("roundText").className = "hidden";
+
+	styleID('dealer').marginTop = "0px";
+	styleID('dealer').marginLeft = "100px";
+
+	switch (deck.players) {
+	case 1:
+		styleID('rightBlock').marginTop = "300px";
+		styleID('selectWager').marginTop = "-27px";
+		break;
+	case 2:
+		styleID('rightBlock').marginTop = "220px";
+		styleID('selectWager').marginTop = "80px";
+		break;
+	case 3:
+	case 4:
+	case 5:
+		styleID('rightBlock').marginTop = "100px";
+		styleID('selectWager').marginTop = "220px";
+		break;
+	}
+
+	newGame(deck.players);
+};
+
+getID('previous').onclick = function () {
+	loadGame();
+};
+
+getID('tournament').onclick = function () {
+	getID('roundText').className = "inline";
+
+	styleID('dealer').marginTop = "-50px";
+	styleID('dealer').marginLeft = "100px";
+	styleID('rightBlock').marginTop = "300px";
+	styleID('selectWager').marginTop = "-27px";
+
+	newGame(1);
+
+	Players.last().rounds = 1;
+	Players.last().handle = prompt('Handle: ');
+};
+
+getID('hit').onclick = function () {
+	if (PLAYING === true) {
+		Players.last().hit();
+	}
+};
+
+getID('stand').onclick = function () {
+	if (PLAYING === true) {
+		Players.last().stand();
+	}
+};
+
+getID('double').onclick = function () {
+	Players.last().hit();
+	settlement(true, false);
+};
+
+getID('split').onclick = function () {
+	Players.last().splitTheCards();
+	getID('split').className = 'hidden';
+};
+
+getID('deal').onclick = function () {
+	round(Players.last().rounds);
+};
+
+getID('nextRound').onclick = function () {
+	round(Players.last().rounds);
+};
+
+ON ID nextRound CLICK DO
 
 < call below every 0.1 seconds >
 	SET HTML players TO deck.players
 	display()
 
-	IF (PLAYING === true) {
-		let user = Players.last();
+	IF PLAYING IS True DO
+		let userTOPlayers.last();
 
 		IF user.evaluate() IS GREATER THAN 21 DO 	
-			settlement(true, true);
+			settlement(True, True);
 		END IF
 
 		IF user.evaluate() IS GREATER THAN 8 AND user.evaluate() IS SMALLER THAN 12 DO
