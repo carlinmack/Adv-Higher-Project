@@ -171,7 +171,8 @@ class Dealer {
 		cardVal = (card[1] + 1).toString(16);
 		// concatenates the suit and the card value
 		temp = prefix.concat(suit, cardVal);
-		// 1. returns a string from the unicode code point 2. returns the colour by passing in the suit value  which returns the respective colour
+		// 1. returns a string from the unicode code point
+		//2. returns the colour by passing in the suit value  which returns the respective colour
 		return [String.fromCodePoint(temp), colour[value]];
 	}
 
@@ -202,8 +203,10 @@ class Dealer {
 
 
 	natural() {
+		// if the first card is an ace and the second card is over 9
 		if (this.cards[0][1] === 0 && this.cards[1][1] > 8) {
 			return true;
+		// if the first card is over 9 and the second card is an ace
 		} else if (this.cards[0][1] > 8 && this.cards[1][1] === 0) {
 			return true;
 		} else {
@@ -221,7 +224,9 @@ class Dealer {
 	}
 
 	returnCards() {
+		// for all cards
 		for (var i = 0; i < this.cards.length; i++) {
+			// .pop() removes the last index and returns it
 			deck.returnCards(this.cards.pop());
 		}
 		this.cards = [];
@@ -401,13 +406,6 @@ function round(Tournament) {
 		deck.shuffle();
 		deck.cut();
 
-	}
-
-	for (let i = 0; i < playerLength + 1; i++) {
-		console.log('Player ' + i + " - card 1: " + Players[i].cards[0] + " card 2: " + Players[i].cards[1] + " card 3: " + Players[i].cards[2]);
-		Players[i].returnCards();
-		console.log('returnCards() called');
-		console.log('Player ' + i + " - card 1: " + Players[i].cards[0] + " card 2: " + Players[i].cards[1] + " card 3: " + Players[i].cards[2]);
 	}
 
 	// generates new values for wager and card balances.
@@ -744,20 +742,29 @@ function clearNode(node) {
 function displayNode(node, object, cards, i) {
 	// for each card in their hand
 	for (var Cd = i; Cd < object.cards.length; Cd++) {
-		let card = object.cards[Cd];
-		var content = document.createTextNode(object.display(card)[0]);
+		// select the card at the index
+		var card = object.cards[Cd];
+		// get the unicode character of the card
+		var unicard = object.display(card)[0]
+		// create a text node of the unicode card
+		var content = document.createTextNode(unicard);
+		// create a span element
 		var span = document.createElement("span");
+		// style the span
 		span.className = "card";
+		// append the text node to the span
 		span.appendChild(content);
+		// colour the card accordingly
 		span.style.color = object.display(card)[1];
+		//append the span element to the hand
 		node.appendChild(span);
 	}
 }
 
 function display() {
-	// for bank
 
 	// for (let i = 0; i < Players.length - 1; i++) {
+	// update the players bank to
 	getID("total").innerHTML = Players.last().bank;
 	// }
 
@@ -780,7 +787,8 @@ function display() {
 		dealerNode.appendChild(span);
 	}
 
-	// if playing, set iterator to 1, otherwise 0 so all cards are displayed
+	// if playing is true set iterator to 1, else 0
+	// this is needed to hide the dealers card when game is in play
 	let Cd = (PLAYING) ? 1 : 0;
 
 	// displays dealer cards
