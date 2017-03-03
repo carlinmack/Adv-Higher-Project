@@ -172,7 +172,7 @@ class Dealer {
 		// concatenates the suit and the card value
 		temp = prefix.concat(suit, cardVal);
 		// 1. returns a string from the unicode code point
-		//2. returns the colour by passing in the suit value  which returns the respective colour
+		// 2. returns the colour by passing in the suit value  which returns the respective colour
 		return [String.fromCodePoint(temp), colour[value]];
 	}
 
@@ -193,7 +193,8 @@ class Dealer {
 				value += 10;
 			}
 		}
-		if (value > 21 && flag) {
+		// if there is an ace (11) and the value is over 21 then the ace should be worth 1
+		if (flag && value > 21) {
 			value -= 10;
 			return value;
 		} else {
@@ -225,11 +226,12 @@ class Dealer {
 
 	returnCards() {
 		// for all cards
-		for (var i = 0; i < this.cards.length; i++) {
+		for (let i = this.cards.length; i > 0; i--) {
 			// .pop() removes the last index and returns it
-			deck.returnCards(this.cards.pop());
+			var temp = this.cards.pop();
+			// returns the index to deck
+			deck.returnCards(temp);
 		}
-		this.cards = [];
 	}
 
 	store() {
@@ -297,14 +299,12 @@ class PlayerHand extends Dealer {
 	}
 
 	returnCards() {
-		for (var i = 0; i < this.cards.length; i++) {
+		for (let i = this.cards.length; i > 0; i--) {
 			deck.returnCards(this.cards.pop());
 		}
-		this.cards = [];
-		for (var f = 0; f < this.splitCards.length; f++) {
+		for (let j = this.cards.length; j > 0; j--) {
 			deck.returnCards(this.splitCards.pop());
 		}
-		this.splitCards = [];
 	}
 
 	splitCardsCheck() {
@@ -412,6 +412,14 @@ function round(Tournament) {
 	for (let i = 1; i < playerLength; i++) {
 		Players[i].wagerBalanceCalc();
 		Players[i].cardBalanceCalc();
+	}
+
+	if (Players[0].cards) {
+		for (let i = 0; i < Players.length; i++) {
+			console.log('Player ' + i + ": " + Players[i].cards)
+			Players[i].returnCards();
+			console.log('Player ' + i + ": " + Players[i].cards)
+		}
 	}
 
 	deck.deal();
@@ -741,7 +749,7 @@ function clearNode(node) {
 
 function displayNode(node, object, cards, i) {
 	// for each card in their hand
-	for (var Cd = i; Cd < object.cards.length; Cd++) {
+	for (let Cd = i; Cd < object.cards.length; Cd++) {
 		// select the card at the index
 		var card = object.cards[Cd];
 		// get the unicode character of the card
