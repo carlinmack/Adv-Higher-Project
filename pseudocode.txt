@@ -27,7 +27,6 @@ CLASS Deck:
     END METHOD
 
     METHOD cut()
-        #cut 20% of the deck which is 62 cards
         FOR iterA FROM 0 TO 62 DO
             APPEND availableCards[iterA] TO cutCards
             REMOVE availableCards[iterA]
@@ -49,11 +48,17 @@ CLASS Deck:
     END METHOD
     
     METHOD combineDecks()
-        FOR iter3 Length(cutCards)
-            APPEND cutCards TO availableCards
+        FOR i FROM Length(cutCards) TO 0 INCREMENT -2
+			SET tempArray to []
+			APPEND cutCards.End TO tempArray
+			APPEND cutCards.End TO tempArray
+            APPEND tempArray TO availableCards
         END FOR
-        FOR iter4 TO Length(spendCards)
-           APPEND spentCards TO availableCards
+        FOR j FROM Length(spentCards) TO 0 INCREMENT -2
+			SET tempArray to []
+			APPEND spentCards.End TO tempArray
+			APPEND spentCards.End TO tempArray
+            APPEND tempArray TO availableCards
         END FOR
     END METHOD
     
@@ -74,10 +79,16 @@ CLASS Dealer:
     METHOD display()
         FOR EACH card FROM cards
             SWITCH cards[1]:
-                0:  SET suit TO 'A'
-                1:  SET suit TO 'B'
-                2:  SET suit TO 'C'
-                3:  SET suit TO 'D'
+                0: SET suit TO 'A'
+                1: SET suit TO 'B'
+                2: SET suit TO 'C'
+                3: SET suit TO 'D'
+            END SWITCH
+			SWITCH colour = {
+				'0': 'black',
+				'1': 'red',
+				'2': 'red',
+				'3': 'black'
             END SWITCH
 
             SET cardVal TO cards[1] + 1 TO HEXADECIMAL
@@ -102,16 +113,15 @@ CLASS Dealer:
     END METHOD  
     
     METHOD natural()
-        IF cards[0][1] IS ZERO AND cards[1][1] IS GREATER THAN 9 
+        IF cards[0][1] IS ZERO AND cards[1][1] > 9 
             RETURN True
-        IF cards[0][1] GREATER THAN 9 AND cards[1][1] IS ZERO
+        IF cards[0][1] > 9 AND cards[1][1] IS 0
             RETURN True
         ELSE
             RETURN False
         END IF    
     END METHOD    
             
-    
     METHOD stand()
         SET turn TO False 
     END METHOD
@@ -121,9 +131,12 @@ CLASS Dealer:
     END METHOD
     
     METHOD returnCards()
-        Deck.return(cards)
-        SET cards TO []
-    METHOD
+		FOR i FROM Length(cards) TO 0 DO
+			SET temp TO LAST INDEX cards
+			REMOVE LAST INDEX cards
+			deck.returnCards(temp)
+		END FOR
+    END METHOD
     
     METHOD store()
         WRITE {
@@ -143,13 +156,13 @@ CLASS AIhand INHERITS Dealer:
         SWITCH wagerBalance DO
             CASE 0:
                 SET wager TO 10
-                break
+                BREAK
             CASE 1:
                 SET wager TO 50
-                break
+                BREAK
             CASE 2:
                 SET wager TO 100
-                break
+                BREAK
             END
     END
 
@@ -176,25 +189,38 @@ CLASS playerHand INHERITS Dealer:
     SET splitCards TO []
     SET handle TO ""
     SET rounds TO 0
-    
-    METHOD display()
-        FOR EACH card FROM cards
-            RETURN unicodeCards[cards[card][0] MOD 4, cards[card][1]]
-        END FOR    
-        IF splitCards != null
-            RETURN unicodeCards[splitCards[card][0] MOD 4, splitCards[card][1]]
-        END IF
+
+	METHOD stand
+		settlement(True, True)
     END METHOD
 
-    METHOD double()
-        APPEND deck.hit() TO cards
-        SET wager TO wager * 2
-        SET turn TO False
+	METHOD returnCards() {
+		FOR i FROM Length(cards) TO 0 DO
+			SET temp TO LAST INDEX cards
+			REMOVE LAST INDEX cards
+		END FOR
+		
+		FOR i FROM Length(cards) TO 0 DO
+			SET temp TO LAST INDEX splitCards
+			REMOVE LAST INDEX splitCards
+		END FOR
     END METHOD
 
-    METHOD splitCards()
-        APPEND cards.pop TO splitCards
-        splitCards.hit()
+	METHOD splitCardsCheck() {
+		IF cards[0][1] IS cards[1][1]
+			RETURN True
+		ELSE IF cards[0][1] > 8 AND cards[1][1] > 8) {
+			RETURN True
+		ELSE
+			RETURN False
+		END IF
+    END METHOD
+
+	METHOD splitTheCards() {
+		splitCards.push(cards.pop())
+		hit()
+		hit()
+		splitCards.push(cards.pop())
     END METHOD
     
     METHOD store(i)
@@ -202,16 +228,45 @@ CLASS playerHand INHERITS Dealer:
             i & cards, cards
             i & bank, bank
             i & wager, wager
-            i & splitCards, splitCards
+            i & cardBalance, cardBalance
             i & handle, handle
+            i & splitCards, splitCards
+            i & turn, turn
         }  TO FILE
     END METHOD
 END CLASS
 
                 # MAIN PROGRAM  #
 SET deck TO NEW deck
-SET Players TO []
+SET Players TO UNDEFINED
 SET PLAYING TO False
+
+
+FUNCTION parse2D(object, item) {
+	
+    SET string TO READ FILE item
+    SET data TO SPLIT string ON ,
+	FOR k FROM 0 TO Length(data) INCREMENT 2 DO
+		SET tempArray TO []
+		APPEND data[k] TO tempArray
+		APPEND data[k + 1] TO tempArray
+	APPEND tempArray TO object
+	END FOR
+END FUNCTION
+		
+FUNCTION toggleWagers(bool) {
+	SET x TO ALL ELEMENTS WHERE CLASS wager
+
+	IF bool IS True
+		FOR i FROM 0 TO Length(x) DO
+			SET x[i].className TO mgame wager
+		END FOR
+	ELSE
+		FOR i FROM 0 TO Length(x) DO
+			x[i].className TO locked
+		END FOR
+	END IF
+END FUNCTION
 
 FUNCTION round(Tournament):    
 
@@ -219,7 +274,7 @@ FUNCTION round(Tournament):
 	< unlock action buttons >
 	< lock wagers >
 
-    SET playerLength TO Players.length
+    SET playerLength TO Length(Players)
 	SET PLAYING TO True
 	
 	IF Length(deck.availableCards) < Length(Players) * 5 DO
@@ -245,7 +300,6 @@ FUNCTION round(Tournament):
     
     deck.store()
     
-    # checking FOR naturals, Dealer can have one
     SET natural TO False
     FOR iter5 FROM 1 TO playerLength
         IF Players[iter5].evaluate() TO 21
@@ -253,7 +307,7 @@ FUNCTION round(Tournament):
         END IF
     END FOR
     
-    IF natural == False
+    IF natural IS False
 		SET display TO ROUND DOWN (players / 2)
 		FOR iterE FROM 1 TO display + 1 DO
 			SET Players[iterD].turn TO True
@@ -270,10 +324,10 @@ FUNCTION round(Tournament):
     END IF
     
     FOR iterF FROM 1 TO Length(Players) DO
-        #IF lower than Dealer or over 21
+	
         IF Players[iterF].evaluate < Players[0].evaluate OR Players[iterF] >= 21 THEN
             SET Players[iterF].bank TO Players[iterF].bank - Players[iterF].wager
-        #IF higher than Dealer
+			
         ELSE IF Players[iterF].evaluate > Players[0].evaluate THEN
             SET Players[iterF].bank TO Players[iterF].bank + Players[iterF].wager
         ELSE
@@ -322,23 +376,23 @@ FUNCTION newGame():
 END FUNCTION
 
 FUNCTION settlement(noNatural, noDouble):
-	SET PLAYING TO False;
+	SET PLAYING TO False
 
 	< hide elements >
 	< unlock action buttons >
 	< unlock wagers >
 
-	SET wager TO Players.End.wager;
-	SET wager.className TO 'mgame wager selected';
+	SET wager TO Players.End.wager
+	SET wager.className TO 'mgame wager selected'
 
 	IF noNatural IS True DO
         FOR iter FROM 0 TO playerLength -1 DO 
-			SET Players[l].turn TO True;
+			SET Players[l].turn TO True
 			WHILE Players[l].turn IS True DO
 				IF Players[l].evaluate() < Players[l].cardBalance DO
-					Players[l].hit();
+					Players[l].hit()
 				ELSE
-					Players[l].stand();
+					Players[l].stand()
 				END IF
 			END WHILE
 		END FOR
@@ -346,50 +400,50 @@ FUNCTION settlement(noNatural, noDouble):
 
 	IF noNatural IS False DO
 		IF Players.End.natural() DO
-			Players.End.wager TO Players.End.wager * 1.5;
+			Players.End.wager TO Players.End.wager * 1.5
 		END IF
 	END IF
 
 	IF noDouble IS False {
-		Players.End.wager += Players.End.wager;
+		Players.End.wager += Players.End.wager
 	END IF
 
-	getID('winnings').innerHTML TO Players.End.wager;
-	getID('losings').innerHTML TO Players.End.wager;
+	getID('winnings').innerHTML TO Players.End.wager
+	getID('losings').innerHTML TO Players.End.wager
 
     FOR iterI FROM 1 TO Length(Players) DO
 		IF noNatural IS False DO        
 			IF Players[i].natural() DO            
-				IF i IS Players.length - 1 DO
-					SET Players[i].bank += Players[i].wager;
+				IF i IS Length(Players) - 1 DO
+					SET Players[i].bank += Players[i].wager
 					< display won >
 				END IF
-				SET Players[i].bank += Players[i].wager * 1.5;
+				SET Players[i].bank += Players[i].wager * 1.5
 			END IF
             
-		ELSE IF Players[0].evaluate() > 21 && Players[i].evaluate() < 21 DO
-			SET Players[i].bank += Players[i].wager;
+		ELSE IF Players[0].evaluate() > 21 AND Players[i].evaluate() < 21 DO
+			SET Players[i].bank += Players[i].wager
 
-			IF i IS Players.length - 1
+			IF i IS Length(Players) - 1
 				< display won >
 			END IF
 
-		ELSE IF Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate() DO
-			SET Players[i].bank -= Players[i].wager;
+		ELSE IF Players[i].evaluate() > 21 OR Players[i].evaluate() < Players[0].evaluate() DO
+			SET Players[i].bank -= Players[i].wager
 
-			IF i IS Players.length - 1 DO
-				< display lest >
+			IF i IS Length(Players) - 1 DO
+				< display lost >
 			END IF
 
 		ELSE IF Players[i].evaluate() > Players[0].evaluate() DO
-			SET Players[i].bank += Players[i].wager;
+			SET Players[i].bank += Players[i].wager
 
-			IF i IS Players.length - 1 DO
+			IF i IS Length(Players) - 1 DO
 				< display won >
 			END IF
             
 		ELSE
-			IF i IS Players.length - 1 DO
+			IF i IS Length(Players) - 1 DO
 				< display tied >
 			END IF
 		END IF
@@ -397,85 +451,77 @@ FUNCTION settlement(noNatural, noDouble):
 
 	IF noNatural IS False DO
 		IF Players.End.natural() DO
-			SET Players.End.wager TO Players.End.wager / 1.5;
+			SET Players.End.wager TO Players.End.wager / 1.5
 		END IF
 	END IF
 
 	IF noDouble IS False DO
-		SET Players.End.wager TO Players.End.wager / 2;
+		SET Players.End.wager TO Players.End.wager / 2
 	END FOR
 
 	FOR iterI FROM 1 TO Length(Players)
-		Players[i].store(i);
+		Players[i].store(i)
 	END FOR
 
-	deck.store();
+	deck.store()
 END FUNCTION
 
 FUNCTION tournament(bank, handle):
-	SET table TO getID('leaderboardTable');
-	SET lastRow TO table.rows[5];
-	SET lastCellValue TO lastRow.cells[2].innerHTML;
-	SET value TO parseInt(lastCellValue.substr(1));
+	SET table TO getID('leaderboardTable')
+	SET lastRow TO table.rows[5]
+	SET lastCellValue TO lastRow.cells[2].innerHTML
+	SET value TO parseInt(lastCellValue.substr(1))
 
 	IF value < bank DO
-		SET tempArr TO [];
-		tempArr.push(bank);
+		SET tempArr TO []
+		tempArr.push(bank)
         FOR iter FROM 1 TO 6 DO
-			SET rowVal TO table.rows[i].cells[2].innerHTML;
-			SET Val TO parseInt(rowVal.substr(1));
-			tempArr.push(Val);
+			SET rowVal TO table.rows[i].cells[2].innerHTML
+			SET Val TO parseInt(rowVal.substr(1))
+			tempArr.push(Val)
 		END FOR
 
-		SET index;
+		SET index TO UNDEFINED
         
 		FOR iter FROM 1 TO 6
 			IF tempArr[i] < tempArr[i + 1] DO
-				SET tempVal TO tempArr[i];
-				tempArr[i] TO tempArr[i + 1];
-				tempArr[i + 1] TO tempVal;
-				index TO i + 2;
+				SET tempVal TO tempArr[i]
+				tempArr[i] TO tempArr[i + 1]
+				tempArr[i + 1] TO tempVal
+				index TO i + 2
 			END IF
 		END FOR
 
-		table.deleteRow(5);
+		FROM table DELETE ROW 5
 
-		SET newRow TO table.insertRow(index);
+		SET newRow TO table.insertRow(index)
 
-		SET newCol1 TO newRow.insertCell(0);
-		SET newCol2 TO newRow.insertCell(1);
-		SET newCol3 TO newRow.insertCell(2);
+		SET newCol1 TO newRow.insertCell(0)
+		SET newCol2 TO newRow.insertCell(1)
+		SET newCol3 TO newRow.insertCell(2)
 
-		SET col1 TO document.createTextNode(index);
-		SET col2 TO document.createTextNode(handle);
-		SET col3 TO document.createTextNode('£' + bank);
-		newCol1.appendChild(col1);
-		newCol2.appendChild(col2);
-		newCol3.appendChild(col3);
+		SET col1 TO document.createTextNode(index)
+		SET col2 TO document.createTextNode(handle)
+		SET col3 TO document.createTextNode('£' + bank)
+		newCol1.appendChild(col1)
+		newCol2.appendChild(col2)
+		newCol3.appendChild(col3)
 
 		FOR iter FROM index + 1 TO 6 DO
             < reindex rows below the inserted row with the iterator >
-			table.rows[i].cells[0].innerHTML TO i;
+			table.rows[i].cells[0].innerHTML TO i
 		END FOR
 	ELSE
-		//
 	END IF
 END FUNCTION
 
-FUNCTION splitCards() {
-	styleID('splitCards').marginLeft TO '50px';
-	getID('split').className TO 'hidden';
-	getID('player').className TO '';
+FUNCTION splitCards()
+	styleID('splitCards').marginLeft TO '50px'
+	getID('split').className TO 'hidden'
+	getID('player').className TO ''
 END FUNCTION
 
-FUNCTION loadGame():
-    SET deck.availableCards TO READ FILE availableCards
-    SET deck.cutCards TO READ FILE cutCards
-    SET deck.spentCards TO READ FILE spentCards
-    SET deck.players TO READ FILE players
-    
-    SET Players[0].cards TO READ FILE 0cards
-    
+FUNCTION loadGame()        
     FOR iterI FROM 1 TO Length(Players) + 1
         SET Players[iterI].cards TO READ FILE iterI & cards
         SET Players[iterI].bank TO READ FILE iterI & bank
@@ -489,32 +535,178 @@ FUNCTION loadGame():
     END FOR
 END FUNCTION
 
-FUNCTION tournament():
-    APPEND Player TO Players
-    SET Player.handle TO USER INPUT
+FUNCTION loadGame() {
+	play()
+	SET PLAYING TO False
 
-    deck.createDeck(6)
-    deck.shuffle()
-    deck.cut()
-    
-    FOR iterJ FROM 0 TO 10:
-        round()
-        iterJ++
-    END FOR
-    
-    # SORT #
-    SET currentval TO Player.bank    
-	SET position TO 1   
-	WHILE position > 0 AND list[position-1] > currentval DO   
-		SET list[position] TO list[position-1]        
-		SET position -= 1    
+	HIDE roundText
+
+	styleID('dealer').marginTop TO "0px"
+	styleID('dealer').marginLeft TO "100px"
+
+	toggleWagers(True)
+
+	GLOBALLY SET Players TO []
+	
+	Players.push(NEW Dealer())
+
+	GLOBALLY SET deck TO NEW Deck()
+	
+    SET deck.availableCards TO READ FILE availableCards
+    SET deck.cutCards TO READ FILE cutCards
+    SET deck.spentCards TO READ FILE spentCards
+    SET deck.players TO READ FILE Int(players)
+
+	FOR i FROM 1 TO deck.players DO
+		Players.push(NEW VirtualHand())
+	END FOR
+
+	Players.push(NEW playerHand())
+
+    SET Players[0].cards TO READ FILE cards
+    SET Players[0].turn TO READ FILE turn
+    SET Players[0].cardBalance TO READ FILE cardBalance
+
+	FOR j FROM 1 TO deck.players + 1 DO
+		SET Players[j].cards TO READ FILE j & cards
+		SET Players[j].bank TO READ FILE j & bank
+		SET Players[j].wager TO READ FILE j & wager
+		SET Players[j].turn TO READ FILE j & turn
+		SET Players[j].cardBalance TO READ FILE j & cardBalance
+
+		IF j IS deck.players DO
+			SET Players[j].splitCards TO READ FILE j & splitCards
+			SET Players[j].handle TO READ FILE j & handle
+		} ELSE {
+			SET Players[j].wagerBalance TO READ FILE j & wagerBalance
+		END IF
+	END FOR
+	
+	SET wager TO Players.End.wager
+	getID(wager).className TO 'mgame wager selected'
+END
+
+FUNCTION clearNode(node) {
+	WHILE node.firstChild
+		REMOVE firstChild FROM node
 	END WHILE
-    SET list[position] TO currentval
 END FUNCTION
 
-SET y TO ALL ELEMENTS WHERE CLASS = return
+FUNCTION displayNode(node, object, cards, i) {
+	FOR i FROM 0 TO Length(object.cards):
+		SET card TO object.cards[Cd]
+		SET unicard TO object.display(card)[0]
+		SET content TO CREATE TEXT NODE unicard
+		SET span TO CREATE ELEMENT SPAN
+		SET span.className TO "card"
+		APPEND content TO span
+		SET span.style.color TO object.display(card)[1]
+		APPEND span TO node
+	END FOR
+END FUNCTION
+
+FUNCTION display() {
+
+	getID("total").innerHTML TO Players.End.bank
+	
+	SET dealerNode TO getID("dealer")
+	SET dealer TO Players[0]
+	
+	clearNode(dealerNode)
+
+	IF Length(dealer.cards) IS 0 OR PLAYING IS True) {
+		SET card TO [0, -1]
+		SET content TO document.createTextNode(dealer.display(card)[0])
+		SET span TO document.createElement("span")
+		span.className TO "card"
+		span.appendChild(content)
+		IF PLAYING IS True
+			SET span.style.color TO dealer.display(dealer.cards[0])[1]
+		END IF
+		dealerNode.appendChild(span)
+	END IF
+
+	IF PLAYING IS True 
+		SET Cd TO 1
+	ELSE 
+		SET Cd To 0
+	END IF
+	
+	displayNode(dealerNode, dealer, 'cards', Cd)
+
+	FOR x FROM 1 TO 5 DO
+		clearNode(getID("ai" + x))
+	END FOR
+
+	IF Length(Players) > 2	
+		FOR PL FROM 1 TO deck.players DO
+			SET aiNode TO getID("ai" + (Pl))			
+			displayNode(aiNode, Players[Pl], 'cards', 0)
+		END FOR
+	END IF
+
+	SET playerNode TO getID('player')
+	SET player TO Players.End
+	
+	clearNode(playerNode)
+
+	displayNode(playerNode, player, 'cards', 0)
+
+	SET splitNode TO getID('splitCards')
+
+	clearNode(splitNode)
+
+	IF Length(player.splitCards) > 0 DO
+		FOR Cd FROM 0 TO LENGTH(Players.End.splitCards) DO
+			SET card TO Players.End.splitCards[Cd]
+			SET content TO document.createTextNode(Players.End.display(card)[0])
+			SET span TO document.createElement("span")
+			SET span.className TO "card"
+			span.appendChild(content)
+			span.style.color TO Players.End.display(card)[1]
+			getID('splitCards').appendChild(span)
+		END FOR
+	END IF
+END FUNCTION
+
+ON CLICK ID game DO makeClicker("gameScreen")
+ON CLICK ID rules DO makeClicker("rulesScreen")
+ON CLICK ID leaderboard DO makeClicker("leaderboardScreen")
+ON CLICK ID exit DO makeClicker("exit")
+ON CLICK ID create DO makeClicker("gameScreen2")
+ON CLICK ID 10 DO makeWager("10")
+ON CLICK ID 50 DO makeWager("50")
+ON CLICK ID 100 DO makeWager("100")
+SET main TO makeClicker("mainScreen")
+SET play TO makeClicker("mainGame")
+
+FUNCTION makeClicker(Button) {
+	< assigns the onclick method to the below function >
+	RETURN FUNCTION () {
+		SET x TO document.querySelectorAll(".screen")
+		FOR i FROM 0 TO Length(x) DO
+			HIDE x[i]
+		END FOR
+		DISPLAY Button
+	}
+END FUNCTION
+
+FUNCTION makeWager(Button) {
+	< assigns the onclick method to the below function >
+	RETURN FUNCTION () {
+		IF PLAYING IS False
+			SET Players.last().wager TO parseInt(Button)
+
+			toggleWagers(true)
+
+			DISPLAY Button
+		END IF
+	}
+END FUNCTION
+
+SET y TO ALL ELEMENTS WHERE CLASS TO return
 FOR k FROM 0 TO LENGTH y DO
-	ON CLICK y[k] = main;
+	ON CLICK y[k] TO main
 END FOR
 
 ON CLICK ID decPlayers DO
@@ -530,25 +722,25 @@ ON CLICK ID incPlayers DO
 END ON CLICK
 
 ON CLICK ID play DO
-	SET ID roundText.className TO hidden
+	HIDE roundText
 
 	< space dealer without tournament text >
 
 	SWITCH deck.players
 	CASE 1:
 		< set margin to space the player accordingly >
-		break;
+		BREAK
 	CASE 2:
 		< set margin to space the player accordingly >
-		break;
+		BREAK
 	CASE 3:
 	CASE 4:
 	CASE 5:
 		< set margin to space the player accordingly >
-		break;
-	}
+		BREAK
+	END SWITCH
 
-	newGame(deck.players);
+	newGame(deck.players)
 END ON CLICK
 
 ON CLICK ID previous DO
@@ -556,36 +748,36 @@ ON CLICK ID previous DO
 END ON CLICK
 
 ON CLICK ID tournament DO
-	getID('roundText').className = "inline";
+	getID('roundText').className TO "inline"
 
 	< space dealer without tournament text >
 	< set margin to space the player accordingly >
 
-	newGame(1);
+	newGame(1)
 
-	SET Players.End.rounds TO 1;
-	SET Players.End.handle TO prompt('Handle: ');
+	SET Players.End.rounds TO 1
+	SET Players.End.handle TO prompt('Handle: ')
 END ON CLICK
 
 ON CLICK ID hit DO
 	IF PLAYING IS True
-		Players.End.hit();
+		Players.End.hit()
 	END IF
 END ON CLICK
 
 ON CLICK ID stand DO
 	IF PLAYING IS True
-		Players.End.stand();
+		Players.End.stand()
 	END IF
 END ON CLICK
 
 ON CLICK ID double DO
-	Players.End.hit();
-	settlement(True, False);
+	Players.End.hit()
+	settlement(True, False)
 END ON CLICK
 
 ON CLICK ID split DO
-	Players.End.splitTheCards();
+	Players.End.splitTheCards()
 	< hide split button >
 END ON CLICK
 
@@ -597,18 +789,18 @@ ON CLICK ID nextRound DO
     round(Players.End.rounds)
 END ON CLICK
 
-< call below every 0.1 seconds >
+< call below every 0.1 seconds, and redraw screen >
 	SET HTML players TO deck.players
 	display()
 
 	IF PLAYING IS True
-		SET user TO Players.End;
+		SET user TO Players.End
 
-		IF user.evaluate() IS GREATER THAN 21  	
-			settlement(True, True);
+		IF user.evaluate() > 21  	
+			settlement(True, True)
 		END IF
 
-		IF user.evaluate() IS GREATER THAN 8 AND user.evaluate() IS SMALLER THAN 12
+		IF user.evaluate() > 8 AND user.evaluate() < 12
 			< show double button >
 		END IF
 
@@ -617,7 +809,7 @@ END ON CLICK
 		END IF
 	END IF
 
-	IF Players.End.rounds IS GREATER THAN 0 
+	IF Players.End.rounds > 0 
 		< show round 1 of 10 >
 	END IF
 < end call >
