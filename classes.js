@@ -120,11 +120,21 @@ class Deck {
 
 	combineDecks() {
 		// add cut and spent cards to the end of available cards
-		for (let i = 0; i < this.cutCards.length; i++) {
-			this.availableCards.push(this.cutCards[i].pop());
+		for (let i = this.cutCards.length; i > 0; i -= 2) {
+			let tempArray = [];
+			// push two items to the array
+			tempArray.push(this.cutCards.pop());
+			tempArray.push(this.cutCards.pop());
+			// adds the two index array (a card) to the object
+			this.availableCards.push(tempArray);
 		}
-		for (let j = 0; j < this.spentCards.length; j++) {
-			this.availableCards.push(this.spentCards[j].pop());
+		for (let j = this.spentCards.length; j > 0; j -= 2) {
+			let tempArray = [];
+			// push two items to the array
+			tempArray.push(this.spentCards.pop());
+			tempArray.push(this.spentCards.pop());
+			// adds the two index array (a card) to the object
+			this.availableCards.push(tempArray);
 		}
 	}
 
@@ -180,7 +190,9 @@ class Dealer {
 		var value = 0;
 		var flag = false;
 
+		// for each card
 		for (let k = 0; k < this.cards.length; k++) {
+			// if card is an ace and they don't have another ace
 			if (this.cards[k][1] === 0 && flag === false) {
 				value += 11;
 				flag = true;
@@ -207,7 +219,7 @@ class Dealer {
 		// if the first card is an ace and the second card is over 9
 		if (this.cards[0][1] === 0 && this.cards[1][1] > 8) {
 			return true;
-		// if the first card is over 9 and the second card is an ace
+			// if the first card is over 9 and the second card is an ace
 		} else if (this.cards[0][1] > 8 && this.cards[1][1] === 0) {
 			return true;
 		} else {
@@ -250,7 +262,9 @@ class VirtualHand extends Dealer {
 	}
 
 	wagerBalanceCalc() {
+		// chooses a random number between 0 and 2
 		this.wagerBalance = Math.floor(Math.random() * 3);
+		// selects the relevant wager
 		switch (this.wagerBalance) {
 		case 0:
 			this.wager = 10;
@@ -269,6 +283,7 @@ class VirtualHand extends Dealer {
 		// not a statistically sound method but it should do the trick
 		var max = 9;
 		var min = 7;
+		// standard formula to select a random number in a range
 		var x = Math.floor(Math.random() * (max - min + 1) + min);
 		var y = Math.floor(Math.random() * (max - min + 1) + min);
 		this.cardBalance = x + y;
@@ -299,24 +314,28 @@ class PlayerHand extends Dealer {
 	}
 
 	returnCards() {
+		// for all cards
 		for (let i = this.cards.length; i > 0; i--) {
+			// .pop() removes the last index and returns it. Then returns the index to deck
 			deck.returnCards(this.cards.pop());
 		}
+		// for all cards
 		for (let j = this.cards.length; j > 0; j--) {
+			// .pop() removes the last index and returns it. Then returns the index to deck
 			deck.returnCards(this.splitCards.pop());
 		}
 	}
 
 	splitCardsCheck() {
+		// if the cards have the same value
 		if (this.cards[0][1] === this.cards[1][1]) {
 			return true;
+			// or if they are both valued above 9
 		} else if (this.cards[0][1] > 8 && this.cards[1][1] > 8) {
 			return true;
 		} else {
 			return false;
 		}
-		// create two seperate hands
-		// this.splitCards.push(this.cards.pop);
 	}
 
 	splitTheCards() {
@@ -349,21 +368,29 @@ function getID(x) {
 	return document.getElementById(x);
 }
 
+// helper function to make code easier to read
 function styleID(x) {
 	return document.getElementById(x).style;
 }
 
+// helper function to parse CSV formatted cards in localstorage to 2D array so that they can be loaded properly
 function parse2D(object, item) {
 	var string = localStorage.getItem(item);
+	// splits the string into an array on commas
 	var data = string.split(',');
+	// for every second index of the array
 	for (let k = 0; k < data.length; k += 2) {
 		var tempArray = [];
+		// push two items to the array
 		tempArray.push(parseInt(data[k]));
 		tempArray.push(parseInt(data[k + 1]));
+		// adds the two index array (a card) to the object
 		object.push(tempArray);
 	}
 }
 
+// helper function so I don't have to write
+// Players[Players.length - 1] to access the user
 Array.prototype.last = function () {
 	return this[this.length - 1];
 };
@@ -373,16 +400,16 @@ function toggleWagers(bool) {
 
 	if (bool) {
 		for (let i = 0; i < x.length; i++) {
+			// remove locked css
 			x[i].className = 'mgame wager';
 		}
 	} else {
 		for (let i = 0; i < x.length; i++) {
+			// lock the buttons
 			x[i].className += ' locked';
 		}
 	}
 }
-
-// end helper function
 
 function round(Tournament) {
 	getID('deal').className = 'hidden';
@@ -400,6 +427,7 @@ function round(Tournament) {
 	var playerLength = Players.length - 1;
 	PLAYING = true;
 
+	// if there aren't enough cards to play the next round
 	if (deck.availableCards.length < Players.length * 5) {
 		deck.combineDecks();
 		alert('time to break?');
@@ -414,11 +442,10 @@ function round(Tournament) {
 		Players[i].cardBalanceCalc();
 	}
 
-	if (Players[0].cards) {
+	// returns the cards if there was a previous round
+	if (Players[0].cards.length) {
 		for (let i = 0; i < Players.length; i++) {
-			console.log('Player ' + i + ": " + Players[i].cards)
 			Players[i].returnCards();
-			console.log('Player ' + i + ": " + Players[i].cards)
 		}
 	}
 
@@ -439,7 +466,7 @@ function round(Tournament) {
 		}
 	}
 
-	// if there is a natural then the game instantly ends, cards are evaled
+
 	if (natural === false) {
 		// turn for players before user
 		var showPlayers = Math.floor(playerLength / 2) + 1;
@@ -453,6 +480,7 @@ function round(Tournament) {
 				}
 			}
 		}
+	// if there is a natural then the game instantly ends, cards are evaled
 	} else {
 		settlement(false, true);
 	}
@@ -461,7 +489,9 @@ function round(Tournament) {
 		Players.last().rounds += 1;
 	}
 
-	if (Players.last().rounds >= 12) tournament(Players.last().bank, Players.last().handle);
+	if (Players.last().rounds >= 12) {
+		tournament(Players.last().bank, Players.last().handle);
+	}
 }
 
 function newGame(players) {
@@ -534,12 +564,14 @@ function settlement(noNatural, noDouble) {
 	}
 
 	if (noNatural === false) {
+		// sets the players augmented wager if they have a natural
 		if (Players.last().natural()) {
 			Players.last().wager = Players.last().wager * 1.5;
 		}
 	}
 
 	if (noDouble === false) {
+		// sets the players augmented wager if they click double
 		Players.last().wager += Players.last().wager;
 	}
 
@@ -562,7 +594,7 @@ function settlement(noNatural, noDouble) {
 				Players[i].bank += Players[i].wager * 1.5;
 			}
 			// if dealer goes bust and player still standing
-		} else if (Players[0].evaluate() > 21 && Players[i].evaluate() < 21) {
+		} else if (Players[0].evaluate() > 21 && Players[i].evaluate() < 22) {
 			Players[i].bank += Players[i].wager;
 
 			if (i === Players.length - 1) {
@@ -592,12 +624,14 @@ function settlement(noNatural, noDouble) {
 		}
 	}
 
+	// resets augmented wager
 	if (noNatural === false) {
 		if (Players.last().natural()) {
 			Players.last().wager = Players.last().wager / 1.5;
 		}
 	}
 
+	// resets augmented wager
 	if (noDouble === false) {
 		Players.last().wager = Players.last().wager / 2;
 	}
@@ -671,6 +705,7 @@ function tournament(bank, handle) {
 }
 
 function splitCards() {
+	// styles the split cards
 	styleID('splitCards').marginLeft = '50px';
 	getID('split').className = 'hidden';
 	getID('player').className = '';
@@ -753,7 +788,7 @@ function displayNode(node, object, cards, i) {
 		// select the card at the index
 		var card = object.cards[Cd];
 		// get the unicode character of the card
-		var unicard = object.display(card)[0]
+		var unicard = object.display(card)[0];
 		// create a text node of the unicode card
 		var content = document.createTextNode(unicard);
 		// create a span element
@@ -783,6 +818,7 @@ function display() {
 	clearNode(dealerNode);
 
 	// for showing back of card if no cards
+	// same code as displyNode but function does not support card = [0,-1]
 	if (dealer.cards.length === 0 || PLAYING === true) {
 		let card = [0, -1];
 		let content = document.createTextNode(dealer.display(card)[0]);
@@ -833,6 +869,7 @@ function display() {
 	clearNode(splitNode);
 
 	if (player.splitCards.length > 0) {
+		// this is the same code as the display node code but module doesn't support splitcards
 		for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
 			let card = Players.last().splitCards[Cd];
 			var content = document.createTextNode(Players.last().display(card)[0]);
@@ -859,10 +896,13 @@ var play = makeClicker("mainGame");
 
 function makeClicker(Button) {
 	return function () {
+		// select all screens
 		var x = document.querySelectorAll(".screen");
+		// hides them
 		for (let i = 0; i < x.length; i++) {
 			x[i].className = 'screen hidden';
 		}
+		// except the chosen screen
 		getID(Button).className = 'screen';
 	};
 }
@@ -870,19 +910,20 @@ function makeClicker(Button) {
 function makeWager(Button) {
 	return function () {
 		if (PLAYING === false) {
+			//sets player wager
 			Players.last().wager = parseInt(Button);
-
 			// select all wagers and unselect them
 			toggleWagers(true);
-
 			// add the class selected to the clicked wager
 			getID(Button).className = 'mgame wager selected';
 		}
 	};
 }
 
+// select all return buttons
 var y = document.querySelectorAll(".return");
 for (let k = 0; k < y.length; k++) {
+	// set the onclick to main
 	y[k].onclick = main;
 }
 
@@ -902,6 +943,8 @@ getID('play').onclick = function () {
 	styleID('dealer').marginLeft = "100px";
 
 	switch (deck.players) {
+		// sets the margins based on the number of players
+		// so that the action/wager buttons are always at bottom
 	case 1:
 		styleID('rightBlock').marginTop = "300px";
 		styleID('selectWager').marginTop = "-27px";
