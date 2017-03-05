@@ -214,7 +214,6 @@ class Dealer {
 		}
 	}
 
-
 	natural() {
 		// if the first card is an ace and the second card is over 9
 		if (this.cards[0][1] === 0 && this.cards[1][1] > 8) {
@@ -319,10 +318,12 @@ class PlayerHand extends Dealer {
 			// .pop() removes the last index and returns it. Then returns the index to deck
 			deck.returnCards(this.cards.pop());
 		}
-		// for all cards
-		for (let j = this.cards.length; j > 0; j--) {
-			// .pop() removes the last index and returns it. Then returns the index to deck
-			deck.returnCards(this.splitCards.pop());
+		// if there are split cards, remove them
+		if (this.splitCards.length) {
+			for (let j = this.splitCards.length; j > 0; j--) {
+				// .pop() removes the last index and returns it. Then returns the index to deck
+				deck.returnCards(this.splitCards.pop());
+			}
 		}
 	}
 
@@ -480,7 +481,7 @@ function round(Tournament) {
 				}
 			}
 		}
-	// if there is a natural then the game instantly ends, cards are evaled
+		// if there is a natural then the game instantly ends, cards are evaled
 	} else {
 		settlement(false, true);
 	}
@@ -782,7 +783,7 @@ function clearNode(node) {
 	}
 }
 
-function displayNode(node, object, cards, i) {
+function displayNode(node, object, i) {
 	// for each card in their hand
 	for (let Cd = i; Cd < object.cards.length; Cd++) {
 		// select the card at the index
@@ -836,7 +837,7 @@ function display() {
 	let Cd = (PLAYING) ? 1 : 0;
 
 	// displays dealer cards
-	displayNode(dealerNode, dealer, 'cards', Cd);
+	displayNode(dealerNode, dealer, Cd);
 
 	// clearing ai players
 	for (let x = 1; x < 5; x++) {
@@ -850,7 +851,7 @@ function display() {
 			let aiNode = getID("ai" + (Pl));
 
 			// for each card in their hand
-			displayNode(aiNode, Players[Pl], 'cards', 0);
+			displayNode(aiNode, Players[Pl], 0);
 		}
 	}
 
@@ -861,7 +862,7 @@ function display() {
 	clearNode(playerNode);
 
 	// for each card in their hand
-	displayNode(playerNode, player, 'cards', 0);
+	displayNode(playerNode, player, 0);
 
 	var splitNode = getID('splitCards');
 
