@@ -492,7 +492,7 @@ function round(Tournament) {
 		Players.last().rounds += 1;
 	}
 
-	if (Players.last().rounds >= 12) {
+	if (Players.last().rounds > 11) {
 		tournament(Players.last().bank, Players.last().handle);
 	}
 }
@@ -656,6 +656,13 @@ function tournament(bank, handle) {
 	var lastCellValue = lastRow.cells[2].innerHTML;
 	var value = parseInt(lastCellValue.substr(1));
 
+	PLAYING = false;
+	Players[0].returnCards();
+	Players[1].returnCards();
+	getID('stand').className += " locked";
+	getID('hit').className += " locked";
+	toggleWagers(false);
+
 	// if lastRval < bank, if someone has same value as last row they don't place
 	if (value < bank) {
 
@@ -669,15 +676,18 @@ function tournament(bank, handle) {
 		}
 
 		// finding position with bubble sort, only doing one pass
-		var index;
+		var index, flag = true;
 		for (let i = 0; i < 6; i++) {
 			if (tempArr[i] < tempArr[i + 1]) {
 				var tempVal = tempArr[i];
 				tempArr[i] = tempArr[i + 1];
 				tempArr[i + 1] = tempVal;
 				index = i + 2;
+				flag = false;
 			}
 		}
+
+		if (flag) index = 1;
 
 		suffix = {
 			'1': 'st',
@@ -697,18 +707,16 @@ function tournament(bank, handle) {
 		// add to table
 		var newRow = table.insertRow(index);
 
-		// Insert a cell in the row at index 0
-		var newCol1 = newRow.insertCell(0);
-		var newCol2 = newRow.insertCell(1);
-		var newCol3 = newRow.insertCell(2);
-
-		// Append a text node to the cell
+		// Create a text node with user data
 		var col1 = document.createTextNode(index);
 		var col2 = document.createTextNode(handle);
 		var col3 = document.createTextNode('£' + bank);
-		newCol1.appendChild(col1);
-		newCol2.appendChild(col2);
-		newCol3.appendChild(col3);
+
+		// Insert a cell in the row at the specified index
+		// and append respective data
+		var newCol1 = newRow.insertCell(0).appendChild(col1);
+		var newCol2 = newRow.insertCell(1).appendChild(col2);
+		var newCol3 = newRow.insertCell(2).appendChild(col3);
 
 		// need to reindex other rows
 		for (let i = index + 1; i < 6; i++) {
@@ -994,7 +1002,7 @@ getID('tournament').onclick = function () {
 	newGame(1);
 
 	Players.last().rounds = 1;
-	Players.last().handle = prompt('Handle: ');
+	Players.last().handle = prompt('Enter a handle for leaderboard: ');
 };
 
 getID('hit').onclick = function () {
@@ -1049,6 +1057,8 @@ window.setInterval(function () {
 			} else {
 				getID('split').className = "hidden";
 			}*/
+		} else {
+			getID('double').className = "hidden";
 		}
 	}
 
