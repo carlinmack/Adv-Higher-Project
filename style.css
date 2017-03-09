@@ -92,6 +92,8 @@ th:first-child {
 }
 
 .screen {
+/*	background: url('felt.png');
+	border: #0EB29C 1px solid */
     width: 750px;
     height: 550px;
     margin: 0 auto;
