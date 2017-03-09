@@ -19,7 +19,6 @@
 			<button class="menu" id="leaderboard"> Leaderboard </button>
 			<button class="menu" id="exit"> Exit </button>
 		</div>
-
 	</div>
 	<!-- End Main Menu -->
 
@@ -32,7 +31,6 @@
 		<button class="menu game center" id="previous"> Enter Previous </button>
 		<br>
 		<button class="menu game center" id="tournament"> Tournament </button>
-
 	</div>
 
 	<div id="gameScreen2" class="screen hidden">
@@ -48,7 +46,6 @@
 		</p>
 		<br>
 		<button class="menu game center" id="play"> Play </button>
-
 	</div>
 
 	<div id="mainGame" class="screen hidden">
@@ -62,6 +59,8 @@
 			<div id="ai2">
 			</div>
 		</div>
+		<p class='hidden' id='winTourn'> Congratulations! You placed <span id='place'> 1st </span></p>
+		<p class='tournamentFeedback inline hidden' id='loseTour'> Sorry you didn't place this time</p>
 		<div id="hand1">
 			<div id="ai3">
 			</div>
@@ -114,22 +113,22 @@
 		<h2> Rules </h2>
 		<ul>
 			<li>
-				Each player selects how much they will bet this turn
+				Each player selects how much they will bet on the next turn
 			</li>
 			<li>
 				Each player is dealt 2 cards
 			</li>
 			<li>
-				They have the option to hit - receive a card - or stand - end your turn
+				The goal of each round is to get as close to 21 without going bust. All players play against the dealer.
 			</li>
 			<li>
-				In certain cases the player can Split or Double
+				Each player has the option to hit and receive a card, or stand and end their turn
 			</li>
 			<li>
-				Split - Seperate two equal cards into two different hands
+				In certain cases the player can double their cards
 			</li>
 			<li>
-				Double - Receive one card and double your wager
+				When this option is selected, they receive one card, double their wager and stand.
 			</li>
 		</ul>
 	</div>
