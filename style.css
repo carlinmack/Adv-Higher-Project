@@ -129,6 +129,13 @@ th:first-child {
     color: #aaa;
 }
 
+.tournamentFeedback {
+	font-size: 2em;
+	text-align: center;
+	width: 225px;
+	margin: 100px auto -120px auto;
+}
+
 .return,
 #hand0 {
     float: right;
