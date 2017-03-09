@@ -419,6 +419,8 @@ function round(Tournament) {
 	getID('won').className = 'hidden';
 	getID('loss').className = 'hidden';
 	getID('tied').className = 'hidden';
+	getID('loseTour').className = "hidden";
+	getID('winTourn').className = "hidden";
 
 	getID('stand').className = 'mgame action';
 	getID('hit').className = 'mgame action';
@@ -504,6 +506,8 @@ function newGame(players) {
 	getID('selectWager').className = "center";
 	getID('double').className = "hidden";
 	getID('split').className = "hidden";
+	getID('loseTour').className = "hidden";
+	getID('winTourn').className = "hidden";
 
 	PLAYING = false;
 
@@ -652,10 +656,8 @@ function tournament(bank, handle) {
 	var lastCellValue = lastRow.cells[2].innerHTML;
 	var value = parseInt(lastCellValue.substr(1));
 
-	// if lastRval < bank
+	// if lastRval < bank, if someone has same value as last row they don't place
 	if (value < bank) {
-		// display well done
-		prompt(':3');
 
 		var tempArr = [];
 		tempArr.push(bank);
@@ -676,6 +678,18 @@ function tournament(bank, handle) {
 				index = i + 2;
 			}
 		}
+
+		suffix = {
+			'1': 'st',
+			'2': 'nd',
+			'3': 'rd',
+			'4': 'th',
+			'5': 'th'
+		};
+
+		// display well done
+		getID('winTourn').className = 'tournamentFeedback';
+		getID('place').innerHTML = index.toString() + suffix[index];
 
 		// remove last row
 		table.deleteRow(5);
@@ -701,7 +715,7 @@ function tournament(bank, handle) {
 			table.rows[i].cells[0].innerHTML = i;
 		}
 	} else {
-		alert('3:');
+		getID('loseTour').className = 'tournamentFeedback';
 	}
 }
 
@@ -1030,11 +1044,11 @@ window.setInterval(function () {
 				getID('double').className = "hidden";
 			}
 
-			if (user.splitCardsCheck()) {
+			/*if (user.splitCardsCheck()) {
 				getID('split').className = "mgame action inline";
 			} else {
 				getID('split').className = "hidden";
-			}
+			}*/
 		}
 	}
 
