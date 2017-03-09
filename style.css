@@ -132,10 +132,10 @@ th:first-child {
 }
 
 .tournamentFeedback {
-	font-size: 2em;
+	font-size: 2.2em;
 	text-align: center;
-	width: 225px;
-	margin: 100px auto -120px auto;
+	width: 250px;
+	margin: 100px auto -160px auto;
 }
 
 .return,
@@ -163,7 +163,8 @@ th:first-child {
 
 #bank,
 #won,
-#loss {
+#loss,
+#tied {
     font-size: 1.3em;
     margin-top: -5px;
     text-align: center;
