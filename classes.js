@@ -144,6 +144,7 @@ class Deck {
 		localStorage.cutCards = this.cutCards;
 		localStorage.spentCards = this.spentCards;
 		localStorage.players = this.players;
+		localStorage.playing = PLAYING;
 	}
 }
 
@@ -735,7 +736,6 @@ function splitCards() {
 function loadGame() {
 	// hides other screens, displays main game
 	play();
-	PLAYING = false;
 
 	// ensures that 'the round 1 of 10" text is not displayed
 	getID("roundText").className = "hidden";
@@ -744,6 +744,13 @@ function loadGame() {
 	styleID('dealer').marginLeft = "100px";
 
 	toggleWagers(true);
+
+	bool = {
+		'true': true,
+		'false': false
+	};
+
+	PLAYING = bool[localStorage.getItem('playing')];
 
 	Players = undefined;
 	// creates player array
