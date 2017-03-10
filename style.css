@@ -153,7 +153,8 @@ th:first-child {
 }
 
 #selectWager {
-    font-size: 1.5em;
+    font-size: 1.75em;
+	margin-bottom: 25px;
     font-weight: bold;
 }
 
