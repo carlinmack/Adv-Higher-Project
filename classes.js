@@ -452,6 +452,10 @@ function round(Tournament) {
 		}
 	}
 
+	if (Players.last().rounds > 10) {
+		tournament(Players.last().bank, Players.last().handle);
+	}
+
 	deck.deal();
 
 	// stores all players
@@ -490,10 +494,6 @@ function round(Tournament) {
 
 	if (Tournament) {
 		Players.last().rounds += 1;
-	}
-
-	if (Players.last().rounds > 11) {
-		tournament(Players.last().bank, Players.last().handle);
 	}
 }
 
@@ -657,8 +657,6 @@ function tournament(bank, handle) {
 	var value = parseInt(lastCellValue.substr(1));
 
 	PLAYING = false;
-	Players[0].returnCards();
-	Players[1].returnCards();
 	getID('stand').className += " locked";
 	getID('hit').className += " locked";
 	toggleWagers(false);
@@ -970,17 +968,17 @@ getID('play').onclick = function () {
 		// so that the action/wager buttons are always at bottom
 	case 1:
 		styleID('rightBlock').marginTop = "300px";
-		styleID('selectWager').marginTop = "-27px";
+		styleID('selectWager').marginTop = "-50px";
 		break;
 	case 2:
 		styleID('rightBlock').marginTop = "220px";
-		styleID('selectWager').marginTop = "80px";
+		styleID('selectWager').marginTop = "65px";
 		break;
 	case 3:
 	case 4:
 	case 5:
 		styleID('rightBlock').marginTop = "100px";
-		styleID('selectWager').marginTop = "220px";
+		styleID('selectWager').marginTop = "195px";
 		break;
 	}
 
