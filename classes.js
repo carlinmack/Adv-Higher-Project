@@ -750,7 +750,9 @@ function loadGame() {
 		'false': false
 	};
 
-	PLAYING = bool[localStorage.getItem('playing')];
+	var boolean = bool[localStorage.getItem('playing')]
+	PLAYING = boolean;
+	toggleWagers(!boolean);
 
 	Players = undefined;
 	// creates player array
