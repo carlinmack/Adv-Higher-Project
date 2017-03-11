@@ -60,7 +60,7 @@
 			</div>
 		</div>
 		<p class='hidden' id='winTourn'> Congratulations! You placed <span id='place'> 1st </span></p>
-		<p class='tournamentFeedback inline hidden' id='loseTour'> Sorry, you didn't place this time</p>
+		<p class='hidden' id='loseTour'> Sorry, you didn't place this time</p>
 		<div id="hand1">
 			<div id="ai3">
 			</div>
@@ -69,9 +69,9 @@
 		</div>
 		<div style="clear: both; padding-left: 20px;" class="center">
 			<div id='leftBlock' class="inline">
-				<button class="inline bigGameButton center" id="deal">Deal</button>
+				<button class="hidden" id="deal">Deal</button>
 
-				<button class="inline bigGameButton center" id="nextRound">Next Round</button>
+				<button class="hidden" id="nextRound">Next Round</button>
 				<br>
 				<span class="actions">
                 <button class="mgame action locked" id="stand">Stand</button>
@@ -80,12 +80,12 @@
 			</div>
 
 			<div class="inline" id='middleBlock'>
-				<button class="mgame action hidden inline" id="split">Split</button>
+				<button class="hidden" id="split">Split</button>
 
 				<span id="player" class="inline"></span>
 				<span id="splitCards"></span>
 
-				<button class="mgame hidden inline" id="double">Double</button>
+				<button class="hidden" id="double">Double</button>
 				<br>
 				<p id="won" class="hidden"> Won £<span id="winnings">50</span>!</p>
 				<p id="loss" class="hidden"> Lost £<span id="losings">50</span></p>
@@ -95,7 +95,7 @@
 			</div>
 
 			<div id='rightBlock' class="inline">
-				<p id="selectWager" class="center">Select Wager</p>
+				<p id="selectWager" class="hidden">Select Wager</p>
 				<br>
 				<span class="wagers">
                     <button class="mgame wager" id="10">£10</button>
