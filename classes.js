@@ -455,6 +455,7 @@ function round(Tournament) {
 
 	if (Players.last().rounds > 10) {
 		tournament(Players.last().bank, Players.last().handle);
+		return;
 	}
 
 	deck.deal();
