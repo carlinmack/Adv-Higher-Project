@@ -13,19 +13,14 @@
 		recombining decks
         split method
 		store leaderboard and load it (:
-		put bugs in document
 
     BUGS
         always losing destroys game
-		fix double
         if other people have a natural?
-		don't load if no game
 
     UI
-        change split and player and double margin so that it doesn't move
+        change margins so that nothing moves
         style tied
-		winning losing tournament text
-        add banks (?)
 
     EFFICIENCY
         simplify duplicated code
@@ -34,11 +29,8 @@
 		only check double and split once
 
     STRETCH GOALS
-        store all cards
-        feedback for natural
         delay ai players turns a bit
-        fragments
-        new game button below 0
+        new game button below 500
         getIDs function mess
 		fix jank
 */
