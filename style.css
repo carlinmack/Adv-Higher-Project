@@ -23,12 +23,6 @@ button {
     background-color: white;
 }
 
-button:hover,
-#decPlayers,
-#incPlayers {
-    cursor: pointer;
-}
-
 li {
     margin: 15px 30px;
     font-size: 1.1em;
@@ -50,6 +44,12 @@ th {
 td:first-child,
 th:first-child {
     text-align: center;
+}
+
+button:hover,
+#decPlayers,
+#incPlayers {
+    cursor: pointer;
 }
 
 .menu {
@@ -134,7 +134,7 @@ th:first-child {
 .tournamentFeedback {
 	font-size: 2.2em;
 	text-align: center;
-	width: 250px;
+	width: 275px;
 	margin: 100px auto -160px auto;
 }
 
