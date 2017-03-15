@@ -64,20 +64,19 @@ class Deck {
 
 	shuffle() {
 		// fisher-yates shuffle
-		var m = this.availableCards.length,
-			t, i;
+		var length = this.availableCards.length,
+			temp, card;
 		// While there remain elements to shuffle…
-		while (m) {
+		while (length) {
 			// Decrease number of remaining cards
-			m -= 1;
+			length -= 1;
 			// Pick a remaining element…
-			i = Math.floor(Math.random() * m);
+			card = Math.floor(Math.random() * length);
 			// And swap it with the current element.
-			t = this.availableCards[m];
-			this.availableCards[m] = this.availableCards[i];
-			this.availableCards[i] = t;
+			temp = this.availableCards[length];
+			this.availableCards[length] = this.availableCards[card];
+			this.availableCards[card] = temp;
 		}
-		return this.availableCards;
 	}
 
 	// remove last 20% of cards
@@ -350,6 +349,7 @@ class PlayerHand extends Dealer {
 		localStorage.setItem(i + "wager", this.wager);
 		localStorage.setItem(i + "splitCards", this.splitCards);
 		localStorage.setItem(i + "handle", this.handle);
+		localStorage.setItem(i + "rounds", this.rounds);
 	}
 }
 
@@ -420,11 +420,11 @@ function round(Tournament) {
 
 	toggleWagers(false);
 
-	var playerLength = Players.length - 1;
+	var playerLength = Players.length;
 	PLAYING = true;
 
 	// if there aren't enough cards to play the next round
-	if (deck.availableCards.length < Players.length * 5) {
+	if (deck.availableCards.length < playerLength * 5) {
 		deck.combineDecks();
 		alert('time to break?');
 		deck.shuffle();
@@ -433,14 +433,14 @@ function round(Tournament) {
 	}
 
 	// generates new values for wager and card balances.
-	for (let i = 1; i < playerLength; i++) {
+	for (let i = 1; i < playerLength-1; i++) {
 		Players[i].wagerBalanceCalc();
 		Players[i].cardBalanceCalc();
 	}
 
 	// returns the cards if there was a previous round
 	if (Players[0].cards.length) {
-		for (let i = 0; i < Players.length; i++) {
+		for (let i = 0; i < playerLength; i++) {
 			Players[i].returnCards();
 		}
 	}
@@ -453,7 +453,7 @@ function round(Tournament) {
 	deck.deal();
 
 	// stores all players
-	for (let i = 0; i < playerLength + 1; i++) {
+	for (let i = 0; i < playerLength; i++) {
 		Players[i].store(i);
 	}
 
@@ -461,7 +461,7 @@ function round(Tournament) {
 
 	// checking for naturals, dealer can have one
 	var natural = false;
-	for (let n = 1; n < playerLength + 1; n++) {
+	for (let n = 1; n < playerLength; n++) {
 		if (Players[n].natural()) {
 			natural = true;
 		}
@@ -470,7 +470,7 @@ function round(Tournament) {
 
 	if (natural === false) {
 		// turn for players before user
-		var showPlayers = Math.floor(playerLength / 2) + 1;
+		var showPlayers = Math.floor((playerLength-1) / 2) + 1;
 		for (let l = 1; l < showPlayers; l++) {
 			Players[l].turn = true;
 			while (Players[l].turn) {
@@ -721,23 +721,21 @@ function tournament(bank, handle) {
 
 function splitCards() {
 	// styles the split cards
-	styleID('splitCards').marginLeft = '50px';
 	getID('split').className = 'hidden';
 	getID('player').className = '';
+	styleID('splitCards').marginLeft = '50px';
 }
 
 function loadGame() {
 	// hides other screens, displays main game
 	play();
 
-	// ensures that 'the round 1 of 10" text is not displayed
-	getID("roundText").className = "hidden";
-
 	styleID('dealer').marginTop = "0px";
 	styleID('dealer').marginLeft = "100px";
 
 	toggleWagers(true);
 
+	// parsing string as a boolean
 	bool = {
 		'true': true,
 		'false': false
@@ -747,13 +745,12 @@ function loadGame() {
 	PLAYING = boolean;
 	toggleWagers(!boolean);
 
-	Players = undefined;
-	// creates player array
+	// creates player array globally
 	window.Players = [];
 	// adds dealer to array
 	Players.push(new Dealer());
 
-	deck = undefined;
+	// creates new deck globally
 	window.deck = new Deck();
 
 	// Function to map CSV to 2d array
@@ -789,6 +786,7 @@ function loadGame() {
 		if (j == deck.players) {
 			Players[j].splitCards = localStorage.getItem(j + 'splitCards');
 			Players[j].handle = localStorage.getItem(j + 'handle');
+			Players[j].handle = localStorage.getItem(j + 'rounds');
 		} else {
 			Players[j].wagerBalance = parseInt(localStorage.getItem(j + 'wagerBalance'));
 		}
@@ -797,6 +795,13 @@ function loadGame() {
 	// selects default wager
 	var wager = Players.last().wager;
 	getID(wager).className = 'mgame wager selected';
+
+	if (Players.last().rounds) {
+		getID('roundText').className = "inline";
+	} else {
+		// ensures that 'the round 1 of 10" text is not displayed
+		getID("roundText").className = "hidden";
+	}
 }
 
 function clearNode(node) {
@@ -893,6 +898,7 @@ function display() {
 
 	if (player.splitCards.length > 0) {
 		// this is the same code as the display node code but module doesn't support splitcards
+		// see above for comments
 		for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
 			let card = Players.last().splitCards[Cd];
 			var content = document.createTextNode(Players.last().display(card)[0]);
@@ -1039,12 +1045,13 @@ window.setInterval(function () {
 	getID('players').innerHTML = deck.players;
 	display();
 
-	if (PLAYING === true) {
+	if (PLAYING) {
 		let user = Players.last();
 
+		// if the user goes bust
 		if (user.evaluate() > 21) settlement(true, true);
 
-		// add - if haven't checked, have a check
+
 		if (user.cards.length === 2) {
 			if (user.evaluate() > 8 && user.evaluate() < 12) {
 				getID('double').className = "mgame action inline";
