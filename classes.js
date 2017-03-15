@@ -426,7 +426,6 @@ function round(Tournament) {
 	// if there aren't enough cards to play the next round
 	if (deck.availableCards.length < playerLength * 5) {
 		deck.combineDecks();
-		alert('time to break?');
 		deck.shuffle();
 		deck.cut();
 
@@ -681,7 +680,7 @@ function tournament(bank, handle) {
 
 		if (flag) index = 1;
 
-		suffix = {
+		var suffix = {
 			'1': 'st',
 			'2': 'nd',
 			'3': 'rd',
@@ -736,12 +735,12 @@ function loadGame() {
 	toggleWagers(true);
 
 	// parsing string as a boolean
-	bool = {
+	var bool = {
 		'true': true,
 		'false': false
 	};
 
-	var boolean = bool[localStorage.getItem('playing')]
+	var boolean = bool[localStorage.getItem('playing')];
 	PLAYING = boolean;
 	toggleWagers(!boolean);
 
