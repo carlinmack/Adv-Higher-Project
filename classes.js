@@ -257,15 +257,15 @@ class VirtualHand extends Dealer {
 		this.wagerBalance = Math.floor(Math.random() * 3);
 		// selects the relevant wager
 		switch (this.wagerBalance) {
-		case 0:
-			this.wager = 10;
-			break;
-		case 1:
-			this.wager = 50;
-			break;
-		case 2:
-			this.wager = 100;
-			break;
+			case 0:
+				this.wager = 10;
+				break;
+			case 1:
+				this.wager = 50;
+				break;
+			case 2:
+				this.wager = 100;
+				break;
 		}
 	}
 
@@ -428,11 +428,10 @@ function round(Tournament) {
 		deck.combineDecks();
 		deck.shuffle();
 		deck.cut();
-
 	}
 
 	// generates new values for wager and card balances.
-	for (let i = 1; i < playerLength-1; i++) {
+	for (let i = 1; i < playerLength - 1; i++) {
 		Players[i].wagerBalanceCalc();
 		Players[i].cardBalanceCalc();
 	}
@@ -469,7 +468,7 @@ function round(Tournament) {
 
 	if (natural === false) {
 		// turn for players before user
-		var showPlayers = Math.floor((playerLength-1) / 2) + 1;
+		var showPlayers = Math.floor((playerLength - 1) / 2) + 1;
 		for (let l = 1; l < showPlayers; l++) {
 			Players[l].turn = true;
 			while (Players[l].turn) {
@@ -973,20 +972,20 @@ getID('play').onclick = function () {
 	switch (deck.players) {
 		// sets the margins based on the number of players
 		// so that the action/wager buttons are always at bottom
-	case 1:
-		styleID('rightBlock').marginTop = "300px";
-		styleID('selectWager').marginTop = "-50px";
-		break;
-	case 2:
-		styleID('rightBlock').marginTop = "220px";
-		styleID('selectWager').marginTop = "65px";
-		break;
-	case 3:
-	case 4:
-	case 5:
-		styleID('rightBlock').marginTop = "100px";
-		styleID('selectWager').marginTop = "195px";
-		break;
+		case 1:
+			styleID('rightBlock').marginTop = "300px";
+			styleID('selectWager').marginTop = "-50px";
+			break;
+		case 2:
+			styleID('rightBlock').marginTop = "220px";
+			styleID('selectWager').marginTop = "65px";
+			break;
+		case 3:
+		case 4:
+		case 5:
+			styleID('rightBlock').marginTop = "100px";
+			styleID('selectWager').marginTop = "195px";
+			break;
 	}
 
 	newGame(deck.players);
