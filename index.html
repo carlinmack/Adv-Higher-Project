@@ -2,145 +2,125 @@
 <html>
 
 <head>
+	<meta charset='UTF-8'>
+	<title>Blackjack</title>
+	<meta name='description' content='The classic casino game completely local on your device'>
 	<title>Blackjack</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
+	<!-- Start No Javascript -->
+	<noscript>
+		<style type='text/css'>
+			#mainScreen {
+				display: none;
+			}
+		</style>
+		<div class='screen'>
+			<p>Please enable
+				Javascript to play this game</p>
+		</div>
+	</noscript>
+	<!-- End No Javascript -->
 	<!-- Main Menu -->
-	<div id="mainScreen" class="screen">
-		<h1> Blackjack </h1>
-		<div class="center">
-			<button class="menu" id="game"> Game </button>
-			<button class="menu" id="rules"> Rules </button>
-		</div>
-		<div class="center">
-			<button class="menu" id="leaderboard"> Leaderboard </button>
-			<button class="menu" id="exit"> Exit </button>
-		</div>
+	<div id='mainScreen' class='screen'>
+		<!-- Main Menu -->
+		<h1>Blackjack </h1>
+		<div class='center'><button class='menu' id='game'>Game </button><button class='menu' id='rules'>Rules </button></div>
+		<div class='center'><button class='menu' id='leaderboard'>Leaderboard
+			</button><button class='menu' id='exit'>Exit
+			</button></div>
 	</div>
 	<!-- End Main Menu -->
-
 	<!-- Game -->
-	<div id="gameScreen" class="screen hidden">
-		<button class="return"> Return </button>
-		<h2> Blackjack </h2>
-		<button class="menu game center" id="create"> Create New Game </button>
-		<br>
-		<button class="menu game center" id="previous"> Enter Previous </button>
-		<br>
-		<button class="menu game center" id="tournament"> Tournament </button>
+	<div id='gameScreen' class='screen hidden'><button class='return'>Return
+		</button>
+		<h2>Blackjack </h2><button class='menu game center' id='create'>Create New
+			Game </button><br><button class='menu game center' id='previous'>Enter Previous </button><br><button class='menu game center'
+		 id='tournament'>Tournament </button>
 	</div>
-
-	<div id="gameScreen2" class="screen hidden">
-		<button class="return"> Return </button>
-		<h2> Blackjack </h2>
-
-		<p class="center menu game" style="margin-top: 50px"> Number of Players </p>
-		<br>
-		<p class="center menu">
-			<span id="decPlayers"> ⯇ </span>
-			<span id="players"> 5 </span>
-			<span id="incPlayers"> ⯈ </span>
-		</p>
-		<br>
-		<button class="menu game center" id="play"> Play </button>
+	<div id='gameScreen2' class='screen hidden'><button class='return'>Return
+		</button>
+		<h2>Blackjack </h2>
+		<p class='center menu game' style='margin-top: 50px'>Number of Players </p><br>
+		<p class='center menu'><span id='decPlayers'>
+				<svg width='51' height='64' version='1' viewBox='0 0 13 17'>
+					<path id='arrowL' fill='black' d='M0 8l12 7V2L6 5z' /> Arrow Left
+				</svg>
+			</span><span id='players'>5
+			</span><span id='incPlayers'>
+				<svg width='51' height='64' version='1' viewBox='0 0 13 17'>
+					<path id='arrowR' fill='#818181' d='M13 8L2 15V2z' />
+					Arrow Right
+				</svg>
+			</span></p><br><button class='menu game center' id='play'>Play </button>
 	</div>
-
-	<div id="mainGame" class="screen hidden">
-		<p id="roundText" class="hidden">Round <span id='rounds'>1</span> of 10</p>
-		<button class="return"> Return </button>
-
-		<div id="dealer" class="center"></div>
-		<div id="hand0">
-			<div id="ai1">
-			</div>
-			<div id="ai2">
-			</div>
+	<div id='mainGame' class='screen hidden'>
+		<p id='roundText' class='hidden'>Round <span id='rounds'>1</span> of 10</p><button class='return'>Return
+		</button>
+		<div id='dealer' class='center'></div>
+		<div id='hand0'>
+			<div id='ai1'></div>
+			<div id='ai2'></div>
 		</div>
-		<p class='hidden' id='winTourn'> Congratulations! You placed <span id='place'> 1st </span></p>
-		<p class='hidden' id='loseTour'> Sorry, you didn't place this time</p>
-		<div id="hand1">
-			<div id="ai3">
-			</div>
-			<div id="ai4">
-			</div>
+		<p class='hidden' id='winTourn'>Congratulations ! You placed <span id='place'>1st </span></p>
+		<p class='hidden' id='loseTour'>Sorry,
+			you didn't place this time</p>
+		<div id='hand1'>
+			<div id='ai3'></div>
+			<div id='ai4'></div>
 		</div>
-		<div style="clear: both; padding-left: 20px;" class="center">
-			<div id='leftBlock' class="inline">
-				<button class="hidden" id="deal">Deal</button>
+		<div id='leftBlock' class='inline'><button class='hidden' id='deal'>Deal</button><button class='hidden' id='nextRound'>Next
+				Round</button><br><span class='actions'><button class='mgame action
+						locked' id='stand'>Stand</button><button
+				 class='mgame action locked' id='hit'>Hit</button></span></div>
+		<div class='inline' id='middleBlock'>
 
-				<button class="hidden" id="nextRound">Next Round</button>
-				<br>
-				<span class="actions">
-                <button class="mgame action locked" id="stand">Stand</button>
-                <button class="mgame action locked" id="hit">Hit</button>
-            </span>
-			</div>
-
-			<div class="inline" id='middleBlock'>
-				<button class="hidden" id="split">Split</button>
-
-				<span id="player" class="inline"></span>
-				<span id="splitCards"></span>
-
-				<button class="hidden" id="double">Double</button>
-				<br>
-				<p id="won" class="hidden"> Won £<span id="winnings">50</span>!</p>
-				<p id="loss" class="hidden"> Lost £<span id="losings">50</span></p>
-				<p id="tied" class="hidden"> Tied!</p>
-				<br>
-				<p id="bank"> Bank £<span id="total">5000</span> </p>
-			</div>
-
-			<div id='rightBlock' class="inline">
-				<p id="selectWager" class="hidden">Select Wager</p>
-				<br>
-				<span class="wagers">
-                    <button class="mgame wager" id="10">£10</button>
-                    <button class="mgame wager selected" id="50">£50</button>
-                    <button class="mgame wager" id="100">£100</button>
-                </span>
-			</div>
+			<span id='player' class='inline'></span><span id='splitCards'></span>
+			<p id='won' class='hidden'>Won £<span id='winnings'>50</span> !</p>
+			<p id='loss' class='hidden'>Lost £<span id='losings'>50</span></p>
+			<p id='tied' class='hidden'>Tied !</p>
+			<p id='bank'>Bank £<span id='total'>5000</span></p>
+		</div>
+		<div id='rightBlock' class='inline'>
+			<button class='hidden' id='split'>Split</button>
+			<button class='hidden' id='double'>Double</button>
+			<p id='selectWager' class='hidden'>Select Wager</p><br><span class='wagers'>
+				<button class='mgame wager' id='10'>£10</button><button class='mgame wager
+						selected' id='50'>£50</button>
+				<button class='mgame wager' id='100'>£100</button></span>
 		</div>
 	</div>
 	<!-- End Game -->
-
 	<!-- Rules -->
-	<div id="rulesScreen" class="screen hidden">
-		<button class="return"> Return </button>
-		<h2> Rules </h2>
+	<div id='rulesScreen' class='screen hidden'><button class='return'>Return
+		</button>
+		<h2>Rules </h2>
 		<ul>
-			<li>
-				Each player selects how much they will bet on the next turn
+			<li>Each player selects how much they will bet on the next turn </li>
+			<li>Each player is dealt 2 cards </li>
+			<li>Ace is worth 1 or 11,
+				face cards are worth 10 and all other cards are worth the value listed on
+				the card </li>
+			<li>The goal of each round is to get as close to 21 without going bust. All
+				players play against the dealer.
 			</li>
-			<li>
-				Each player is dealt 2 cards
-			</li>
-			<li>
-				Ace is worth 1 or 11, face cards are worth 10 and all other cards are worth the value listed on the card
-			</li>
-			<li>
-				The goal of each round is to get as close to 21 without going bust. All players play against the dealer.
-			</li>
-			<li>
-				Each player has the option to hit and receive a card, or stand and end their turn
-			</li>
-			<li>
-				In certain cases, the player can double their wager and receive a single card
-			</li>
+			<li>Each player has the option to hit and receive a card,
+				or stand and end their turn </li>
+			<li>In certain cases,
+				the player can double their wager and receive a single card </li>
 		</ul>
 	</div>
 	<!-- End Rules -->
-
 	<!-- Start Leaderboard -->
-	<div id="leaderboardScreen" class="screen hidden">
-		<button class="return"> Return </button>
-		<h2> Leaderboard </h2>
+	<div id='leaderboardScreen' class='screen hidden'><button class='return'>Return
+		</button>
+		<h2>Leaderboard </h2>
 		<table id='leaderboardTable'>
 			<tr>
-				<th style="width:18px">#</th>
-				<th style="width:435px">Handle</th>
+				<th style='width:18px'>#</th>
+				<th style='width:435px'>Handle</th>
 				<th>Final Bank</th>
 			</tr>
 			<tr>
@@ -151,27 +131,29 @@
 			<tr>
 				<td>2</td>
 				<td>Carlin</td>
-				<td>£5200</td>
+				<td>£5175</td>
 			</tr>
 			<tr>
 				<td>3</td>
-				<td>Neeley</td>
-				<td>£5125</td>
+				<td>Mark</td>
+				<td>£5100</td>
 			</tr>
 			<tr>
 				<td>4</td>
 				<td>Murray</td>
-				<td>£4950</td>
+				<td>£4850</td>
 			</tr>
 			<tr>
 				<td>5</td>
 				<td>Ryan</td>
-				<td>£4900</td>
+				<td>£4700</td>
 			</tr>
 		</table>
 	</div>
+	<footer>This website was written in pure CSS and Javascript<br>© Carlin
+		MacKenzie 2018 </footer>
 	<!-- End Leaderboard -->
-	<script type="text/javascript" src="classes.js"></script>
+	<script type='text/javascript' src='blackjack.js'></script>
 </body>
 
 </html>
