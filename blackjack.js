@@ -45,6 +45,24 @@ class Deck {
 		this.players = 5;
 	}
 
+	setPlayers(value) {
+		const newVal = this.players + value;
+		if (newVal < 1 || newVal > 5) {
+			return;
+		} else if (newVal === 1) {
+			getID('arrowL').style.fill = '#818181';
+			getID('arrowR').style.fill = 'black';
+		} else if (newVal === 5) {
+			getID('arrowL').style.fill = 'black';
+			getID('arrowR').style.fill = '#818181';
+		} else {
+			getID('arrowL').style.fill = 'black';
+			getID('arrowR').style.fill = 'black';
+		}
+		this.players = newVal;
+		getID('players').innerHTML = deck.players;
+	}
+
 	createDeck(decks) {
 		// As there are 4 suits per deck it needs to be multiplied for the loop
 		decks *= 4;
@@ -66,11 +84,11 @@ class Deck {
 		// fisher-yates shuffle
 		var length = this.availableCards.length,
 			temp, card;
-		// While there remain elements to shuffle…
+		// While there remain elements to shuffle
 		while (length) {
 			// Decrease number of remaining cards
 			length -= 1;
-			// Pick a remaining element…
+			// Pick a remaining element 
 			card = Math.floor(Math.random() * length);
 			// And swap it with the current element.
 			temp = this.availableCards[length];
@@ -146,10 +164,10 @@ class Dealer {
 		this.cardBalance = 17;
 	}
 
-	// Change [0, 2] to A ♦
+	// Change [0, 2] to a card¦
 	display(card) {
-		var prefix = "0x0001F0",
-			suit = "",
+		var prefix = '0x0001F0',
+			suit = '',
 			cardVal, temp;
 
 		var suits = {
@@ -160,21 +178,24 @@ class Dealer {
 			},
 			colour = {
 				'0': 'black',
-				'1': 'red',
-				'2': 'red',
+				'1': '#ff1103',
+				'2': '#ff1103',
 				'3': 'black'
 			};
 
-		// takes the first value, finds the remainder it has with 4 and casts it to a string
+		// takes the first value, finds the remainder it has with 4 and casts it to
+		// a string
 		var value = (card[0] % 4).toString();
-		// select which suit by passing the raw value into the object, which returns the unicode suit value
+		// select which suit by passing the raw value into the object, which returns
+		// the unicode suit value
 		suit = suits[value];
 		// adds one to the card value and converts it into hexadecimal
 		cardVal = (card[1] + 1).toString(16);
 		// concatenates the suit and the card value
 		temp = prefix.concat(suit, cardVal);
 		// 1. returns a string from the unicode code point
-		// 2. returns the colour by passing in the suit value  which returns the respective colour
+		// 2. returns the colour by passing in the suit value  which returns the
+		// respective colour
 		return [String.fromCodePoint(temp), colour[value]];
 	}
 
@@ -197,7 +218,8 @@ class Dealer {
 				value += 10;
 			}
 		}
-		// if there is an ace (11) and the value is over 21 then the ace should be worth 1
+		// if there is an ace (11) and the value is over 21 then the ace should be
+		// worth 1
 		if (flag && value > 21) {
 			value -= 10;
 			return value;
@@ -281,12 +303,12 @@ class VirtualHand extends Dealer {
 	}
 
 	store(i) {
-		localStorage.setItem(i + "cards", this.cards);
-		localStorage.setItem(i + "turn", this.turn);
-		localStorage.setItem(i + "cardBalance", this.cardBalance);
-		localStorage.setItem(i + "wagerBalance", this.wagerBalance);
-		localStorage.setItem(i + "bank", this.bank);
-		localStorage.setItem(i + "wager", this.wager);
+		localStorage.setItem(i + 'cards', this.cards);
+		localStorage.setItem(i + 'turn', this.turn);
+		localStorage.setItem(i + 'cardBalance', this.cardBalance);
+		localStorage.setItem(i + 'wagerBalance', this.wagerBalance);
+		localStorage.setItem(i + 'bank', this.bank);
+		localStorage.setItem(i + 'wager', this.wager);
 	}
 }
 
@@ -296,8 +318,14 @@ class PlayerHand extends Dealer {
 		this.bank = 5000;
 		this.wager = 50;
 		this.splitCards = [];
-		this.handle = "";
+		this.handle = '';
 		this.rounds = 0;
+	}
+
+	hit() {
+		this.cards.push(deck.hit());
+		if (this.evaluate() > 21) settlement(true, true);
+		getID('double').className = 'hidden';
 	}
 
 	stand() {
@@ -307,13 +335,15 @@ class PlayerHand extends Dealer {
 	returnCards() {
 		// for all cards
 		for (let i = this.cards.length; i > 0; i--) {
-			// .pop() removes the last index and returns it. Then returns the index to deck
+			// .pop() removes the last index and returns it. Then returns the index to
+			// deck
 			deck.returnCards(this.cards.pop());
 		}
 		// if there are split cards, remove them
 		if (this.splitCards.length) {
 			for (let j = this.splitCards.length; j > 0; j--) {
-				// .pop() removes the last index and returns it. Then returns the index to deck
+				// .pop() removes the last index and returns it. Then returns the index
+				// to deck
 				deck.returnCards(this.splitCards.pop());
 			}
 		}
@@ -342,14 +372,14 @@ class PlayerHand extends Dealer {
 	}
 
 	store(i) {
-		localStorage.setItem(i + "cards", this.cards);
-		localStorage.setItem(i + "turn", this.turn);
-		localStorage.setItem(i + "cardBalance", this.cardBalance);
-		localStorage.setItem(i + "bank", this.bank);
-		localStorage.setItem(i + "wager", this.wager);
-		localStorage.setItem(i + "splitCards", this.splitCards);
-		localStorage.setItem(i + "handle", this.handle);
-		localStorage.setItem(i + "rounds", this.rounds);
+		localStorage.setItem(i + 'cards', this.cards);
+		localStorage.setItem(i + 'turn', this.turn);
+		localStorage.setItem(i + 'cardBalance', this.cardBalance);
+		localStorage.setItem(i + 'bank', this.bank);
+		localStorage.setItem(i + 'wager', this.wager);
+		localStorage.setItem(i + 'splitCards', this.splitCards);
+		localStorage.setItem(i + 'handle', this.handle);
+		localStorage.setItem(i + 'rounds', this.rounds);
 	}
 }
 
@@ -362,12 +392,16 @@ function getID(x) {
 	return document.getElementById(x);
 }
 
+const localStorage = window.localStorage;
+const prompt = window.prompt;
+
 // helper function to make code easier to read
 function styleID(x) {
 	return document.getElementById(x).style;
 }
 
-// helper function to parse CSV formatted cards in localstorage to 2D array so that they can be loaded properly
+// helper function to parse CSV formatted cards in localstorage to 2D array so
+// that they can be loaded properly
 function parse2D(object, item) {
 	var string = localStorage.getItem(item);
 	// splits the string into an array on commas
@@ -390,7 +424,7 @@ Array.prototype.last = function () {
 };
 
 function toggleWagers(bool) {
-	var x = document.querySelectorAll(".wager");
+	var x = document.querySelectorAll('.wager');
 
 	if (bool) {
 		for (let i = 0; i < x.length; i++) {
@@ -412,8 +446,8 @@ function round(Tournament) {
 	getID('won').className = 'hidden';
 	getID('loss').className = 'hidden';
 	getID('tied').className = 'hidden';
-	getID('loseTour').className = "hidden";
-	getID('winTourn').className = "hidden";
+	getID('loseTour').className = 'hidden';
+	getID('winTourn').className = 'hidden';
 
 	getID('stand').className = 'mgame action';
 	getID('hit').className = 'mgame action';
@@ -465,7 +499,6 @@ function round(Tournament) {
 		}
 	}
 
-
 	if (natural === false) {
 		// turn for players before user
 		var showPlayers = Math.floor((playerLength - 1) / 2) + 1;
@@ -484,6 +517,8 @@ function round(Tournament) {
 		settlement(false, true);
 	}
 
+	display();
+
 	if (Tournament) {
 		Players.last().rounds += 1;
 	}
@@ -493,13 +528,13 @@ function newGame(players) {
 	// hides other screens, displays main game
 	play();
 
-	getID('deal').className = "bigGameButton center";
-	getID('nextRound').className = "hidden";
-	getID('selectWager').className = "center";
-	getID('double').className = "hidden";
-	getID('split').className = "hidden";
-	getID('loseTour').className = "hidden";
-	getID('winTourn').className = "hidden";
+	getID('deal').className = 'bigGameButton center';
+	getID('nextRound').className = 'hidden';
+	getID('selectWager').className = 'center';
+	getID('double').className = 'hidden';
+	getID('split').className = 'hidden';
+	getID('loseTour').className = 'hidden';
+	getID('winTourn').className = 'hidden';
 
 	PLAYING = false;
 
@@ -527,15 +562,17 @@ function newGame(players) {
 	deck.createDeck(6);
 	deck.shuffle();
 	deck.cut();
+
+	display();
 }
 
 function settlement(noNatural, noDouble) {
 	PLAYING = false;
 
-	getID('nextRound').className = "center bigGameButton";
+	getID('nextRound').className = 'center bigGameButton';
 	getID('player').className = 'inline';
-	getID('stand').className += " locked";
-	getID('hit').className += " locked";
+	getID('stand').className += ' locked';
+	getID('hit').className += ' locked';
 	getID('double').className = 'hidden';
 	getID('split').className = 'hidden';
 
@@ -577,7 +614,6 @@ function settlement(noNatural, noDouble) {
 
 	// Settling
 	for (let i = 1; i < Players.length; i++) {
-
 		// if there is a natural
 		if (noNatural === false) {
 			// if the player has a natural
@@ -585,7 +621,7 @@ function settlement(noNatural, noDouble) {
 				// if the player is the user
 				if (i === Players.length - 1) {
 					Players[i].bank += Players[i].wager;
-					getID('won').className = "center";
+					getID('won').className = 'center';
 					continue;
 				}
 				Players[i].bank += Players[i].wager * 1.5;
@@ -595,15 +631,17 @@ function settlement(noNatural, noDouble) {
 			Players[i].bank += Players[i].wager;
 
 			if (i === Players.length - 1) {
-				getID('won').className = "center";
+				getID('won').className = 'center';
 			}
 
 			// if player goes bust or less than dealer
-		} else if (Players[i].evaluate() > 21 || Players[i].evaluate() < Players[0].evaluate()) {
+		} else if (
+			Players[i].evaluate() > 21 ||
+			Players[i].evaluate() < Players[0].evaluate()) {
 			Players[i].bank -= Players[i].wager;
 
 			if (i === Players.length - 1) {
-				getID('loss').className = "center";
+				getID('loss').className = 'center';
 			}
 
 			// if player is above dealer
@@ -611,12 +649,12 @@ function settlement(noNatural, noDouble) {
 			Players[i].bank += Players[i].wager;
 
 			if (i === Players.length - 1) {
-				getID('won').className = "center";
+				getID('won').className = 'center';
 			}
 			// if they have the same value cards
 		} else {
 			if (i === Players.length - 1) {
-				getID('tied').className = "center";
+				getID('tied').className = 'center';
 			}
 		}
 	}
@@ -649,13 +687,12 @@ function tournament(bank, handle) {
 	var value = parseInt(lastCellValue.substr(1));
 
 	PLAYING = false;
-	getID('stand').className += " locked";
-	getID('hit').className += " locked";
+	getID('stand').className += ' locked';
+	getID('hit').className += ' locked';
 	toggleWagers(false);
 
 	// if lastRval < bank, if someone has same value as last row they don't place
 	if (value < bank) {
-
 		var tempArr = [];
 		tempArr.push(bank);
 		// creating array of leaderboard to sort more easily
@@ -717,19 +754,19 @@ function tournament(bank, handle) {
 	}
 }
 
-function splitCards() {
-	// styles the split cards
-	getID('split').className = 'hidden';
-	getID('player').className = '';
-	styleID('splitCards').marginLeft = '50px';
-}
+// function splitCards() {
+//     // styles the split cards
+//     getID('split').className = 'hidden';
+//     getID('player').className = '';
+//     styleID('splitCards').marginLeft = '50px';
+// }
 
 function loadGame() {
 	// hides other screens, displays main game
 	play();
 
-	styleID('dealer').marginTop = "0px";
-	styleID('dealer').marginLeft = "100px";
+	styleID('dealer').marginTop = '0px';
+	styleID('dealer').marginLeft = '100px';
 
 	toggleWagers(true);
 
@@ -781,7 +818,7 @@ function loadGame() {
 		Players[j].turn = localStorage.getItem(j + 'turn');
 		Players[j].cardBalance = parseInt(localStorage.getItem(j + 'cardBalance'));
 
-		if (j == deck.players) {
+		if (j === deck.players) {
 			Players[j].splitCards = localStorage.getItem(j + 'splitCards');
 			Players[j].handle = localStorage.getItem(j + 'handle');
 			Players[j].handle = localStorage.getItem(j + 'rounds');
@@ -795,10 +832,10 @@ function loadGame() {
 	getID(wager).className = 'mgame wager selected';
 
 	if (Players.last().rounds) {
-		getID('roundText').className = "inline";
+		getID('roundText').className = 'inline';
 	} else {
 		// ensures that 'the round 1 of 10" text is not displayed
-		getID("roundText").className = "hidden";
+		getID('roundText').className = 'hidden';
 	}
 }
 
@@ -818,126 +855,122 @@ function displayNode(node, object, i) {
 		// create a text node of the unicode card
 		var content = document.createTextNode(unicard);
 		// create a span element
-		var span = document.createElement("span");
+		var span = document.createElement('span');
 		// style the span
-		span.className = "card";
+		span.className = 'card';
 		// append the text node to the span
 		span.appendChild(content);
 		// colour the card accordingly
 		span.style.color = object.display(card)[1];
-		//append the span element to the hand
+		// append the span element to the hand
 		node.appendChild(span);
 	}
 }
 
 function display() {
+	if (Players !== undefined) {
+		getID('total').innerHTML = Players.last().bank;
 
-	// for (let i = 0; i < Players.length - 1; i++) {
-	// update the players bank to
-	getID("total").innerHTML = Players.last().bank;
-	// }
+		var dealerNode = getID('dealer');
+		var dealer = Players[0];
 
-	var dealerNode = getID("dealer");
-	var dealer = Players[0];
+		// clearing dealer
+		clearNode(dealerNode);
 
-	// clearing dealer
-	clearNode(dealerNode);
-
-	// for showing back of card if no cards
-	// same code as displyNode but function does not support card = [0,-1]
-	if (dealer.cards.length === 0 || PLAYING === true) {
-		let card = [0, -1];
-		let content = document.createTextNode(dealer.display(card)[0]);
-		let span = document.createElement("span");
-		span.className = "card";
-		span.appendChild(content);
-		if (PLAYING) {
-			span.style.color = dealer.display(dealer.cards[0])[1];
-		}
-		dealerNode.appendChild(span);
-	}
-
-	// if playing is true set iterator to 1, else 0
-	// this is needed to hide the dealers card when game is in play
-	let Cd = (PLAYING) ? 1 : 0;
-
-	// displays dealer cards
-	displayNode(dealerNode, dealer, Cd);
-
-	// clearing ai players
-	for (let x = 1; x < 5; x++) {
-		clearNode(getID("ai" + x));
-	}
-
-	// if there are ai players
-	if (Players.length > 2) {
-		// for each player
-		for (let Pl = 1; Pl < deck.players; Pl++) {
-			let aiNode = getID("ai" + (Pl));
-
-			// for each card in their hand
-			displayNode(aiNode, Players[Pl], 0);
-		}
-	}
-
-	var playerNode = getID('player');
-	var player = Players.last();
-
-	// clearing player
-	clearNode(playerNode);
-
-	// for each card in their hand
-	displayNode(playerNode, player, 0);
-
-	var splitNode = getID('splitCards');
-
-	// clearing player
-	clearNode(splitNode);
-
-	if (player.splitCards.length > 0) {
-		// this is the same code as the display node code but module doesn't support splitcards
-		// see above for comments
-		for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
-			let card = Players.last().splitCards[Cd];
-			var content = document.createTextNode(Players.last().display(card)[0]);
-			var span = document.createElement("span");
-			span.className = "card";
+		// for showing back of card if no cards
+		// same code as displyNode but function does not support card = [0,-1]
+		if (dealer.cards.length === 0 || PLAYING === true) {
+			let card = [0, -1];
+			let content = document.createTextNode(dealer.display(card)[0]);
+			let span = document.createElement('span');
+			span.className = 'card';
 			span.appendChild(content);
-			span.style.color = Players.last().display(card)[1];
-			getID('splitCards').appendChild(span);
+			if (PLAYING) {
+				span.style.color = dealer.display(dealer.cards[0])[1];
+			}
+			dealerNode.appendChild(span);
+		}
+
+		// if playing is true set iterator to 1, else 0
+		// this is needed to hide the dealers card when game is in play
+		let Cd = (PLAYING) ? 1 : 0;
+
+		// displays dealer cards
+		displayNode(dealerNode, dealer, Cd);
+
+		// clearing ai players
+		for (let x = 1; x < 5; x++) {
+			clearNode(getID('ai' + x));
+		}
+
+		// if there are ai players
+		if (Players.length > 2) {
+			// for each player
+			for (let Pl = 1; Pl < deck.players; Pl++) {
+				let aiNode = getID('ai' + (Pl));
+
+				// for each card in their hand
+				displayNode(aiNode, Players[Pl], 0);
+			}
+		}
+
+		var playerNode = getID('player');
+		var player = Players.last();
+
+		// clearing player
+		clearNode(playerNode);
+
+		// for each card in their hand
+		displayNode(playerNode, player, 0);
+
+		var splitNode = getID('splitCards');
+
+		// clearing player
+		clearNode(splitNode);
+
+		if (player.splitCards.length > 0) {
+			// this is the same code as the display node code but module doesn't
+			// support splitcards see above for comments
+			for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
+				let card = Players.last().splitCards[Cd];
+				var content = document.createTextNode(Players.last().display(card)[0]);
+				var span = document.createElement('span');
+				span.className = 'card';
+				span.appendChild(content);
+				span.style.color = Players.last().display(card)[1];
+				getID('splitCards').appendChild(span);
+			}
 		}
 	}
 }
 
 ////////////////////// CLICKING //////////////////////
-getID('game').onclick = makeClicker("gameScreen");
-getID('rules').onclick = makeClicker("rulesScreen");
-getID('leaderboard').onclick = makeClicker("leaderboardScreen");
-getID('exit').onclick = makeClicker("exit");
-getID('create').onclick = makeClicker("gameScreen2");
-getID('10').onclick = makeWager("10");
-getID('50').onclick = makeWager("50");
-getID('100').onclick = makeWager("100");
-var main = makeClicker("mainScreen");
-var play = makeClicker("mainGame");
+getID('rules').onclick = makeClicker('rulesScreen');
+getID('leaderboard').onclick = makeClicker('leaderboardScreen');
+getID('create').onclick = makeClicker('gameScreen2');
+getID('10').onclick = makeWager('10');
+getID('50').onclick = makeWager('50');
+getID('100').onclick = makeWager('100');
+var main = makeClicker('mainScreen');
+var play = makeClicker('mainGame');
 
 function makeClicker(Button) {
 	return function () {
 		// select all screens
-		var x = document.querySelectorAll(".screen");
+		let x = document.querySelectorAll('.screen');
 		// hides them
 		for (let i = 0; i < x.length; i++) {
-			x[i].className = 'screen hidden';
+			x[i].classList.add('hidden');
 		}
 		// except the chosen screen
-		getID(Button).className = 'screen';
+		getID(Button).classList.remove('hidden');
 	};
 }
 
 function makeWager(Button) {
 	return function () {
 		if (PLAYING === false) {
-			//sets player wager
+			// sets player wager
 			Players.last().wager = parseInt(Button);
 			// select all wagers and unselect them
 			toggleWagers(true);
@@ -947,46 +980,41 @@ function makeWager(Button) {
 	};
 }
 
+getID('game').onclick = function () {
+	let x = document.querySelectorAll('.screen');
+	for (let i = 0; i < x.length; i++) {
+		x[i].classList.add('hidden');
+	}
+	getID('gameScreen').classList.remove('hidden');
+
+	if (localStorage.length < 10) {
+		getID('previous').classList.add('hidden');
+	} else {
+		getID('previous').classList.remove('hidden');
+	}
+};
+
 // select all return buttons
-var y = document.querySelectorAll(".return");
+var y = document.querySelectorAll('.return');
 for (let k = 0; k < y.length; k++) {
 	// set the onclick to main
 	y[k].onclick = main;
 }
 
 getID('decPlayers').onclick = function () {
-	if (deck.players > 1) deck.players--;
+	deck.setPlayers(-1);
 };
 
 getID('incPlayers').onclick = function () {
-	if (deck.players < 5) deck.players++;
+	deck.setPlayers(1);
 };
 
 getID('play').onclick = function () {
 	// ensures that 'the round 1 of 10" text is not displayed
-	getID("roundText").className = "hidden";
-
-	styleID('dealer').marginTop = "0px";
-	styleID('dealer').marginLeft = "100px";
-
-	switch (deck.players) {
-		// sets the margins based on the number of players
-		// so that the action/wager buttons are always at bottom
-		case 1:
-			styleID('rightBlock').marginTop = "300px";
-			styleID('selectWager').marginTop = "-50px";
-			break;
-		case 2:
-			styleID('rightBlock').marginTop = "220px";
-			styleID('selectWager').marginTop = "65px";
-			break;
-		case 3:
-		case 4:
-		case 5:
-			styleID('rightBlock').marginTop = "100px";
-			styleID('selectWager').marginTop = "195px";
-			break;
-	}
+	getID('roundText').className = 'hidden';
+	getID('won').className = 'hidden';
+	getID('loss').className = 'hidden';
+	getID('tied').className = 'hidden';
 
 	newGame(deck.players);
 };
@@ -996,34 +1024,34 @@ getID('previous').onclick = function () {
 };
 
 getID('tournament').onclick = function () {
-	getID('roundText').className = "inline";
-
-	styleID('dealer').marginTop = "-50px";
-	styleID('dealer').marginLeft = "100px";
-	styleID('rightBlock').marginTop = "300px";
-	styleID('selectWager').marginTop = "-27px";
+	getID('roundText').className = 'inline';
 
 	newGame(1);
 
 	Players.last().rounds = 1;
 	Players.last().handle = prompt('Enter a handle for leaderboard: ');
+	getID('rounds').innerHTML = 1;
 };
 
 getID('hit').onclick = function () {
 	if (PLAYING === true) {
 		Players.last().hit();
 	}
+	display();
 };
 
 getID('stand').onclick = function () {
 	if (PLAYING === true) {
 		Players.last().stand();
 	}
+	display();
 };
 
 getID('double').onclick = function () {
 	Players.last().hit();
+	getID('double').className = 'hidden';
 	settlement(true, false);
+	display();
 };
 
 getID('split').onclick = function () {
@@ -1033,41 +1061,38 @@ getID('split').onclick = function () {
 
 getID('deal').onclick = function () {
 	round(Players.last().rounds);
+
+	if (Players !== undefined && Players.last().rounds) {
+		getID('rounds').innerHTML = Players.last().rounds - 1;
+	}
 };
 
 getID('nextRound').onclick = function () {
-	round(Players.last().rounds);
-};
+	let user = Players.last();
 
-window.setInterval(function () {
-	getID('players').innerHTML = deck.players;
-	display();
+	round(user.rounds);
 
-	if (PLAYING) {
-		let user = Players.last();
-
-		// if the user goes bust
-		if (user.evaluate() > 21) settlement(true, true);
-
-
-		if (user.cards.length === 2) {
-			if (user.evaluate() > 8 && user.evaluate() < 12) {
-				getID('double').className = "mgame action inline";
-			} else {
-				getID('double').className = "hidden";
-			}
-
-			/*if (user.splitCardsCheck()) {
-				getID('split').className = "mgame action inline";
-			} else {
-				getID('split').className = "hidden";
-			}*/
+	if (user.cards.length === 2) {
+		if (user.evaluate() > 8 && user.evaluate() < 12) {
+			getID('double').className = 'mgame action inline';
 		} else {
-			getID('double').className = "hidden";
+			getID('double').className = 'hidden';
 		}
+
+		/* if (user.splitCardsCheck()) {
+		        getID('split').className = "mgame action inline";
+		} else {
+		        getID('split').className = "hidden";
+		} */
+	} else {
+		getID('double').className = 'hidden';
 	}
 
-	if (Players.last().rounds) {
+	if (Players !== undefined && Players.last().rounds) {
 		getID('rounds').innerHTML = Players.last().rounds - 1;
 	}
-}, 100);
+};
+
+getID('exit').onclick = function () {
+	window.location.href = '/';
+};
