@@ -1,5 +1,10 @@
 body {
     font-family: sans-serif;
+    background-color: #a0dbaf;
+    min-width: 440px;
+    display: grid;
+    grid-template-rows: 1fr 80px;
+    height: 98vh;
 }
 
 h1 {
@@ -21,6 +26,12 @@ button {
     padding: 10px;
     font-size: 1em;
     background-color: white;
+}
+
+button:hover,
+#decPlayers,
+#incPlayers {
+    cursor: pointer;
 }
 
 li {
@@ -46,10 +57,12 @@ th:first-child {
     text-align: center;
 }
 
-button:hover,
-#decPlayers,
-#incPlayers {
-    cursor: pointer;
+svg {
+    display: inline-block;
+    vertical-align: middle;
+    height: 2.5rem;
+    top: -.125em;
+    position: relative;
 }
 
 .menu {
@@ -68,13 +81,14 @@ button:hover,
     border-radius: 10px;
     padding: 7px;
     font-size: 1.3em;
-    margin: 0 8px;
+    margin: 0 4px;
 }
 
 .card {
     background-color: white;
-    font-size: 5.5em;
-    margin-left: -30px;
+    font-size: 4em;
+    margin-left: -20px;
+    font-family: dejavu_sansbook, Segoe UI Symbol;
 }
 
 .action {
@@ -86,32 +100,40 @@ button:hover,
 }
 
 .center {
-    display: block;
     margin: 0 auto;
     text-align: center;
 }
 
+.gridCenter {
+    place-self: center;
+}
+
 .screen {
-/*	background: url('felt.png');
-	border: #0EB29C 1px solid;*/
+    border: #0EB29C 10px solid;
+    border-style: outset;
+    border-radius: 1%;
     width: 750px;
     height: 550px;
-    margin: 0 auto;
+    margin: 5% auto;
+    background-color: white;
+    grid-row: 1;
 }
 
 .return {
     border: lightgray solid 4px;
-    border-radius: 10px;
+    border-radius: 10px 0 10px 10px;
     color: gray;
     padding: 7px 11px;
+    grid-row: 1/2;
+    grid-column: 1/5;
+    height: 42px;
+    width: 80px;
+    margin-left: auto;
+    z-index: 1;
 }
 
 .hidden {
-    display: none;
-}
-
-.inline {
-    display: inline-block;
+    display: none !important;
 }
 
 .selected {
@@ -124,6 +146,8 @@ button:hover,
     font-size: 1.5em;
     padding: 7px;
     width: 175px;
+    margin: 5%;
+    min-width: 80px
 }
 
 .locked {
@@ -132,29 +156,39 @@ button:hover,
 }
 
 .tournamentFeedback {
-	font-size: 2.2em;
-	text-align: center;
-	width: 275px;
-	margin: 100px auto -160px auto;
+    font-size: 2.2em;
+    text-align: center;
+    width: 250px;
+    margin: 100px auto -160px auto;
 }
 
-.return,
-#hand0 {
+.return {
     float: right;
 }
 
-#hand1 {
-    float: left;
+#mainGame {
+    display: grid;
+    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 0.5fr 0.5fr 1fr;
+    place-content: space-evenly;
+}
+
+#dealer {
+    grid-row: 1/2;
+    grid-column: 1/5;
+    margin: 0 0 0 30px;
 }
 
 #roundText {
     font-size: 1.5em;
     margin: 5% 10% 0 10%;
+    grid-row: 1/2;
+    grid-column: 1/2;
 }
 
 #selectWager {
     font-size: 1.75em;
-	margin-bottom: 25px;
+    margin-bottom: 25px;
     font-weight: bold;
 }
 
@@ -169,30 +203,46 @@ button:hover,
     font-size: 1.3em;
     margin-top: -5px;
     text-align: center;
+    grid-row: 2/3;
+}
+
+#bank {
+    grid-row: 3/4;
 }
 
 #hand0 {
-    margin-right: 120px;
+    grid-row: 2/3;
+    grid-column: 1/3;
+    text-align: center;
+    margin-left: 10%;
+    place-self: center;
 }
 
 #hand1 {
-    margin-left: 120px;
+    grid-row: 2/3;
+    grid-column: 3/5;
+    text-align: center;
+    place-self: center;
 }
 
 #player {
     position: relative;
     margin-left: 30px;
+    grid-row: 1/2;
 }
 
 #splitCards {
     position: relative;
     left: 50px;
+    grid-row: 1/2;
+    display: none;
 }
 
 #double {
     position: relative;
-    left: 50px;
-    margin-right: -80px;
+    /*! left: 50px; */
+    /*! margin-right: -80px; */
+    margin-bottom: 5%;
 }
 
 #split {
@@ -201,15 +251,98 @@ button:hover,
     margin-left: -90px;
 }
 
-#leftBlock,
+#leftBlock {
+    grid-row: 3/4;
+    grid-column: 1/2;
+    text-align: center;
+    align-self: end;
+    margin: 10%;
+}
+
 #rightBlock {
-    z-index: 2;
-    position: relative;
+    grid-row: 3/4;
+    grid-column: 4/5;
+    align-self: end;
+    margin-bottom: 10%;
+    text-align: center;
 }
 
 #middleBlock {
-    margin: 0 -150px 0 -120px;
-    width: 500px;
-    z-index: 1;
-    position: relative;
+    grid-row: 3/4;
+    grid-column: 2/4;
+    text-align: center;
+    align-self: end;
+    margin-bottom: 14%;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1.5em 1em;
+}
+
+footer {
+    grid-row: 2;
+    font-family: monospace;
+    font-size: 0.8em;
+    margin: auto;
+    text-align: center;
+    line-height: 1.2rem;
+}
+
+noscript p {
+    font-size: 2em;
+    margin: auto;
+    width: 400px;
+    text-align: center;
+    margin-top: 75px;
+}
+
+@font-face {
+    font-family: 'dejavu_sansbook';
+    src: url('Fonts/DejaVuSans-webfont.woff') format('woff'), url('Fonts/DejaVuSans-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@media only screen and (max-width: 780px) {
+    h1 {
+        margin: 0.5em 0;
+    }
+
+    .screen {
+        width: 94%;
+        height: 650px;
+        margin: auto;
+    }
+
+    .mgame {
+        display: inline-block;
+        margin: auto 0;
+        margin: 0.3rem 0.8rem;
+    }
+
+    #leftBlock,
+    #rightBlock {
+        place-self: center;
+    }
+}
+
+*::selection {
+    color: #eeeeee;
+    background-color: #097668;
+}
+
+@media only screen and (max-width: 565px) {
+    .bigGameButton {
+        width: auto;
+    }
+
+    .card {
+        font-size: 3.8em;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .mgame {
+        margin: 4%;
+    }
 }
