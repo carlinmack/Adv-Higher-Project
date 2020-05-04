@@ -1,31 +1,65 @@
+:root {
+    --hue: 135.3;
+    --sat: 45%;
+    --light: 74.3%;
+
+    --background-footer: hsl(var(--hue), var(--sat), 27%);
+}
+
+*::selection {
+    color: #eeeeee;
+    background-color: #097668;
+}
+
 body {
-    font-family: sans-serif;
-    background-color: #a0dbaf;
-    min-width: 440px;
+    font-family: 'Fira Sans', sans-serif;
+    background-color: #eee;
+    min-width: 350px;
+    margin: 0 0 0 0;
     display: grid;
-    grid-template-rows: 1fr 80px;
-    height: 98vh;
+    grid-template-rows: minmax(100vh, max-content) 80px;
+    grid-template-columns: 1fr;
+    grid-template-areas: "content""footer";
+    overflow-x: hidden;
+}
+
+body,
+body.playing {
+    transition: background-color 3s;
+}
+
+body.playing {
+    background-color: #2a2a2a;
+}
+
+body>div {
+    grid-area: content;
+    width: 100%;
+    min-width: 350px;
 }
 
 h1 {
     text-align: center;
-    font-size: 5em;
-    font-weight: normal;
-    margin: 0.8em 0;
+    font-size: 12vmin;
+    font-weight: 800;
+    margin: 0;
 }
 
 h2 {
-    font-size: 4em;
-    font-weight: normal;
-    margin: 0.45em 0 0.45em 50px;
+    font-size: 8vmin;
+    font-weight: 600;
+    margin: 0 0 0 50px;
 }
 
 button {
-    border: black solid 4px;
-    border-radius: 5px;
+    font-family: Fira Sans, sans-serif;
+    border: none;
+    border-radius: 10px;
     padding: 10px;
     font-size: 1em;
-    background-color: white;
+    background-color: #ffffff80;
+    transition: transform .05s ease;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, .2);
 }
 
 button:hover,
@@ -34,20 +68,27 @@ button:hover,
     cursor: pointer;
 }
 
+button:active,
+#decPlayers:active,
+#incPlayers:active {
+    transform: scale(0.95);
+}
+
 li {
-    margin: 15px 30px;
+    margin: 1.5em 30px;
     font-size: 1.1em;
 }
 
 table {
     border-collapse: collapse;
-    width: 90%;
-    margin: auto;
+    width: 70%;
+    margin: 0 auto;
+    min-width: 310px;
+    font-size: 1.25em;
 }
 
 td,
 th {
-    border: 1px solid #dddddd;
     text-align: left;
     padding: 10px;
 }
@@ -57,7 +98,50 @@ th:first-child {
     text-align: center;
 }
 
-svg {
+th {
+    background: grey;
+    color: white;
+}
+
+ul {
+    width: 85%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+tbody tr:nth-child(even) {
+    background-color: whitesmoke;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: lightgray;
+}
+
+noscript p {
+    font-size: 2em;
+    margin: auto;
+    width: 400px;
+    text-align: center;
+    margin-top: 75px;
+}
+
+footer {
+    font-family: monospace;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.2rem;
+    grid-area: footer;
+    display: flex;
+    place-content: center;
+    place-items: center;
+    width: 100vw;
+    height: 80px;
+    background: hsl(var(--hue), var(--sat), 27%);
+    padding: 10px 0;
+}
+
+.arrow {
     display: inline-block;
     vertical-align: middle;
     height: 2.5rem;
@@ -73,11 +157,12 @@ svg {
 
 .menu.game {
     display: block;
-    width: 400px;
+    width: 365px;
+    line-height: 1.5em;
 }
 
 .mgame {
-    border: black solid 2px;
+    border: #ffffffc0;
     border-radius: 10px;
     padding: 7px;
     font-size: 1.3em;
@@ -85,10 +170,14 @@ svg {
 }
 
 .card {
-    background-color: white;
     font-size: 4em;
-    margin-left: -20px;
-    font-family: dejavu_sansbook, Segoe UI Symbol;
+    margin-left: -28px;
+    font-family: DejaVu, Segoe UI Symbol;
+    position: relative;
+}
+
+.cardBackground {
+    position: absolute;
 }
 
 .action {
@@ -112,24 +201,30 @@ svg {
     border: #0EB29C 10px solid;
     border-style: outset;
     border-radius: 1%;
-    width: 750px;
-    height: 550px;
-    margin: 5% auto;
-    background-color: white;
+    width: 90vmin;
+    height: 66vmin;
+    margin: 4em auto;
+    background-color: #a0dbaf;
     grid-row: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    min-height: 500px;
+    min-width: 700px;
 }
 
 .return {
-    border: lightgray solid 4px;
     border-radius: 10px 0 10px 10px;
-    color: gray;
-    padding: 7px 11px;
-    grid-row: 1/2;
-    grid-column: 1/5;
-    height: 42px;
+    color: grey;
+    background-color: #eef1f080;
     width: 80px;
-    margin-left: auto;
     z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    line-height: 1em;
+    box-shadow: none;
 }
 
 .hidden {
@@ -137,45 +232,129 @@ svg {
 }
 
 .selected {
-    background: linear-gradient(#fff, #d0d0d0);
+    background: linear-gradient(#ffffffC0, #d0d0d0C0);
+}
+
+.selected.locked {
+    background: linear-gradient(#ffffff80, #d0d0d080);
 }
 
 .bigGameButton {
-    border: black solid 3px;
-    border-radius: 10px;
     font-size: 1.5em;
     padding: 7px;
     width: 175px;
     margin: 5%;
-    min-width: 80px
+    min-width: 80px;
 }
 
 .locked {
-    border: #ddd solid 3px;
     color: #aaa;
+    background-color: #ffffff60;
 }
 
 .tournamentFeedback {
     font-size: 2.2em;
     text-align: center;
-    width: 250px;
-    margin: 100px auto -160px auto;
+    width: 300px;
+    grid-row: 2/3;
+    grid-column: 1/6;
+    place-self: center;
 }
 
-.return {
-    float: right;
+.ai {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.aiBank p {
+    font-size: 1rem;
+    color: #777777;
+    text-align: center;
+    padding: 5px;
+    margin: 0;
+}
+
+.aiBank.hide {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.aiBank {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+#mainGame.selectWager {
+    grid-template-rows: 1fr 2fr 1.5fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: "dealer""rightblock""leftblock";
+    /*! width: 100%; */
+    place-items: center stretch;
+}
+
+#mainGame.selectWager #middleBlock,
+#mainGame.selectWager #hand0,
+#mainGame.selectWager #hand1 {
+    display: none;
+}
+
+#mainGame.selectWager .actions {
+    display: none;
+}
+
+#ai3 .aiBank,
+#ai4 .aiBank {
+    margin-right: 28px;
+}
+
+#hand0 .ai {
+    margin-right: 50px;
+}
+
+#hand1 .ai {
+    margin-left: 50px;
+}
+
+#hand1 .aiBank {
+    order: 1;
+}
+
+#decPlayers,
+#incPlayers {
+    width: 0;
+    height: 0;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    display: inline-block;
+    vertical-align: sub;
+}
+
+#decPlayers {
+    border-right: 38.64px solid black;
+}
+
+#incPlayers {
+    border-left: 38.64px solid #969696;
+}
+
+#tournamentLeaderboard {
+    font-size: 2em;
+    width: 300px;
 }
 
 #mainGame {
     display: grid;
-    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1.5fr;
     grid-template-columns: 1fr 0.5fr 0.5fr 1fr;
     place-content: space-evenly;
+    background-image: url(felt.png);
+    grid-template-areas: "dealer dealer dealer dealer""lefthands lefthands righthands righthands""leftblock middleblock middleblock rightblock";
 }
 
 #dealer {
-    grid-row: 1/2;
-    grid-column: 1/5;
+    grid-area: dealer;
     margin: 0 0 0 30px;
 }
 
@@ -193,7 +372,14 @@ svg {
 }
 
 #players {
-    margin: 0 10%;
+    display: inline-block;
+    width: 150px;
+}
+
+#won,
+#loss,
+#tied {
+    grid-area: feedback;
 }
 
 #bank,
@@ -203,24 +389,21 @@ svg {
     font-size: 1.3em;
     margin-top: -5px;
     text-align: center;
-    grid-row: 2/3;
 }
 
 #bank {
-    grid-row: 3/4;
+    grid-area: bank;
 }
 
 #hand0 {
-    grid-row: 2/3;
-    grid-column: 1/3;
+    grid-area: lefthands;
     text-align: center;
     margin-left: 10%;
     place-self: center;
 }
 
 #hand1 {
-    grid-row: 2/3;
-    grid-column: 3/5;
+    grid-area: righthands;
     text-align: center;
     place-self: center;
 }
@@ -228,7 +411,7 @@ svg {
 #player {
     position: relative;
     margin-left: 30px;
-    grid-row: 1/2;
+    grid-area: player;
 }
 
 #splitCards {
@@ -240,8 +423,6 @@ svg {
 
 #double {
     position: relative;
-    /*! left: 50px; */
-    /*! margin-right: -80px; */
     margin-bottom: 5%;
 }
 
@@ -252,24 +433,24 @@ svg {
 }
 
 #leftBlock {
-    grid-row: 3/4;
-    grid-column: 1/2;
+    grid-area: leftblock;
     text-align: center;
     align-self: end;
     margin: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #rightBlock {
-    grid-row: 3/4;
-    grid-column: 4/5;
+    grid-area: rightblock;
     align-self: end;
     margin-bottom: 10%;
     text-align: center;
 }
 
 #middleBlock {
-    grid-row: 3/4;
-    grid-column: 2/4;
+    grid-area: middleblock;
     text-align: center;
     align-self: end;
     margin-bottom: 14%;
@@ -277,28 +458,12 @@ svg {
     grid-gap: 10px;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1.5em 1em;
-}
-
-footer {
-    grid-row: 2;
-    font-family: monospace;
-    font-size: 0.8em;
-    margin: auto;
-    text-align: center;
-    line-height: 1.2rem;
-}
-
-noscript p {
-    font-size: 2em;
-    margin: auto;
-    width: 400px;
-    text-align: center;
-    margin-top: 75px;
+    grid-template-areas: "player""feedback""bank";
 }
 
 @font-face {
-    font-family: 'dejavu_sansbook';
-    src: url('Fonts/DejaVuSans-webfont.woff') format('woff'), url('Fonts/DejaVuSans-webfont.ttf') format('truetype');
+    font-family: 'DejaVu';
+    src: url('Fonts/DejaVuSans.woff') format('woff'), url('Fonts/DejaVuSans.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -306,12 +471,30 @@ noscript p {
 @media only screen and (max-width: 780px) {
     h1 {
         margin: 0.5em 0;
+        font-size: 20vw;
+    }
+
+    h2 {
+        font-size: 4.5em;
+    }
+
+    body {
+        background-color: #a0dbaf;
+        display: block;
+        overflow-x: scroll;
     }
 
     .screen {
-        width: 94%;
-        height: 650px;
-        margin: auto;
+        background-color: #a0dbaf;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border: none;
+        top: 0;
+        left: 0;
+        position: absolute;
+        min-height: unset;
+        min-width: unset;
     }
 
     .mgame {
@@ -322,27 +505,55 @@ noscript p {
 
     #leftBlock,
     #rightBlock {
-        place-self: center;
+        place-self: left;
+    }
+
+    footer,
+    my-footer {
+        display: none;
     }
 }
 
-*::selection {
-    color: #eeeeee;
-    background-color: #097668;
+@keyframes slide-up {
+    0% {
+        /* opacity: 0; */
+        /* transform: translateY(50px); */
+        transform: rotateX(180deg);
+    }
+
+    100% {
+        /* opacity: 1; */
+        /* transform: translateY(0); */
+        transform: rotateX(0deg);
+    }
 }
 
 @media only screen and (max-width: 565px) {
+    h2 {
+        margin: 0 auto;
+    }
+
     .bigGameButton {
         width: auto;
     }
 
-    .card {
-        font-size: 3.8em;
+    .aiBank {
+        display: none;
     }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 495px) {
     .mgame {
         margin: 4%;
+    }
+
+    h2 {
+        font-size: 16vw;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    h2 {
+        font-size: 4em;
     }
 }

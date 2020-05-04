@@ -1,41 +1,4 @@
-// following are debug comment lines
-
-/* jshint esversion: 6 */
-/* globals prompt:false */
-/* globals document:false */
-/* globals window:false */
-/* globals localStorage:false */
-
-// end debug lines
-
-/*TODO
-    JAVASCRIPT
-		recombining decks
-        split method
-		store leaderboard and load it (:
-
-    BUGS
-        always losing destroys game
-        if other people have a natural?
-
-    UI
-        change margins so that nothing moves
-        style tied
-
-    EFFICIENCY
-        simplify duplicated code
-        don't update hidden things
-		only update cards when they need to
-		only check double and split once
-
-    STRETCH GOALS
-        delay ai players turns a bit
-        new game button below 500
-        getIDs function mess
-		fix jank
-*/
-
-class Deck {
+﻿class Deck {
     constructor() {
         // initialises arrays for cards
         this.availableCards = [];
@@ -50,14 +13,14 @@ class Deck {
         if (newVal < 1 || newVal > 5) {
             return;
         } else if (newVal === 1) {
-            getID('arrowL').style.fill = '#818181';
-            getID('arrowR').style.fill = 'black';
+            getID('decPlayers').style.borderColor = 'transparent #969696 transparent transparent';
+            getID('incPlayers').style.borderColor = 'transparent transparent transparent black';
         } else if (newVal === 5) {
-            getID('arrowL').style.fill = 'black';
-            getID('arrowR').style.fill = '#818181';
+            getID('decPlayers').style.borderColor = 'transparent black transparent transparent';
+            getID('incPlayers').style.borderColor = 'transparent transparent transparent #969696';
         } else {
-            getID('arrowL').style.fill = 'black';
-            getID('arrowR').style.fill = 'black';
+            getID('decPlayers').style.borderColor = 'transparent black transparent transparent';
+            getID('incPlayers').style.borderColor = 'transparent transparent transparent black';
         }
         this.players = newVal;
         getID('players').innerHTML = deck.players;
@@ -82,13 +45,14 @@ class Deck {
 
     shuffle() {
         // fisher-yates shuffle
-        var length = this.availableCards.length,
-            temp, card;
-        // While there remain elements to shuffle
+        let length = this.availableCards.length;
+        let temp;
+        let card;
+        // While there remain elements to shuffleâ€¦
         while (length) {
             // Decrease number of remaining cards
             length -= 1;
-            // Pick a remaining element 
+            // Pick a remaining elementâ€¦
             card = Math.floor(Math.random() * length);
             // And swap it with the current element.
             temp = this.availableCards[length];
@@ -100,21 +64,39 @@ class Deck {
     // remove last 20% of cards
     cut() {
         // select the last 20%
-        var len = this.availableCards.length / 5;
+        var len = Math.floor(this.availableCards.length / 5);
         for (let i = 0; i < len; i++) {
             // remove them from the end of the array
             // and add it to the front of the cut cards arry
-            this.cutCards.push(this.availableCards.pop());
+            this.cutCards.unshift(this.availableCards.pop());
         }
     }
 
     deal() {
         // deal 2 cards to each player and the dealer
-        for (let i = 0; i < Players.length; i++) {
-            // adds the last two cards of the deck to the front of the Players cards
-            Players[i].cards.unshift(this.availableCards.pop());
-            Players[i].cards.unshift(this.availableCards.pop());
-        }
+        let dealCards;
+        let i = 0;
+        let index;
+        let order = [1, 2, 5, 4, 3, 0];
+        order = order.filter(el => el < Players.length);
+
+        const self = this;
+        return new Promise(function (resolve, reject) {
+            setTimeout(dealCards = () => {
+                index = order[i % Players.length];
+                // adds the last card of the deck to the end of the Players cards
+                Players[index].cards.push(self.availableCards.pop());
+
+                display();
+                i++;
+
+                if (i < Players.length * 2) {
+                    setTimeout(dealCards, 50);
+                } else {
+                    resolve();
+                }
+            }, 0);
+        });
     }
 
     hit() {
@@ -129,13 +111,15 @@ class Deck {
 
     combineDecks() {
         // add cut and spent cards to the end of available cards
+        // the iteration by two is to mimic casinos (I think ?)
         for (let i = this.cutCards.length; i > 0; i -= 2) {
             let tempArray = [];
             // push two items to the array
             tempArray.push(this.cutCards.pop());
             tempArray.push(this.cutCards.pop());
             // adds the two index array (a card) to the object
-            this.availableCards.push(tempArray);
+            if (tempArray[1]) this.availableCards.push(tempArray[1]);
+            this.availableCards.push(tempArray[0]);
         }
         for (let j = this.spentCards.length; j > 0; j -= 2) {
             let tempArray = [];
@@ -143,7 +127,8 @@ class Deck {
             tempArray.push(this.spentCards.pop());
             tempArray.push(this.spentCards.pop());
             // adds the two index array (a card) to the object
-            this.availableCards.push(tempArray);
+            if (tempArray[1]) this.availableCards.push(tempArray[1]);
+            this.availableCards.push(tempArray[0]);
         }
     }
 
@@ -164,24 +149,25 @@ class Dealer {
         this.cardBalance = 17;
     }
 
-    // Change [0, 2] to a card¦
+    // Change [0, 2] to A â™¦
     display(card) {
-        var prefix = '0x0001F0',
-            suit = '',
-            cardVal, temp;
+        const prefix = '0x0001F0';
+        let suit = '';
+        let cardVal;
+        let temp;
 
-        var suits = {
-                '0': 'A',
-                '1': 'B',
-                '2': 'C',
-                '3': 'D'
-            },
-            colour = {
-                '0': 'black',
-                '1': '#ff1103',
-                '2': '#ff1103',
-                '3': 'black'
-            };
+        const suits = {
+            '0': 'A',
+            '1': 'B',
+            '2': 'C',
+            '3': 'D',
+        };
+        const colour = {
+            '0': 'black',
+            '1': '#ff1103',
+            '2': '#ff1103',
+            '3': 'black',
+        };
 
         // takes the first value, finds the remainder it has with 4 and casts it to
         // a string
@@ -196,7 +182,7 @@ class Dealer {
         // 1. returns a string from the unicode code point
         // 2. returns the colour by passing in the suit value  which returns the
         // respective colour
-        return [String.fromCodePoint(temp), colour[value]];
+        return [String.fromCodePoint(parseInt(temp, 16)), colour[value]];
     }
 
     evaluate() {
@@ -209,9 +195,8 @@ class Dealer {
             if (this.cards[k][1] === 0 && flag === false) {
                 value += 11;
                 flag = true;
-            }
-            // if card is less than ten, value of it is card val + 1
-            else if (this.cards[k][1] < 10) {
+            } else if (this.cards[k][1] < 10) {
+                // if card is less than ten, value of it is card val + 1
                 value += this.cards[k][1] + 1;
             } else {
                 // all cards above ten are valued at 10
@@ -222,10 +207,8 @@ class Dealer {
         // worth 1
         if (flag && value > 21) {
             value -= 10;
-            return value;
-        } else {
-            return value;
         }
+        return value;
     }
 
     natural() {
@@ -259,7 +242,7 @@ class Dealer {
         }
     }
 
-    store() {
+    store(i) {
         localStorage.cards = this.cards;
         localStorage.turn = this.turn;
         localStorage.cardBalance = this.cardBalance;
@@ -303,12 +286,12 @@ class VirtualHand extends Dealer {
     }
 
     store(i) {
-        localStorage.setItem(i + 'cards', this.cards);
-        localStorage.setItem(i + 'turn', this.turn);
-        localStorage.setItem(i + 'cardBalance', this.cardBalance);
-        localStorage.setItem(i + 'wagerBalance', this.wagerBalance);
-        localStorage.setItem(i + 'bank', this.bank);
-        localStorage.setItem(i + 'wager', this.wager);
+        localStorage.setItem(i + 'cards', String(this.cards));
+        localStorage.setItem(i + 'turn', String(this.turn));
+        localStorage.setItem(i + 'cardBalance', String(this.cardBalance));
+        localStorage.setItem(i + 'wagerBalance', String(this.wagerBalance));
+        localStorage.setItem(i + 'bank', String(this.bank));
+        localStorage.setItem(i + 'wager', String(this.wager));
     }
 }
 
@@ -340,13 +323,13 @@ class PlayerHand extends Dealer {
             deck.returnCards(this.cards.pop());
         }
         // if there are split cards, remove them
-        if (this.splitCards.length) {
-            for (let j = this.splitCards.length; j > 0; j--) {
-                // .pop() removes the last index and returns it. Then returns the index
-                // to deck
-                deck.returnCards(this.splitCards.pop());
-            }
-        }
+        // if (this.splitCards.length) {
+        //     for (let j = this.splitCards.length; j > 0; j--) {
+        //         // .pop() removes the last index and returns it. Then returns the index
+        //         // to deck
+        //         deck.returnCards(this.splitCards.pop());
+        //     }
+        // }
     }
 
     splitCardsCheck() {
@@ -372,20 +355,21 @@ class PlayerHand extends Dealer {
     }
 
     store(i) {
-        localStorage.setItem(i + 'cards', this.cards);
-        localStorage.setItem(i + 'turn', this.turn);
-        localStorage.setItem(i + 'cardBalance', this.cardBalance);
-        localStorage.setItem(i + 'bank', this.bank);
-        localStorage.setItem(i + 'wager', this.wager);
-        localStorage.setItem(i + 'splitCards', this.splitCards);
-        localStorage.setItem(i + 'handle', this.handle);
-        localStorage.setItem(i + 'rounds', this.rounds);
+        localStorage.setItem(i + 'cards', String(this.cards));
+        localStorage.setItem(i + 'turn', String(this.turn));
+        localStorage.setItem(i + 'cardBalance', String(this.cardBalance));
+        localStorage.setItem(i + 'bank', String(this.bank));
+        localStorage.setItem(i + 'wager', String(this.wager));
+        localStorage.setItem(i + 'splitCards', String(this.splitCards));
+        localStorage.setItem(i + 'handle', String(this.handle));
+        localStorage.setItem(i + 'rounds', String(this.rounds));
     }
 }
 
-////////////////////// MAIN FUNCTION //////////////////////
-var deck = new Deck(),
-    Players, PLAYING = false;
+// ------------------- MAIN FUNCTION ------------------- //
+let deck = new Deck();
+let Players;
+let PLAYING = false;
 
 // helper function to make code easier to read
 function getID(x) {
@@ -393,7 +377,7 @@ function getID(x) {
 }
 
 const localStorage = window.localStorage;
-const prompt = window.prompt;
+const Prompt = window.prompt;
 
 // helper function to make code easier to read
 function styleID(x) {
@@ -410,8 +394,8 @@ function parse2D(object, item) {
     for (let k = 0; k < data.length; k += 2) {
         var tempArray = [];
         // push two items to the array
-        tempArray.push(parseInt(data[k]));
-        tempArray.push(parseInt(data[k + 1]));
+        tempArray.push(parseInt(data[k], 10));
+        tempArray.push(parseInt(data[k + 1], 10));
         // adds the two index array (a card) to the object
         object.push(tempArray);
     }
@@ -442,12 +426,8 @@ function toggleWagers(bool) {
 function round(Tournament) {
     getID('deal').className = 'hidden';
     getID('selectWager').className = 'hidden';
-    getID('nextRound').className = 'hidden';
-    getID('won').className = 'hidden';
-    getID('loss').className = 'hidden';
-    getID('tied').className = 'hidden';
-    getID('loseTour').className = 'hidden';
-    getID('winTourn').className = 'hidden';
+    getID('mainGame').classList.remove('selectWager');
+    hideForNewRound();
 
     getID('stand').className = 'mgame action';
     getID('hit').className = 'mgame action';
@@ -456,13 +436,6 @@ function round(Tournament) {
 
     var playerLength = Players.length;
     PLAYING = true;
-
-    // if there aren't enough cards to play the next round
-    if (deck.availableCards.length < playerLength * 5) {
-        deck.combineDecks();
-        deck.shuffle();
-        deck.cut();
-    }
 
     // generates new values for wager and card balances.
     for (let i = 1; i < playerLength - 1; i++) {
@@ -477,64 +450,118 @@ function round(Tournament) {
         }
     }
 
+    // if there aren't enough cards to play the next round
+    if (deck.availableCards.length < playerLength * 5) {
+        deck.combineDecks();
+        deck.shuffle();
+        deck.cut();
+    }
+
     if (Players.last().rounds > 10) {
         tournament(Players.last().bank, Players.last().handle);
         return;
     }
 
-    deck.deal();
+    deck.deal()
+        .then(function () {
+            // display banks
+            const banks = document.querySelectorAll('.aiBank');
 
-    // stores all players
-    for (let i = 0; i < playerLength; i++) {
-        Players[i].store(i);
-    }
+            for (let i = 0; i < banks.length; i++) {
+                const element = banks.item(i);
+                const numNeighbours = element.parentNode.children.length;
 
-    deck.store();
-
-    // checking for naturals, dealer can have one
-    var natural = false;
-    for (let n = 1; n < playerLength; n++) {
-        if (Players[n].natural()) {
-            natural = true;
-        }
-    }
-
-    if (natural === false) {
-        // turn for players before user
-        var showPlayers = Math.floor((playerLength - 1) / 2) + 1;
-        for (let l = 1; l < showPlayers; l++) {
-            Players[l].turn = true;
-            while (Players[l].turn) {
-                if (Players[l].evaluate() < Players[l].cardBalance) {
-                    Players[l].hit();
-                } else {
-                    Players[l].stand();
+                if (numNeighbours > 1) {
+                    element.classList.remove('hide');
                 }
             }
-        }
-        // if there is a natural then the game instantly ends, cards are evaled
-    } else {
-        settlement(false, true);
+
+            // stores all players
+            for (let i = 0; i < playerLength; i++) {
+                Players[i].store(i);
+            }
+
+            deck.store();
+
+            // checking for naturals, dealer can have one
+            var natural = false;
+            for (let n = 1; n < playerLength; n++) {
+                if (Players[n].natural()) {
+                    natural = true;
+                }
+            }
+
+            if (natural === false) {
+                // turn for players before user
+                const showPlayers = Math.floor((playerLength - 1) / 2) + 1;
+
+                aiTakeTurn(1, showPlayers);
+            } else {
+                // if there is a natural then the game instantly ends, cards are evaled
+                settlement(false, true);
+            }
+
+            if (Tournament) {
+                Players.last().rounds += 1;
+            }
+        });
+
+    function aiTakeTurn(i, bound) {
+        if (i < bound) new Promise((resolve) => {
+            let aiTurns;
+            Players[i].turn = true;
+            setTimeout(aiTurns = () => {
+                if (Players[i].evaluate() < Players[i].cardBalance) {
+                    Players[i].hit();
+                    display();
+                } else {
+                    Players[i].stand();
+                }
+                if (Players[i].turn) {
+                    setTimeout(aiTurns, 100);
+                } else {
+                    resolve();
+                }
+            }, 50);
+        }).then(() => aiTakeTurn(i + 1, bound));
+    }
+}
+
+function hideForNewRound() {
+    getID('nextRound').className = 'hidden';
+    getID('playAgain').className = 'hidden';
+    getID('won').className = 'hidden';
+    getID('loss').className = 'hidden';
+    getID('tied').className = 'hidden';
+    getID('loseTour').className = 'hidden';
+    getID('winTourn').className = 'hidden';
+    getID('double').className = 'hidden';
+    getID('split').className = 'hidden';
+
+    const elems1 = document.querySelectorAll('.won');
+    for (const elem of elems1) {
+        elem.classList.add('hidden');
     }
 
-    display();
-
-    if (Tournament) {
-        Players.last().rounds += 1;
+    const elems2 = document.querySelectorAll('.tied');
+    for (const elem of elems2) {
+        elem.classList.add('hidden');
     }
 }
 
 function newGame(players) {
     // hides other screens, displays main game
     play();
+    document.body.classList.add('playing');
+    getID('mainGame').classList.add('selectWager');
 
     getID('deal').className = 'bigGameButton center';
-    getID('nextRound').className = 'hidden';
     getID('selectWager').className = 'center';
-    getID('double').className = 'hidden';
-    getID('split').className = 'hidden';
-    getID('loseTour').className = 'hidden';
-    getID('winTourn').className = 'hidden';
+    const elems2 = document.querySelectorAll('.aiBank');
+    for (const elem of elems2) {
+        elem.classList.add('hide');
+    }
+    hideForNewRound();
 
     PLAYING = false;
 
@@ -622,7 +649,9 @@ function settlement(noNatural, noDouble) {
                 if (i === Players.length - 1) {
                     Players[i].bank += Players[i].wager;
                     getID('won').className = 'center';
-                    continue;
+                    continue; // no idea why this is necessary
+                } else {
+                    displayWon(i, true);
                 }
                 Players[i].bank += Players[i].wager * 1.5;
             }
@@ -632,8 +661,9 @@ function settlement(noNatural, noDouble) {
 
             if (i === Players.length - 1) {
                 getID('won').className = 'center';
+            } else {
+                displayWon(i, 0);
             }
-
             // if player goes bust or less than dealer
         } else if (
             Players[i].evaluate() > 21 ||
@@ -643,18 +673,22 @@ function settlement(noNatural, noDouble) {
             if (i === Players.length - 1) {
                 getID('loss').className = 'center';
             }
-
             // if player is above dealer
         } else if (Players[i].evaluate() > Players[0].evaluate()) {
             Players[i].bank += Players[i].wager;
 
             if (i === Players.length - 1) {
                 getID('won').className = 'center';
+            } else {
+                displayWon(i, 0);
             }
             // if they have the same value cards
         } else {
             if (i === Players.length - 1) {
                 getID('tied').className = 'center';
+            } else {
+                getID('ai' + (i)).getElementsByClassName('tied')[0]
+                    .classList.remove('hidden');
             }
         }
     }
@@ -671,12 +705,22 @@ function settlement(noNatural, noDouble) {
         Players.last().wager = Players.last().wager / 2;
     }
 
+    display();
+
     // stores all players
     for (let i = 0; i < Players.length; i++) {
         Players[i].store(i);
     }
 
     deck.store();
+
+    function displayWon(i, natural) {
+        const wonNode = getID('ai' + (i)).getElementsByClassName('won')[0];
+        wonNode.classList.remove('hidden');
+        let wager = Players[i].wager;
+        if (natural) wager *= 1.5;
+        wonNode.children.item(0).innerHTML = wager;
+    }
 }
 
 function tournament(bank, handle) {
@@ -684,7 +728,7 @@ function tournament(bank, handle) {
     var table = getID('leaderboardTable');
     var lastRow = table.rows[5];
     var lastCellValue = lastRow.cells[2].innerHTML;
-    var value = parseInt(lastCellValue.substr(1));
+    var value = parseInt(lastCellValue.substr(1), 10);
 
     PLAYING = false;
     getID('stand').className += ' locked';
@@ -698,12 +742,13 @@ function tournament(bank, handle) {
         // creating array of leaderboard to sort more easily
         for (let i = 1; i < 6; i++) {
             var rowVal = table.rows[i].cells[2].innerHTML;
-            var Val = parseInt(rowVal.substr(1));
+            var Val = parseInt(rowVal.substr(1), 10);
             tempArr.push(Val);
         }
 
         // finding position with bubble sort, only doing one pass
-        var index, flag = true;
+        let index;
+        let flag = true;
         for (let i = 0; i < 6; i++) {
             if (tempArr[i] < tempArr[i + 1]) {
                 var tempVal = tempArr[i];
@@ -721,7 +766,7 @@ function tournament(bank, handle) {
             '2': 'nd',
             '3': 'rd',
             '4': 'th',
-            '5': 'th'
+            '5': 'th',
         };
 
         // display well done
@@ -741,9 +786,9 @@ function tournament(bank, handle) {
 
         // Insert a cell in the row at the specified index
         // and append respective data
-        var newCol1 = newRow.insertCell(0).appendChild(col1);
-        var newCol2 = newRow.insertCell(1).appendChild(col2);
-        var newCol3 = newRow.insertCell(2).appendChild(col3);
+        newRow.insertCell(0).appendChild(col1);
+        newRow.insertCell(1).appendChild(col2);
+        newRow.insertCell(2).appendChild(col3);
 
         // need to reindex other rows
         for (let i = index + 1; i < 6; i++) {
@@ -752,6 +797,7 @@ function tournament(bank, handle) {
     } else {
         getID('loseTour').className = 'tournamentFeedback';
     }
+    getID('playAgain').className = 'bigGameButton';
 }
 
 // function splitCards() {
@@ -773,10 +819,11 @@ function loadGame() {
     // parsing string as a boolean
     var bool = {
         'true': true,
-        'false': false
+        'false': false,
     };
 
     var boolean = bool[localStorage.getItem('playing')];
+    console.log(localStorage.getItem('playing'));
     PLAYING = boolean;
     toggleWagers(!boolean);
 
@@ -793,7 +840,7 @@ function loadGame() {
     parse2D(deck.cutCards, 'cutCards');
     parse2D(deck.spentCards, 'spentCards');
 
-    deck.players = parseInt(localStorage.getItem('players'));
+    deck.players = parseInt(localStorage.getItem('players'), 10);
 
     for (let i = 1; i < deck.players; i++) {
         // adds AI Players to array
@@ -813,17 +860,18 @@ function loadGame() {
         // Function to map CSV to 2d array
         parse2D(Players[j].cards, j + 'cards');
 
-        Players[j].bank = parseInt(localStorage.getItem(j + 'bank'));
-        Players[j].wager = parseInt(localStorage.getItem(j + 'wager'));
+        Players[j].bank = parseInt(localStorage.getItem(j + 'bank'), 10);
+        Players[j].wager = parseInt(localStorage.getItem(j + 'wager'), 10);
         Players[j].turn = localStorage.getItem(j + 'turn');
-        Players[j].cardBalance = parseInt(localStorage.getItem(j + 'cardBalance'));
+        Players[j].cardBalance = parseInt(localStorage.getItem(j + 'cardBalance'), 10);
 
         if (j === deck.players) {
             Players[j].splitCards = localStorage.getItem(j + 'splitCards');
             Players[j].handle = localStorage.getItem(j + 'handle');
             Players[j].handle = localStorage.getItem(j + 'rounds');
         } else {
-            Players[j].wagerBalance = parseInt(localStorage.getItem(j + 'wagerBalance'));
+            Players[j].wagerBalance =
+                parseInt(localStorage.getItem(j + 'wagerBalance'), 10);
         }
     }
 
@@ -834,42 +882,17 @@ function loadGame() {
     if (Players.last().rounds) {
         getID('roundText').className = 'inline';
     } else {
-        // ensures that 'the round 1 of 10" text is not displayed
+        // ensures that 'the round 1 of 10' text is not displayed
         getID('roundText').className = 'hidden';
-    }
-}
-
-function clearNode(node) {
-    while (node.firstChild) {
-        node.removeChild(node.firstChild);
-    }
-}
-
-function displayNode(node, object, i) {
-    // for each card in their hand
-    for (let Cd = i; Cd < object.cards.length; Cd++) {
-        // select the card at the index
-        var card = object.cards[Cd];
-        // get the unicode character of the card
-        var unicard = object.display(card)[0];
-        // create a text node of the unicode card
-        var content = document.createTextNode(unicard);
-        // create a span element
-        var span = document.createElement('span');
-        // style the span
-        span.className = 'card';
-        // append the text node to the span
-        span.appendChild(content);
-        // colour the card accordingly
-        span.style.color = object.display(card)[1];
-        // append the span element to the hand
-        node.appendChild(span);
     }
 }
 
 function display() {
     if (Players !== undefined) {
-        getID('total').innerHTML = Players.last().bank;
+        for (let i = 1; i < Players.length - 1; i++) {
+            getID('total' + (i)).innerHTML = Players[i].bank;
+        }
+        getID('total5').innerHTML = Players.last().bank;
 
         var dealerNode = getID('dealer');
         var dealer = Players[0];
@@ -877,26 +900,38 @@ function display() {
         // clearing dealer
         clearNode(dealerNode);
 
+        // if playing is true set bound to 1, else 0
+        // this is needed to hide the dealers card when game is in play
+        let Cd = (PLAYING && dealer.cards.length !== 0) ? 1 : dealer.cards.length;
+
+        // displays dealer cards
+        displayNode(dealerNode, dealer, Cd);
+
         // for showing back of card if no cards
         // same code as displyNode but function does not support card = [0,-1]
-        if (dealer.cards.length === 0 || PLAYING === true) {
+        // if no cards have been dealt or the dealer has 2 cards and the game is in play
+        // look at this disjunctive normal form *heart eyes*
+        if ((PLAYING === false && Players[1].cards.length === 0) ||
+            (PLAYING === true && dealer.cards.length === 2)) {
+            var parent = document.createElement('span');
+            parent.className = 'fullCard';
+
+            const svg = createSVG(0);
+            parent.appendChild(svg);
+
             let card = [0, -1];
             let content = document.createTextNode(dealer.display(card)[0]);
             let span = document.createElement('span');
             span.className = 'card';
             span.appendChild(content);
+
             if (PLAYING) {
                 span.style.color = dealer.display(dealer.cards[0])[1];
             }
-            dealerNode.appendChild(span);
+
+            parent.appendChild(span);
+            dealerNode.appendChild(parent);
         }
-
-        // if playing is true set iterator to 1, else 0
-        // this is needed to hide the dealers card when game is in play
-        let Cd = (PLAYING) ? 1 : 0;
-
-        // displays dealer cards
-        displayNode(dealerNode, dealer, Cd);
 
         // clearing ai players
         for (let x = 1; x < 5; x++) {
@@ -907,10 +942,12 @@ function display() {
         if (Players.length > 2) {
             // for each player
             for (let Pl = 1; Pl < deck.players; Pl++) {
+                if (deck.players === 3 && Pl === 2) Pl++;
                 let aiNode = getID('ai' + (Pl));
+                const object = Players[Pl];
 
                 // for each card in their hand
-                displayNode(aiNode, Players[Pl], 0);
+                displayNode(aiNode, object, 0);
             }
         }
 
@@ -923,38 +960,108 @@ function display() {
         // for each card in their hand
         displayNode(playerNode, player, 0);
 
-        var splitNode = getID('splitCards');
+        // var splitNode = getID('splitCards');
 
         // clearing player
-        clearNode(splitNode);
+        // clearNode(splitNode);
 
-        if (player.splitCards.length > 0) {
-            // this is the same code as the display node code but module doesn't
-            // support splitcards see above for comments
-            for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
-                let card = Players.last().splitCards[Cd];
-                var content = document.createTextNode(Players.last().display(card)[0]);
-                var span = document.createElement('span');
-                span.className = 'card';
-                span.appendChild(content);
-                span.style.color = Players.last().display(card)[1];
-                getID('splitCards').appendChild(span);
+        // if (player.splitCards.length > 0) {
+        //     // this is the same code as the display node code but module doesn't
+        //     // support splitcards see above for comments
+        //     for (let Cd = 0; Cd < Players.last().splitCards.length; Cd++) {
+        //         let card = Players.last().splitCards[Cd];
+        //         var content = document.createTextNode(Players.last().display(card)[0]);
+        //         var span = document.createElement('span');
+        //         span.className = 'card';
+        //         span.appendChild(content);
+        //         span.style.color = Players.last().display(card)[1];
+        //         getID('splitCards').appendChild(span);
+        //     }
+        // }
+    }
+
+    function clearNode(node) {
+        let children = node.children;
+        for (let i = children.length - 1; i > -1; i--) {
+            const child = children.item(i);
+
+            if (child.className === 'fullCard') {
+                child.remove();
             }
         }
     }
+
+    function displayNode(node, object, i) {
+        // for each card in their hand
+        let bound = i || object.cards.length;
+        for (let Cd = 0; Cd < bound; Cd++) {
+            var parent = document.createElement('span');
+            parent.className = 'fullCard';
+
+            const svg = createSVG(2 * Cd);
+            parent.appendChild(svg);
+
+            // select the card at the index
+            var card = object.cards[Cd];
+            // get the unicode character of the card
+            var unicard = object.display(card)[0];
+            // create a text node of the unicode card
+            var content = document.createTextNode(unicard);
+            // create a span element
+            var span = document.createElement('span');
+            // style the span
+            span.className = 'card';
+            // append the text node to the span
+            span.appendChild(content);
+            // colour the card accordingly
+            span.style.color = object.display(card)[1];
+            span.setAttribute('z-index', 2 * Cd + 1);
+
+            // append the span element to the hand
+            parent.appendChild(span);
+            node.appendChild(parent);
+        }
+    }
+
+    function createSVG(zIndex) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '48');
+        svg.setAttribute('height', '70');
+        svg.setAttribute('class', 'cardBackground');
+        svg.setAttribute('z-index', zIndex);
+        svg.setAttribute('transform', 'translate(-18 22)');
+        const rect = document.createElementNS(svg.namespaceURI, 'rect');
+        rect.setAttribute('x', 0);
+        rect.setAttribute('y', 0);
+        rect.setAttribute('width', 48);
+        rect.setAttribute('height', 71);
+        rect.setAttribute('fill', '#fffff8');
+        svg.appendChild(rect);
+        return svg;
+    }
 }
 
-////////////////////// CLICKING //////////////////////
+// -------------------  CLICKING  ------------------- //
 getID('rules').onclick = makeClicker('rulesScreen');
 getID('leaderboard').onclick = makeClicker('leaderboardScreen');
-getID('create').onclick = makeClicker('gameScreen2');
-getID('10').onclick = makeWager('10');
-getID('50').onclick = makeWager('50');
-getID('100').onclick = makeWager('100');
+getID('create').onclick = makeClicker('gameScreen2', () => {
+    getID('players').innerHTML = deck.players;
+});
+getID('game').onclick = makeClicker('gameScreen', () => {
+    if (localStorage.length < 10) {
+        getID('previous').classList.add('hidden');
+    } else {
+        getID('previous').classList.remove('hidden');
+    }
+});
 var main = makeClicker('mainScreen');
 var play = makeClicker('mainGame');
 
-function makeClicker(Button) {
+getID('10').onclick = makeWager('10');
+getID('50').onclick = makeWager('50');
+getID('100').onclick = makeWager('100');
+
+function makeClicker(Button, callback = () => {}) {
     return function () {
         // select all screens
         let x = document.querySelectorAll('.screen');
@@ -964,6 +1071,7 @@ function makeClicker(Button) {
         }
         // except the chosen screen
         getID(Button).classList.remove('hidden');
+        callback();
     };
 }
 
@@ -971,7 +1079,7 @@ function makeWager(Button) {
     return function () {
         if (PLAYING === false) {
             // sets player wager
-            Players.last().wager = parseInt(Button);
+            Players.last().wager = parseInt(Button, 10);
             // select all wagers and unselect them
             toggleWagers(true);
             // add the class selected to the clicked wager
@@ -980,25 +1088,14 @@ function makeWager(Button) {
     };
 }
 
-getID('game').onclick = function () {
-    let x = document.querySelectorAll('.screen');
-    for (let i = 0; i < x.length; i++) {
-        x[i].classList.add('hidden');
-    }
-    getID('gameScreen').classList.remove('hidden');
-
-    if (localStorage.length < 10) {
-        getID('previous').classList.add('hidden');
-    } else {
-        getID('previous').classList.remove('hidden');
-    }
-};
-
 // select all return buttons
 var y = document.querySelectorAll('.return');
 for (let k = 0; k < y.length; k++) {
     // set the onclick to main
-    y[k].onclick = main;
+    y[k].onclick = () => {
+        main();
+        document.body.classList.remove('playing');
+    };
 }
 
 getID('decPlayers').onclick = function () {
@@ -1010,11 +1107,8 @@ getID('incPlayers').onclick = function () {
 };
 
 getID('play').onclick = function () {
-    // ensures that 'the round 1 of 10" text is not displayed
+    // ensures that 'the round 1 of 10' text is not displayed
     getID('roundText').className = 'hidden';
-    getID('won').className = 'hidden';
-    getID('loss').className = 'hidden';
-    getID('tied').className = 'hidden';
 
     newGame(deck.players);
 };
@@ -1029,22 +1123,43 @@ getID('tournament').onclick = function () {
     newGame(1);
 
     Players.last().rounds = 1;
-    Players.last().handle = prompt('Enter a handle for leaderboard: ');
+    Players.last().handle = Prompt('Enter a handle for leaderboard: ');
+    getID('rounds').innerHTML = 1;
+};
+
+getID('playAgain').onclick = function () {
+    getID('roundText').className = 'inline';
+    const oldHandle = Players.last().handle;
+
+    newGame(1);
+
+    Players.last().rounds = 1;
+    Players.last().handle = oldHandle;
+    getID('rounds').innerHTML = 1;
+};
+
+getID('tournamentLeaderboard').onclick = function () {
+    getID('roundText').className = 'inline';
+
+    newGame(1);
+
+    Players.last().rounds = 1;
+    Players.last().handle = Prompt('Enter a handle for leaderboard: ');
     getID('rounds').innerHTML = 1;
 };
 
 getID('hit').onclick = function () {
     if (PLAYING === true) {
         Players.last().hit();
+        display();
     }
-    display();
 };
 
 getID('stand').onclick = function () {
     if (PLAYING === true) {
         Players.last().stand();
+        display();
     }
-    display();
 };
 
 getID('double').onclick = function () {
@@ -1080,9 +1195,9 @@ getID('nextRound').onclick = function () {
         }
 
         /* if (user.splitCardsCheck()) {
-                getID('split').className = "mgame action inline";
+                getID('split').className = 'mgame action inline';
         } else {
-                getID('split').className = "hidden";
+                getID('split').className = 'hidden';
         } */
     } else {
         getID('double').className = 'hidden';
